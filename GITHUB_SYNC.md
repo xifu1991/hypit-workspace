@@ -42,6 +42,20 @@ git push -u origin workbench/main
 
 如果当前电脑已经使用过 GitHub SSH，这一步可以直接推送。如果没有，需要先配置 SSH Key。
 
+### GitHub Token 权限
+
+Hypit 官方仓库包含 `.github/workflows/`。使用 HTTPS + Personal Access Token 推送时，
+Token 必须允许创建或更新 Workflow 文件：
+
+- Classic Token：勾选 `repo` 和 `workflow`
+- Fine-grained Token：给目标仓库 `Contents: Read and write` 和 `Workflows: Read and write`
+
+如果只勾选普通仓库权限，推送会报：
+
+```text
+refusing to allow a Personal Access Token to create or update workflow
+```
+
 以后更新上游 Hypit：
 
 ```powershell
