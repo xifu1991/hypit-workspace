@@ -2,11 +2,18 @@ param(
     [ValidateSet("Pull", "Push", "Status")]
     [string]$Action = "Status",
     [string]$Message = "",
-    [string]$CodeRepo = "C:\Users\admin\Documents\视频制作\hypit-local-demo",
-    [string]$WorkspaceRepo = "C:\Users\admin\Documents\视频制作"
+    [string]$CodeRepo = "",
+    [string]$WorkspaceRepo = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+if ([string]::IsNullOrWhiteSpace($CodeRepo)) {
+    $CodeRepo = Join-Path $PSScriptRoot "hypit-local-demo"
+}
+if ([string]::IsNullOrWhiteSpace($WorkspaceRepo)) {
+    $WorkspaceRepo = $PSScriptRoot
+}
 
 $repositories = @(
     [pscustomobject]@{ Name = "code"; Path = $CodeRepo },
