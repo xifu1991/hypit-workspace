@@ -1,0 +1,14 @@
+{
+  "format": "hypit.style-example-transcript@1",
+  "sourceWindow": {
+    "startSec": 0.0,
+    "endSec": 2.5
+  },
+  "segments": [
+    {
+      "startSec": 0.0,
+      "endSec": 2.5,
+      "text": "真人全屏口播，建立信任后承接产品介绍。"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "format": "hypit.style-example-transcript@1",
+  "sourceWindow": {
+    "startSec": 2.5,
+    "endSec": 6.5
+  },
+  "segments": [
+    {
+      "startSec": 2.5,
+      "endSec": 6.5,
+      "text": "黑底矩形画中画配合上下标题，快速交代口播主题和结论。"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "format": "hypit.style-example-transcript@1",
+  "sourceWindow": {
+    "startSec": 11.1,
+    "endSec": 18.87
+  },
+  "segments": [
+    {
+      "startSec": 11.1,
+      "endSec": 18.87,
+      "text": "产品旁的花字跟随手中的香水移动，分段解释香调和卖点。"
+    }
+  ]
+}

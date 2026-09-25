@@ -1,0 +1,14 @@
+{
+  "format": "hypit.style-example-transcript@1",
+  "sourceWindow": {
+    "startSec": 8.0,
+    "endSec": 11.1
+  },
+  "segments": [
+    {
+      "startSec": 8.0,
+      "endSec": 11.1,
+      "text": "圆形真人画中画居中，场景词围绕人物逐项铺开。"
+    }
+  ]
+}

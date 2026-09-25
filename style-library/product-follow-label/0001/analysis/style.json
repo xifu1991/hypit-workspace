@@ -1,0 +1,27 @@
+{
+  "format": "hypit.style-spec@1",
+  "id": "product-follow-label",
+  "version": "0001",
+  "name": "产品跟随花字",
+  "status": "analyzed",
+  "scope": "style-variant",
+  "sourceWindow": {
+    "startSec": 11.1,
+    "endSec": 18.87
+  },
+  "media": {
+    "canvas": "9:16",
+    "fps": 30,
+    "sourceLanguage": "zh"
+  },
+  "composition": "人物保持全屏，产品附近的文字负责提炼香调、使用感和结论。",
+  "typography": "小号白色粗体、黑色描边，控制在产品相邻区域，不遮挡脸部和产品标签。",
+  "motion": "文字以产品位置为锚点，在画面中横移约 180 到 290 像素，并包含纵向跟随。",
+  "reuse": "适合手持产品讲解、香调递进、材质说明和即时卖点提示。",
+  "tags": [
+    "产品花字",
+    "跟随",
+    "口播",
+    "卖点"
+  ]
+}

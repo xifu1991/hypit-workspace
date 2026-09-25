@@ -1,0 +1,40 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "full-frame-presenter",
+  "version": "0001",
+  "name": "全屏口播",
+  "summary": "真人全屏出镜，以正脸口播建立信任，并直接进入产品说明。",
+  "status": "analyzed",
+  "createdAt": "2026-09-24T03:07:22.0222901Z",
+  "updatedAt": "2026-09-24T03:07:22.0222901Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "58F498B50F277A33C0FD61CCBD1BF9221461CCE33340A2E837C6EBFB46AE1371",
+    "bytes": 996840,
+    "durationSec": 2.5,
+    "width": 720,
+    "height": 1280,
+    "fps": 30
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "style-example"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence-1.jpg",
+      "analysis/evidence-2.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "真人",
+    "口播",
+    "开场",
+    "信任感"
+  ]
+}

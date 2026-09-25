@@ -1,0 +1,41 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "armani-yulong-clean-talk",
+  "version": "0001",
+  "name": "阿玛尼玉龙茶香 · 口播种草",
+  "summary": "真人口播为信任主体，产品、香调、原料和氛围画面承担种草；人物以全屏或抠像小人的形式穿插。",
+  "status": "analyzed",
+  "createdAt": "2026-09-08T01:48:02.000Z",
+  "updatedAt": "2026-09-23T00:00:00.000Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "B8907913C7CED5ED901815D68750C08272EC7DAC762B6A4E9AAFD3E871954DE5",
+    "bytes": 9625832,
+    "durationSec": 151.046077,
+    "width": 544,
+    "height": 960,
+    "fps": 30
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "volc-seedasr-2.0"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence_a.jpg",
+      "analysis/evidence_b.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "香水",
+    "口播",
+    "产品种草",
+    "B-roll",
+    "花字"
+  ]
+}

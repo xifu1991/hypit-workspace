@@ -1,0 +1,40 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "black-circle-pip-scene-tags",
+  "version": "0001",
+  "name": "黑底圆形场景标签",
+  "summary": "黑色背景承托居中圆形真人画中画，四周白色场景词包围。",
+  "status": "analyzed",
+  "createdAt": "2026-09-24T03:07:22.0222901Z",
+  "updatedAt": "2026-09-24T03:07:22.0222901Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "0668E54E94004C2E1160758A5F2F08AD9549781190CB635831074C4B44015AAA",
+    "bytes": 442547,
+    "durationSec": 3.0999999999999996,
+    "width": 720,
+    "height": 1280,
+    "fps": 30
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "style-example"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence-1.jpg",
+      "analysis/evidence-2.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "黑底",
+    "圆形画中画",
+    "场景词",
+    "标签"
+  ]
+}

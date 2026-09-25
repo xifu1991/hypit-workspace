@@ -1,0 +1,14 @@
+{
+  "format": "hypit.style-example-transcript@1",
+  "sourceWindow": {
+    "startSec": 18.87,
+    "endSec": 22.2
+  },
+  "segments": [
+    {
+      "startSec": 18.87,
+      "endSec": 22.2,
+      "text": "产品特写占满画面，主播小圆窗继续讲解，底部大字提炼核心卖点。"
+    }
+  ]
+}

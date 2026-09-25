@@ -1,0 +1,103 @@
+{
+  "format": "hypit.style-library@1",
+  "updatedAt": "2026-09-24T03:07:22.0222901Z",
+  "styles": [
+    {
+      "id": "armani-yulong-clean-talk",
+      "name": "阿玛尼玉龙茶香 · 口播种草",
+      "summary": "真人口播为信任主体，产品、香调、原料和氛围画面承担种草；人物以全屏或抠像小人的形式穿插。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "香水",
+        "口播",
+        "产品种草",
+        "B-roll",
+        "花字"
+      ],
+      "sourceSha256": "B8907913C7CED5ED901815D68750C08272EC7DAC762B6A4E9AAFD3E871954DE5",
+      "preview": "armani-yulong-clean-talk/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "full-frame-presenter",
+      "name": "全屏口播",
+      "summary": "真人全屏出镜，以正脸口播建立信任，并直接进入产品说明。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "真人",
+        "口播",
+        "开场",
+        "信任感"
+      ],
+      "sourceSha256": "58F498B50F277A33C0FD61CCBD1BF9221461CCE33340A2E837C6EBFB46AE1371",
+      "preview": "full-frame-presenter/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "black-rectangle-pip-title",
+      "name": "黑底矩形画中画标题",
+      "summary": "黑色背景承托矩形真人画中画，上下白色标题提炼开场信息。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "黑底",
+        "矩形画中画",
+        "标题",
+        "开场"
+      ],
+      "sourceSha256": "E2D1303147576ADD9B03B5DBABF7CDBEDE3286BDE17ABE0EE579C62277DAED20",
+      "preview": "black-rectangle-pip-title/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "black-circle-pip-scene-tags",
+      "name": "黑底圆形场景标签",
+      "summary": "黑色背景承托居中圆形真人画中画，四周白色场景词包围。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "黑底",
+        "圆形画中画",
+        "场景词",
+        "标签"
+      ],
+      "sourceSha256": "0668E54E94004C2E1160758A5F2F08AD9549781190CB635831074C4B44015AAA",
+      "preview": "black-circle-pip-scene-tags/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "product-follow-label",
+      "name": "产品跟随花字",
+      "summary": "产品说明贴在手持香水附近，随产品运动轨迹做明显位移。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "产品花字",
+        "跟随",
+        "口播",
+        "卖点"
+      ],
+      "sourceSha256": "C1423F070B4E468EAB2A07800B09B5120A5193AE906DE677FA850C544221255A",
+      "preview": "product-follow-label/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "product-hero-speaker-pip",
+      "name": "产品特写 + 主播圆窗",
+      "summary": "产品近景铺满画面，主播小圆形画中画固定右下，底部大字收束。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "产品特写",
+        "主播圆窗",
+        "大字标题",
+        "20秒效果"
+      ],
+      "sourceSha256": "AEF1EC29FAB626060CBAA97895B231BDDE2A75687D9F051B2C89F61FB58CDA2E",
+      "preview": "product-hero-speaker-pip/0001/preview/cover.jpg",
+      "versionCount": 1
+    }
+  ]
+}

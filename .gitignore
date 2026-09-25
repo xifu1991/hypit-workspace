@@ -1,0 +1,36 @@
+config.json
+
+# Credentials and local machine state
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.token
+
+# Runtime and dependency state
+.hypit/
+.pnpm-store/
+.venv/
+__pycache__/
+node_modules/
+
+# Generated media, renders and logs
+assets/
+outputs/
+sample_*/
+*.log
+*.mp4
+*.mov
+*.mkv
+*.wav
+*.m4a
+*.aac
+
+# Nested source repository is synced separately.
+hypit-local-demo/
+
+# Local editor state
+.idea/
+.vscode/

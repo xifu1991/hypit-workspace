@@ -1,0 +1,27 @@
+{
+  "format": "hypit.style-spec@1",
+  "id": "full-frame-presenter",
+  "version": "0001",
+  "name": "全屏口播",
+  "status": "analyzed",
+  "scope": "style-variant",
+  "sourceWindow": {
+    "startSec": 0.0,
+    "endSec": 2.5
+  },
+  "media": {
+    "canvas": "9:16",
+    "fps": 30,
+    "sourceLanguage": "zh"
+  },
+  "composition": "人物占满 9:16 画面，保留完整脸部、上半身和产品持握空间。",
+  "typography": "开场不抢人物主体；进入产品说明后再叠加关键词或结论字。",
+  "motion": "以稳定人物画面为主，避免无意义推近；通过语义节点切换到下一视觉系统。",
+  "reuse": "适合信任建立、痛点提出、产品初次出现和结尾行动引导。",
+  "tags": [
+    "真人",
+    "口播",
+    "开场",
+    "信任感"
+  ]
+}

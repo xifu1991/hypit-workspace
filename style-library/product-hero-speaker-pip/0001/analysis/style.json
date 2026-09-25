@@ -1,0 +1,27 @@
+{
+  "format": "hypit.style-spec@1",
+  "id": "product-hero-speaker-pip",
+  "version": "0001",
+  "name": "产品特写 + 主播圆窗",
+  "status": "analyzed",
+  "scope": "style-variant",
+  "sourceWindow": {
+    "startSec": 18.87,
+    "endSec": 22.2
+  },
+  "media": {
+    "canvas": "9:16",
+    "fps": 30,
+    "sourceLanguage": "zh"
+  },
+  "composition": "产品近景占满画面，主播圆窗放在右下安全区，底部留出单行大标题位置。",
+  "typography": "单行白色超大粗体，黑色重描边，保证产品纹理和小圆窗不被文字覆盖。",
+  "motion": "产品近景做轻微推近，主播圆窗稳定；标题使用短促弹出。",
+  "reuse": "适合产品价值收束、核心香调命名、关键原料强调和购买理由定格。",
+  "tags": [
+    "产品特写",
+    "主播圆窗",
+    "大字标题",
+    "20秒效果"
+  ]
+}

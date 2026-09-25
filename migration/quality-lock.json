@@ -1,0 +1,25 @@
+{
+  "format": "hypit.migration-quality-lock@1",
+  "node": "24.14.1",
+  "packageManager": "pnpm@10.33.0",
+  "hypit": "0.1.13",
+  "hyperframes": "0.7.101",
+  "ffmpeg": "9.0.1-essentials_build-www.gyan.dev",
+  "render": {
+    "quality": "standard",
+    "videoCodec": "libx264",
+    "crf": 23,
+    "preset": "medium",
+    "pixelFormat": "yuv420p",
+    "audioCodec": "aac",
+    "workers": 2,
+    "browserGpu": "software"
+  },
+  "requiredWorkspaceFiles": [
+    "HYPIT_EDITING_PROTOCOL.md",
+    "HYPIT_STYLE_SELECTION.json",
+    "hypit.runtime.json",
+    "hypit_node_preload.cjs",
+    "style-library/index.json"
+  ]
+}

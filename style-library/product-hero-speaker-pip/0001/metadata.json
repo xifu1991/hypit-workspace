@@ -1,0 +1,40 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "product-hero-speaker-pip",
+  "version": "0001",
+  "name": "产品特写 + 主播圆窗",
+  "summary": "产品近景铺满画面，主播小圆形画中画固定右下，底部大字收束。",
+  "status": "analyzed",
+  "createdAt": "2026-09-24T03:07:22.0222901Z",
+  "updatedAt": "2026-09-24T03:07:22.0222901Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "AEF1EC29FAB626060CBAA97895B231BDDE2A75687D9F051B2C89F61FB58CDA2E",
+    "bytes": 1142488,
+    "durationSec": 3.3299999999999983,
+    "width": 720,
+    "height": 1280,
+    "fps": 30
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "style-example"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence-1.jpg",
+      "analysis/evidence-2.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "产品特写",
+    "主播圆窗",
+    "大字标题",
+    "20秒效果"
+  ]
+}

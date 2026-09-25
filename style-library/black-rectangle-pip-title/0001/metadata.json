@@ -1,0 +1,40 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "black-rectangle-pip-title",
+  "version": "0001",
+  "name": "黑底矩形画中画标题",
+  "summary": "黑色背景承托矩形真人画中画，上下白色标题提炼开场信息。",
+  "status": "analyzed",
+  "createdAt": "2026-09-24T03:07:22.0222901Z",
+  "updatedAt": "2026-09-24T03:07:22.0222901Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "E2D1303147576ADD9B03B5DBABF7CDBEDE3286BDE17ABE0EE579C62277DAED20",
+    "bytes": 811626,
+    "durationSec": 4.0,
+    "width": 720,
+    "height": 1280,
+    "fps": 30
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "style-example"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence-1.jpg",
+      "analysis/evidence-2.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "黑底",
+    "矩形画中画",
+    "标题",
+    "开场"
+  ]
+}

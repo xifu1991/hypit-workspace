@@ -1,0 +1,27 @@
+{
+  "format": "hypit.style-spec@1",
+  "id": "black-circle-pip-scene-tags",
+  "version": "0001",
+  "name": "黑底圆形场景标签",
+  "status": "analyzed",
+  "scope": "style-variant",
+  "sourceWindow": {
+    "startSec": 8.0,
+    "endSec": 11.1
+  },
+  "media": {
+    "canvas": "9:16",
+    "fps": 30,
+    "sourceLanguage": "zh"
+  },
+  "composition": "真人圆形画中画位于画面中心，场景词分布在上、左、右和下四个方向。",
+  "typography": "场景词使用统一白字和黑色描边，底部结论词最大。",
+  "motion": "标签由外向内进入，圆形画面稳定，不做持续缩放。",
+  "reuse": "适合受众场景、使用时机、人群匹配和多标签归纳。",
+  "tags": [
+    "黑底",
+    "圆形画中画",
+    "场景词",
+    "标签"
+  ]
+}
