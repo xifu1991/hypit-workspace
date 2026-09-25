@@ -34,3 +34,15 @@ hypit-local-demo/
 # Local editor state
 .idea/
 .vscode/
+
+# Legacy local-only tooling and experiments
+FEEDBACK.json
+build_*.py
+inspect_*.py
+make_*.py
+tools_*.py
+scripts/
+tests/
+start_studio_4317.ps1
+start_studio_4317_148971474.ps1
+start_studio_4317_23perfume.ps1
