@@ -85,7 +85,7 @@ Set-Location 'C:\Users\admin\Documents\视频制作'
 git init
 git remote add origin 'git@github.com:YOUR_NAME/hypit-workspace.git'
 
-git add style-library
+git add style-library playbook component-library
 git add HYPIT_EDITING_PROTOCOL.md HYPIT_STYLE_LIBRARY_DISCOVERY.md HYPIT_STYLE_SELECTION.json
 git add hypit.runtime.json hypit_node_preload.cjs
 git add migration GITHUB_SYNC.md
@@ -200,6 +200,8 @@ workbench/computer-b
 - `packages/` 下的代码
 - `examples/*.svml`、`.svs`、`.svrun`
 - `style-library/` 的分析和预览
+- `playbook/` 的流程、模板和校验器
+- `component-library/` 的组件状态、版本和授权记录
 - `HYPIT_STYLE_SELECTION.json`
 - `hypit.runtime.json` 模板，但不含密钥
 - `migration/` 引导脚本

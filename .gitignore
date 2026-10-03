@@ -1,5 +1,8 @@
 config.json
 
+# Local credential notes: never commit.
+doubao.txt
+
 # Credentials and local machine state
 .env
 .env.*
@@ -43,6 +46,9 @@ make_*.py
 tools_*.py
 scripts/
 tests/
+
+# Vendored local binaries: FFmpeg and whisper.cpp builds stay on each machine.
+tools/
 start_studio_4317.ps1
 start_studio_4317_148971474.ps1
 start_studio_4317_23perfume.ps1

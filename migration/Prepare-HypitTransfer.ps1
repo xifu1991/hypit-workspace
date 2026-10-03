@@ -56,8 +56,8 @@ foreach ($item in Get-ChildItem -LiteralPath $sourceApp -Force) {
     Copy-Tree -SourcePath $item.FullName -DestinationRoot $bundleApp
 }
 
-Write-Host "Copying workspace, styles and settings..."
-foreach ($name in @("style-library", "HYPIT_EDITING_PROTOCOL.md", "HYPIT_STYLE_LIBRARY_DISCOVERY.md",
+Write-Host "Copying workspace, styles, playbook and settings..."
+foreach ($name in @("style-library", "component-library", "playbook", "HYPIT_EDITING_PROTOCOL.md", "HYPIT_STYLE_LIBRARY_DISCOVERY.md",
         "HYPIT_STYLE_SELECTION.json", "hypit_node_preload.cjs", "hypit.runtime.json")) {
     $source = Join-Path $workspace $name
     if (Test-Path -LiteralPath $source) {

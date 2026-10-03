@@ -1,0 +1,23 @@
+{
+  "format": "hypit.component-plan@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "shotbookPath": "shotbook.json",
+  "components": [
+    {
+      "id": "use-01",
+      "shotId": "shot-01",
+      "slot": "title",
+      "componentId": "",
+      "version": "",
+      "requiredStatus": "verified",
+      "overrides": {},
+      "assetReplacements": [],
+      "license": {
+        "status": "unknown",
+        "evidence": ""
+      },
+      "evidence": ""
+    }
+  ]
+}

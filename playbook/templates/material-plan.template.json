@@ -1,0 +1,30 @@
+{
+  "format": "hypit.material-plan@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "briefPath": "brief.json",
+  "referencePath": "reference.json",
+  "arguments": [
+    {
+      "id": "claim-01",
+      "claim": "",
+      "role": "hook",
+      "assets": [
+        {
+          "id": "asset-01",
+          "path": "",
+          "mediaType": "video",
+          "source": "",
+          "license": {
+            "status": "unknown",
+            "evidence": ""
+          },
+          "availability": "missing",
+          "evidence": ""
+        }
+      ],
+      "coverage": "missing",
+      "gap": ""
+    }
+  ]
+}

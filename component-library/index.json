@@ -1,0 +1,506 @@
+{
+  "format": "hypit.component-library@1",
+  "updatedAt": "2026-10-02T00:00:00+08:00",
+  "policy": {
+    "validStatuses": [
+      "planned",
+      "draft",
+      "analyzed",
+      "verified",
+      "retired"
+    ],
+    "shipRequires": "verified",
+    "explorationAllows": [
+      "draft",
+      "analyzed"
+    ],
+    "requiresVersionPinning": true,
+    "requiresLicenseEvidence": true,
+    "requiresRenderedEvidenceForVerification": true
+  },
+  "components": [
+    {
+      "id": "hypit/svml-title-stack",
+      "name": "SVML 双层标题与强调行",
+      "kind": "title",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "标题",
+        "重点词",
+        "口播"
+      ],
+      "slots": [
+        "hook-title",
+        "title"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "../ChatGPT/视频制作ds版本/production-30/edit.svml",
+        "portable": false
+      },
+      "integration": {
+        "engine": "hypit-svml",
+        "import": "@hypit/typography-track@1",
+        "placement": "typo:Track"
+      },
+      "inputs": [
+        "text",
+        "frame",
+        "style",
+        "startFrame",
+        "durationFrames"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "../ChatGPT/视频制作ds版本/production-30/30_style_24s_chest-v2.mp4",
+          "verifiedAt": "2026-09-27"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地工程轨道，未包含第三方品牌素材。"
+      },
+      "notes": "当前只能证明现有 SVML 标题实现可渲染，后续参数化后仍要重新验证。"
+    },
+    {
+      "id": "hypit/svml-caption-band",
+      "name": "SVML 底部字幕带",
+      "kind": "caption",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "字幕",
+        "关键词",
+        "安全区"
+      ],
+      "slots": [
+        "caption"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "../ChatGPT/视频制作ds版本/production-30/edit.svml",
+        "portable": false
+      },
+      "integration": {
+        "engine": "hypit-svml",
+        "import": "@hypit/typography-track@1",
+        "placement": "typo:Track"
+      },
+      "inputs": [
+        "text",
+        "frame",
+        "style",
+        "startFrame",
+        "durationFrames"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "../ChatGPT/视频制作ds版本/production-30/30_style_24s_chest-v2.mp4",
+          "verifiedAt": "2026-09-27"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地工程轨道，未包含第三方品牌素材。"
+      },
+      "notes": "字幕带位置和字号已在竖屏 720x1280 工程中通过真实成片验证。"
+    },
+    {
+      "id": "hyperframes/registry-block",
+      "name": "HyperFrames Registry 场景块",
+      "kind": "layout",
+      "latestVersion": "0.7.101",
+      "status": "planned",
+      "tags": [
+        "场景",
+        "版式",
+        "组件库"
+      ],
+      "slots": [
+        "layout",
+        "chart",
+        "quote",
+        "device"
+      ],
+      "source": {
+        "type": "official-package",
+        "reference": "hyperframes@0.7.101",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "command": "npx hyperframes add <block>",
+        "placement": "sub-composition"
+      },
+      "inputs": [
+        "blockId",
+        "variables",
+        "assetOverrides"
+      ],
+      "evidence": [],
+      "license": {
+        "status": "per-component",
+        "evidence": "安装前必须逐项读取 Registry 组件的许可与素材来源。"
+      },
+      "notes": "尚未把官方 Registry 组件正式接入当前生产工程。"
+    },
+    {
+      "id": "hyperframes/kinetic-title",
+      "name": "HyperFrames 动态标题",
+      "kind": "title",
+      "latestVersion": "0.7.101",
+      "status": "analyzed",
+      "tags": [
+        "标题",
+        "动效",
+        "GSAP"
+      ],
+      "slots": [
+        "hook-title",
+        "title"
+      ],
+      "source": {
+        "type": "official-docs",
+        "reference": "hyperframes@0.7.101 title-card example",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "composition"
+      },
+      "inputs": [
+        "title",
+        "subtitle",
+        "colors",
+        "start",
+        "duration"
+      ],
+      "evidence": [],
+      "license": {
+        "status": "apache-2.0",
+        "evidence": "HyperFrames 0.7.101 package license."
+      },
+      "notes": "官方能力已分析，但还没有用当前素材完成注册与验收。"
+    },
+    {
+      "id": "hyperframes/embedded-captions",
+      "name": "HyperFrames 嵌入式字幕工作流",
+      "kind": "caption",
+      "latestVersion": "0.7.101",
+      "status": "analyzed",
+      "tags": [
+        "字幕",
+        "逐词",
+        "口播"
+      ],
+      "slots": [
+        "caption"
+      ],
+      "source": {
+        "type": "official-workflow",
+        "reference": "hyperframes embedded-captions route",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "caption-track"
+      },
+      "inputs": [
+        "wordTimedTranscript",
+        "captionIdentity",
+        "safeZone"
+      ],
+      "evidence": [],
+      "license": {
+        "status": "apache-2.0",
+        "evidence": "HyperFrames 0.7.101 package license."
+      },
+      "notes": "正式使用前需要验证中文字体、逐词对齐和非遮挡。"
+    },
+    {
+      "id": "hyperframes/alpha-webm-sticker",
+      "name": "透明 WebM 贴纸交付格式",
+      "kind": "sticker",
+      "latestVersion": "1",
+      "status": "analyzed",
+      "tags": [
+        "贴纸",
+        "透明通道",
+        "VP9"
+      ],
+      "slots": [
+        "sticker",
+        "overlay"
+      ],
+      "source": {
+        "type": "local-pipeline",
+        "reference": "PNG sequence to alpha VP9 WebM",
+        "portable": true
+      },
+      "integration": {
+        "engine": "ffmpeg",
+        "videoCodec": "libvpx-vp9",
+        "pixelFormat": "yuva420p"
+      },
+      "inputs": [
+        "pngSequence",
+        "fps",
+        "duration",
+        "canvas"
+      ],
+      "evidence": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地编码管线。"
+      },
+      "notes": "链路验证过，但尚未登记可复用脚本和正式 A/B 验收样例。"
+    },
+    {
+      "id": "hyperframes/scene-transition",
+      "name": "HyperFrames 场景转场",
+      "kind": "transition",
+      "latestVersion": "0.7.101",
+      "status": "planned",
+      "tags": [
+        "转场",
+        "擦除",
+        "Shader"
+      ],
+      "slots": [
+        "transition"
+      ],
+      "source": {
+        "type": "official-docs",
+        "reference": "hyperframes transitions catalog",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "scene-boundary"
+      },
+      "inputs": [
+        "type",
+        "start",
+        "duration",
+        "direction",
+        "intensity"
+      ],
+      "evidence": [],
+      "license": {
+        "status": "apache-2.0",
+        "evidence": "HyperFrames 0.7.101 package license."
+      },
+      "notes": "尚未接入当前 SVML 渲染链。"
+    },
+    {
+      "id": "hyperframes/product-card",
+      "name": "HyperFrames 产品信息卡",
+      "kind": "card",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "产品",
+        "信息卡",
+        "香调",
+        "场景"
+      ],
+      "slots": [
+        "product-card",
+        "title"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_playbook_25s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf",
+          "assets/Chinese-Regular.ttf"
+        ]
+      },
+      "inputs": [
+        "index",
+        "productName",
+        "productType",
+        "notes",
+        "usage",
+        "accent",
+        "start",
+        "duration"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "../outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
+          "verifiedAt": "2026-10-02"
+        },
+        {
+          "type": "rendered-alpha-overlay",
+          "reference": "../outputs/DSC_5862_playbook_25s/qa/overlay-alpha.webm",
+          "verifiedAt": "2026-10-02"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，字体文件随工程本地加载，未包含第三方品牌素材。"
+      },
+      "notes": "左上安全区版式，已在 1920x1080 横屏成片的关键帧检查中确认不遮脸、不遮瓶身。"
+    },
+    {
+      "id": "hyperframes/end-note",
+      "name": "HyperFrames 底部结论提示条",
+      "kind": "caption",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "结尾",
+        "结论",
+        "安全区"
+      ],
+      "slots": [
+        "end-note",
+        "caption"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_playbook_25s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf",
+          "assets/Chinese-Regular.ttf"
+        ]
+      },
+      "inputs": [
+        "kicker",
+        "title",
+        "start",
+        "duration",
+        "placement"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "../outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
+          "verifiedAt": "2026-10-02"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，未包含第三方品牌素材。"
+      },
+      "notes": "底部居中深色窄条。当前版本下沿与瓶身底部有轻微重叠，已登记为已知非阻断问题。"
+    },
+    {
+      "id": "hyperframes/progress-rule",
+      "name": "HyperFrames 全片进度线",
+      "kind": "overlay",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "进度",
+        "动效",
+        "信息层"
+      ],
+      "slots": [
+        "progress-rule",
+        "overlay"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_playbook_25s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js"
+        ]
+      },
+      "inputs": [
+        "start",
+        "duration",
+        "easing"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-alpha-overlay",
+          "reference": "../outputs/DSC_5862_playbook_25s/qa/overlay-alpha.webm",
+          "verifiedAt": "2026-10-02"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现。"
+      },
+      "notes": "24.27 秒匀速推进，仅在画面底边留一条细线，不参与信息表达。"
+    },
+    {
+      "id": "hyperframes/caption-band",
+      "name": "HyperFrames 底部字幕带",
+      "kind": "caption",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "字幕",
+        "词级时间轴",
+        "安全区",
+        "豆包ASR"
+      ],
+      "slots": [
+        "caption",
+        "subtitle"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_playbook_25s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf",
+          "assets/Chinese-Regular.ttf"
+        ]
+      },
+      "inputs": [
+        "cues",
+        "start",
+        "end",
+        "text",
+        "safeZone"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "../outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
+          "verifiedAt": "2026-10-02"
+        },
+        {
+          "type": "word-timed-transcript",
+          "reference": "../outputs/DSC_5862_playbook_25s/qa/asr/transcript.json",
+          "verifiedAt": "2026-10-02"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，字幕文本由用户素材的豆包 ASR 结果校正得到。"
+      },
+      "notes": "每条字幕使用 GSAP 时间轴上的固定补间，保证 HyperFrames 抽帧时按时间确定性显隐。底部安全区，不遮挡瓶身与结尾提示。"
+    }
+  ]
+}

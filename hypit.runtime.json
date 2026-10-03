@@ -28,7 +28,11 @@
       }
     },
     "media.local": {
-      "use": "@hypit/provider-media-local"
+      "use": "@hypit/provider-media-local",
+      "config": {
+        "ffmpegPath": "C:/Users/admin/Documents/视频制作/tools/ffmpeg/ffmpeg.exe",
+        "ffprobePath": "C:/Users/admin/Documents/视频制作/tools/ffmpeg/ffprobe.exe"
+      }
     },
     "hyperframes.local": {
       "use": "@hypit/provider-hyperframes-local"

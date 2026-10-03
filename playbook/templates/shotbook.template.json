@@ -1,0 +1,54 @@
+{
+  "format": "hypit.shotbook@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "briefPath": "brief.json",
+  "referencePath": "reference.json",
+  "materialPlanPath": "material-plan.json",
+  "timelineSemantics": "[startFrame,endFrame)",
+  "canvas": {
+    "width": 720,
+    "height": 1280,
+    "aspectRatio": "9:16"
+  },
+  "fps": 30,
+  "totalFrames": 0,
+  "shots": [
+    {
+      "id": "shot-01",
+      "order": 1,
+      "startFrame": 0,
+      "endFrame": 0,
+      "purpose": "",
+      "referenceMapping": {
+        "startSeconds": 0,
+        "endSeconds": 0,
+        "reuse": ""
+      },
+      "narration": "",
+      "visual": {
+        "assetIds": [],
+        "description": "",
+        "subjectFocus": "",
+        "framing": "",
+        "crop": ""
+      },
+      "captions": [],
+      "layout": "",
+      "components": [
+        {
+          "slot": "title",
+          "componentId": "",
+          "version": "",
+          "purpose": ""
+        }
+      ],
+      "motion": [],
+      "audio": {
+        "mode": "original",
+        "notes": ""
+      },
+      "acceptanceCriteria": []
+    }
+  ]
+}

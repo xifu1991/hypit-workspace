@@ -8,6 +8,8 @@
 
 - `workspace/hypit-local-demo`：本地 Hypit 工作树，包括 Studio 导出、风格库和本地改动。
 - `workspace/style-library`：已归档的剪辑风格和参考分析。
+- `workspace/playbook`：8 步视频制作流程、JSON 模板和门禁校验器。
+- `workspace/component-library`：标题、字幕、转场、版式、贴纸和场景块的状态登记。
 - `workspace/HYPIT_STYLE_SELECTION.json`：当前勾选风格。
 - `workspace/HYPIT_EDITING_PROTOCOL.md`：剪辑复用规则。
 - `workspace/hypit.runtime.json`：默认 Runtime，包括豆包 ASR 接入。
@@ -121,11 +123,13 @@ http://localhost:4317/__studio#studio
 
 新电脑会读取同一份风格库。以后收到新素材时，沿用当前流程：
 
-1. 在 Studio 左侧勾选需要的风格。
-2. 把新素材路径和时长要求发给 Codex。
-3. Codex 读取 `HYPIT_STYLE_SELECTION.json`。
-4. 复用相同版本的风格分析。
-5. 构建并导出 MP4。
+1. 先运行 `node playbook/validate.mjs`。
+2. 按 `playbook/templates/` 建立本次工程的阶段文件。
+3. 在 Studio 左侧勾选需要的风格。
+4. 把新素材路径和时长要求发给 Codex。
+5. Codex 读取 `HYPIT_STYLE_SELECTION.json` 和 `component-library/index.json`。
+6. 复用相同版本的风格分析，组件只有 `verified` 才能进入正式交付。
+7. 构建、检查并导出 MP4，再用 `node playbook/validate.mjs --project <工程目录>` 验收。
 
 ## 常见偏差
 

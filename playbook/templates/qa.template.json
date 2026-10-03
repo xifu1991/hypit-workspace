@@ -1,0 +1,72 @@
+{
+  "format": "hypit.qa-report@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "shotbookPath": "shotbook.json",
+  "artifacts": {
+    "outputVideoPath": "",
+    "renderLogPath": "",
+    "contactSheetPath": "",
+    "referenceContactSheetPath": ""
+  },
+  "checks": [
+    {
+      "id": "hook-first-3s",
+      "label": "前 3 秒钩子",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    },
+    {
+      "id": "reference-structure",
+      "label": "参考结构与镜头映射",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    },
+    {
+      "id": "pacing-density",
+      "label": "节奏与信息密度",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    },
+    {
+      "id": "caption-sync",
+      "label": "字幕与语音同步",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    },
+    {
+      "id": "fact-accuracy",
+      "label": "事实、数据和表达准确性",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    },
+    {
+      "id": "media-integrity",
+      "label": "真实媒体轨道与渲染产物",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    },
+    {
+      "id": "authorization",
+      "label": "素材、字体和品牌授权",
+      "status": "pending",
+      "severity": "blocking",
+      "evidence": "",
+      "notes": ""
+    }
+  ],
+  "blockingIssues": [],
+  "finalVerdict": "pending"
+}

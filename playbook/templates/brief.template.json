@@ -1,0 +1,33 @@
+{
+  "format": "hypit.video-brief@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "coreQuestion": "",
+  "audience": {
+    "primary": "",
+    "currentSituation": "",
+    "desiredChange": ""
+  },
+  "singleTakeaway": "",
+  "productOrSubject": "",
+  "platform": {
+    "name": "",
+    "aspectRatio": "9:16",
+    "width": 720,
+    "height": 1280,
+    "fps": 30
+  },
+  "duration": {
+    "targetSeconds": 0,
+    "minSeconds": 0,
+    "maxSeconds": 0
+  },
+  "facts": [],
+  "constraints": [],
+  "prohibitedDirections": [],
+  "approval": {
+    "topicLocked": false,
+    "approvedBy": "",
+    "approvedAt": ""
+  }
+}

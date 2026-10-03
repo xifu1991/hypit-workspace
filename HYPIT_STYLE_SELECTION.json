@@ -1,5 +1,12 @@
 {
   "format": "hypit.style-selection@1",
-  "updatedAt": "2026-09-25T01:27:42.472Z",
-  "styles": []
+  "updatedAt": "2026-10-01T03:45:20.021Z",
+  "styles": [
+    {
+      "id": "armani-yulong-clean-talk",
+      "name": "阿玛尼玉龙茶香 · 口播种草",
+      "version": "0001",
+      "preview": "armani-yulong-clean-talk/0001/preview/cover.jpg"
+    }
+  ]
 }

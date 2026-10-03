@@ -1,0 +1,296 @@
+{
+  "format": "hypit.video-playbook@1",
+  "version": "0002",
+  "status": "active",
+  "purpose": "把选题、参考、素材、编排、组件、动效、检查和复盘串成可验收的视频制作流程。",
+  "principles": [
+    "一条视频只服务一个核心问题。",
+    "参考用于拆结构，不复制品牌、文案和未授权素材。",
+    "每个阶段必须有明确产物，不能只靠聊天记录传递。",
+    "上一阶段门禁未通过，不进入下一阶段。",
+    "任何成片结论必须来自真实媒体轨道和真实渲染产物。"
+  ],
+  "stages": [
+    {
+      "id": "topic",
+      "order": 1,
+      "name": "选题",
+      "goal": "明确一个核心问题、目标观众和看完后的单一认知变化。",
+      "requiredInputs": [
+        "用户目标",
+        "产品或主题",
+        "平台、画幅和时长约束"
+      ],
+      "actions": [
+        "写出一句话核心问题",
+        "写出主要观众和他们当前的痛点或欲望",
+        "写出观众看完后只需要记住的一个结论",
+        "列出不能偏离的事实和边界"
+      ],
+      "outputs": [
+        "brief.json"
+      ],
+      "gates": [
+        "只有一个核心问题",
+        "目标观众和单一结论明确",
+        "时长、画幅和平台明确",
+        "没有用素材标题或产品名称代替主题"
+      ],
+      "failurePolicy": [
+        "核心问题不唯一时先向用户确认",
+        "没有明确承诺时停止写脚本"
+      ]
+    },
+    {
+      "id": "reference",
+      "order": 2,
+      "name": "参考",
+      "goal": "找到 Design Reference，并拆出可复用的结构和网感。",
+      "requiredInputs": [
+        "brief.json",
+        "参考视频或参考链接",
+        "用户勾选的风格"
+      ],
+      "actions": [
+        "计算参考视频 SHA-256 并查询 style-library",
+        "抽取关键帧和时间结构",
+        "记录钩子、节奏、信息密度、镜头关系、字幕和结尾",
+        "记录可复用结构和禁止复制的品牌、文案、素材"
+      ],
+      "outputs": [
+        "reference.json",
+        "参考证据帧",
+        "风格库 ID 或明确的无风格声明"
+      ],
+      "gates": [
+        "参考指纹和时间范围已记录",
+        "至少完成一套结构拆解",
+        "证据帧可以指向具体时间点",
+        "明确列出禁止复制项",
+        "勾选风格时只读取已勾选记录"
+      ],
+      "failurePolicy": [
+        "没有可用参考时改为原创结构，并标记为原创",
+        "参考与旧模板明显不同时拒绝复用旧模板"
+      ]
+    },
+    {
+      "id": "materials",
+      "order": 3,
+      "name": "素材",
+      "goal": "围绕核心问题收集并验证画面、案例、数据和对比。",
+      "requiredInputs": [
+        "brief.json",
+        "reference.json"
+      ],
+      "actions": [
+        "按核心论点整理画面、案例、数据、对比和产品证据",
+        "为每一条核心论点绑定可追溯素材",
+        "标记素材来源、授权和可用状态",
+        "补齐开头、正文、证据和结尾所需覆盖"
+      ],
+      "outputs": [
+        "material-plan.json",
+        "素材清单"
+      ],
+      "gates": [
+        "每条核心论点都有素材或明确的证据缺口",
+        "没有未授权素材",
+        "素材覆盖钩子、正文、证据和结尾",
+        "素材状态不是把静态图冒充成视频"
+      ],
+      "failurePolicy": [
+        "素材不足时先改脚本或补素材，不用无关画面填空",
+        "授权不明时标记不可发布"
+      ]
+    },
+    {
+      "id": "arrangement",
+      "order": 4,
+      "name": "编排",
+      "goal": "用 shotbook 安排每段内容、镜头、组件和时长。",
+      "requiredInputs": [
+        "brief.json",
+        "reference.json",
+        "material-plan.json"
+      ],
+      "actions": [
+        "把脚本拆成有明确目的的镜头",
+        "为每个镜头指定起止帧、画面、台词、组件、动效和声音",
+        "检查镜头之间的承接和节奏",
+        "为每个镜头写明验收条件"
+      ],
+      "outputs": [
+        "shotbook.json"
+      ],
+      "gates": [
+        "每个镜头都有目的、素材、起止帧和验收条件",
+        "没有空镜头、重复镜头或无归属镜头",
+        "总时长、画幅和帧率一致",
+        "镜头间的信息流连续"
+      ],
+      "failurePolicy": [
+        "编排与参考结构冲突时先修改 shotbook",
+        "未定稿的 shotbook 不进入组件和动效实现"
+      ]
+    },
+    {
+      "id": "components",
+      "order": 5,
+      "name": "组件",
+      "goal": "从组件库调用标题、字幕、转场和版式，并记录版本。",
+      "requiredInputs": [
+        "shotbook.json",
+        "component-library/index.json"
+      ],
+      "actions": [
+        "为每个镜头选择组件 ID 和版本",
+        "记录组件覆盖值和素材替换",
+        "检查组件授权和品牌资产",
+        "缺失组件先登记为 planned，不直接写一次性代码"
+      ],
+      "outputs": [
+        "component-plan.json"
+      ],
+      "gates": [
+        "每个组件 ID 都能在组件库找到",
+        "交付使用的组件状态为 verified",
+        "品牌素材、字体和商标已替换或标记不可发布",
+        "组件参数可追溯"
+      ],
+      "failurePolicy": [
+        "组件不存在时先创建新版本并登记，再使用",
+        "未验证组件只能用于探索，不能进入正式交付"
+      ]
+    },
+    {
+      "id": "motion",
+      "order": 6,
+      "name": "动效",
+      "goal": "用 HyperFrames 等工具完成动态包装，并产出可验证的渲染资产。",
+      "requiredInputs": [
+        "shotbook.json",
+        "component-plan.json",
+        "视频工程"
+      ],
+      "actions": [
+        "实现标题、字幕、转场、版式和贴纸动效",
+        "对 HyperFrames 工程运行 check",
+        "需要透明贴纸时输出 alpha WebM",
+        "记录帧率、时长、分辨率、编码和文件大小"
+      ],
+      "outputs": [
+        "动效资产",
+        "渲染计划",
+        "真实渲染产物"
+      ],
+      "gates": [
+        "HyperFrames check 通过",
+        "透明资产确实包含 alpha",
+        "帧率、时长和画幅符合 shotbook",
+        "没有未说明的空转或无效动效"
+      ],
+      "failurePolicy": [
+        "WebM 丢失 alpha 时改用 PNG 序列加 alpha VP9 编码",
+        "渲染失败时停在工程预览，不冒充成片"
+      ]
+    },
+    {
+      "id": "qa",
+      "order": 7,
+      "name": "检查",
+      "goal": "检查开头钩子、节奏、信息密度和表达准确性。",
+      "requiredInputs": [
+        "shotbook.json",
+        "真实渲染产物",
+        "参考证据"
+      ],
+      "actions": [
+        "逐镜对照 shotbook 和参考结构",
+        "检查前 3 秒钩子、节奏、阅读速度和字幕同步",
+        "检查事实、数据、口播和字幕一致性",
+        "检查音频、画幅、时长和授权"
+      ],
+      "outputs": [
+        "qa.json",
+        "对比图或接触表"
+      ],
+      "gates": [
+        "所有必检项有状态和证据",
+        "没有未解决的阻断项",
+        "成片来自真实渲染文件",
+        "未通过项只能标记为工程预览或待修复"
+      ],
+      "failurePolicy": [
+        "任一门禁失败时禁止发布",
+        "发现事实错误时回到对应阶段修正"
+      ]
+    },
+    {
+      "id": "publish-retrospective",
+      "order": 8,
+      "name": "发布复盘",
+      "goal": "记录完播、互动和可复用经验，反哺风格库和组件库。",
+      "requiredInputs": [
+        "qa.json",
+        "发布结果或明确的未发布原因"
+      ],
+      "actions": [
+        "记录发布时间、平台、封面、标题和基础数据",
+        "记录 24 小时、72 小时和 7 天的指标",
+        "记录留存曲线、评论反馈和异常情况",
+        "把经验映射到 style-library、component-library 或 playbook"
+      ],
+      "outputs": [
+        "retrospective.json",
+        "风格库或组件库更新建议"
+      ],
+      "gates": [
+        "数据不可得时记录原因，不伪造数据",
+        "每条经验必须指向可执行的复用或避免项",
+        "没有真实验证前不得把风格标记为 verified"
+      ],
+      "failurePolicy": [
+        "未发布时记录未发布原因并关闭复盘",
+        "数据异常时保留原始记录，不覆盖历史版本"
+      ]
+    }
+  ],
+  "artifacts": {
+    "topic": {
+      "output": "brief.json",
+      "template": "templates/brief.template.json"
+    },
+    "reference": {
+      "output": "reference.json",
+      "template": "templates/reference.template.json"
+    },
+    "materials": {
+      "output": "material-plan.json",
+      "template": "templates/material-plan.template.json"
+    },
+    "arrangement": {
+      "output": "shotbook.json",
+      "template": "templates/shotbook.template.json"
+    },
+    "components": {
+      "output": "component-plan.json",
+      "template": "templates/component-plan.template.json"
+    },
+    "qa": {
+      "output": "qa.json",
+      "template": "templates/qa.template.json"
+    },
+    "publish-retrospective": {
+      "output": "retrospective.json",
+      "template": "templates/retrospective.template.json"
+    }
+  },
+  "rules": {
+    "stageOrderIsMandatory": true,
+    "skipRequiresExplicitApproval": true,
+    "unverifiedStyleCannotBePromoted": true,
+    "unverifiedComponentCannotShip": true,
+    "referenceBrandAssetsCannotShip": true
+  }
+}

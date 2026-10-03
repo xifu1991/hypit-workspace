@@ -1,0 +1,39 @@
+{
+  "format": "hypit.video-retrospective@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "qaPath": "qa.json",
+  "publication": {
+    "status": "not-published",
+    "platform": "",
+    "publishedAt": "",
+    "title": "",
+    "cover": "",
+    "url": "",
+    "reasonIfNotPublished": ""
+  },
+  "metrics": {
+    "24h": {},
+    "72h": {},
+    "7d": {}
+  },
+  "retention": {
+    "curve": [],
+    "dropOffPoints": [],
+    "notes": ""
+  },
+  "comments": {
+    "positive": [],
+    "negative": [],
+    "questions": []
+  },
+  "learnings": [
+    {
+      "observation": "",
+      "evidence": "",
+      "action": "reuse",
+      "updateTarget": "playbook"
+    }
+  ],
+  "libraryUpdates": []
+}

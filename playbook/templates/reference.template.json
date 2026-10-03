@@ -1,0 +1,56 @@
+{
+  "format": "hypit.video-reference@1",
+  "status": "draft",
+  "projectId": "project-id",
+  "briefPath": "brief.json",
+  "sources": [
+    {
+      "label": "primary-reference",
+      "path": "",
+      "url": "",
+      "sha256": "",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "primary"
+    }
+  ],
+  "selectedStyleIds": [],
+  "structure": {
+    "narrativePattern": "",
+    "hook": {
+      "timeSeconds": 0,
+      "mechanism": "",
+      "onScreenText": ""
+    },
+    "pacing": {
+      "shotCount": 0,
+      "averageShotSeconds": 0,
+      "firstCutSeconds": 0
+    },
+    "informationDensity": "",
+    "shotLanguage": [],
+    "captionSystem": [],
+    "transitions": [],
+    "ending": ""
+  },
+  "evidenceFrames": [
+    {
+      "timeSeconds": 0,
+      "path": "",
+      "observation": ""
+    }
+  ],
+  "reusablePatterns": [],
+  "forbiddenReuse": [
+    {
+      "type": "brand",
+      "detail": ""
+    }
+  ],
+  "originality": {
+    "mode": "reference-structured",
+    "declaration": ""
+  }
+}

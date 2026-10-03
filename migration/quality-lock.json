@@ -20,6 +20,17 @@
     "HYPIT_STYLE_SELECTION.json",
     "hypit.runtime.json",
     "hypit_node_preload.cjs",
-    "style-library/index.json"
+    "style-library/index.json",
+    "component-library/index.json",
+    "playbook/playbook.json",
+    "playbook/PLAYBOOK.md",
+    "playbook/validate.mjs",
+    "playbook/templates/brief.template.json",
+    "playbook/templates/reference.template.json",
+    "playbook/templates/material-plan.template.json",
+    "playbook/templates/shotbook.template.json",
+    "playbook/templates/component-plan.template.json",
+    "playbook/templates/qa.template.json",
+    "playbook/templates/retrospective.template.json"
   ]
 }
