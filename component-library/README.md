@@ -15,3 +15,16 @@
 ## 当前策略
 
 HyperFrames 官方 Registry、动态标题、嵌入式字幕、转场和透明贴纸能力已经登记，但尚未全部用当前中文口播素材完成验收。后续每接入一个组件，要把版本、覆盖参数、素材替换、许可证据和真实渲染产物补回 `index.json`，然后才把状态提升为 `verified`。
+
+## 校验要求
+
+涉及 overlay composition 的组件，登记为 `verified` 之前必须先用 HyperFrames 官方命令跑通校验：
+
+```powershell
+hyperframes lint
+hyperframes inspect
+```
+
+要求 `lint` 为 0 error / 0 warning、`inspect` 为 0 layout issue。校验结果、媒体是否全部落在项目根内、以及字体等依赖限制，都要写进组件证据和工程 `qa.json`，否则只能停留在 `analyzed`。
+
+已知限制：中文字体（等线）单文件约 15.6MB，超过 HyperFrames 的 2MB 内联上限，因此中文口播工程暂时无法靠 HyperFrames 打包自包含，成片仍由本地 HTML/GSAP 加 Chrome 抽帧管线渲染。详见 `HYPIT_LESSONS.md` 的 L-011。

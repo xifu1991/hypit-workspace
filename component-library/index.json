@@ -1,6 +1,6 @@
 {
   "format": "hypit.component-library@1",
-  "updatedAt": "2026-10-02T00:00:00+08:00",
+  "updatedAt": "2026-10-03T00:00:00+08:00",
   "policy": {
     "validStatuses": [
       "planned",
@@ -36,7 +36,7 @@
       ],
       "source": {
         "type": "workspace-evidence",
-        "reference": "../ChatGPT/视频制作ds版本/production-30/edit.svml",
+        "reference": "production-30/edit.svml",
         "portable": false
       },
       "integration": {
@@ -54,7 +54,7 @@
       "evidence": [
         {
           "type": "rendered-video",
-          "reference": "../ChatGPT/视频制作ds版本/production-30/30_style_24s_chest-v2.mp4",
+          "reference": "production-30/30_style_24s_chest-v2.mp4",
           "verifiedAt": "2026-09-27"
         }
       ],
@@ -80,7 +80,7 @@
       ],
       "source": {
         "type": "workspace-evidence",
-        "reference": "../ChatGPT/视频制作ds版本/production-30/edit.svml",
+        "reference": "production-30/edit.svml",
         "portable": false
       },
       "integration": {
@@ -98,7 +98,7 @@
       "evidence": [
         {
           "type": "rendered-video",
-          "reference": "../ChatGPT/视频制作ds版本/production-30/30_style_24s_chest-v2.mp4",
+          "reference": "production-30/30_style_24s_chest-v2.mp4",
           "verifiedAt": "2026-09-27"
         }
       ],
@@ -338,12 +338,12 @@
       "evidence": [
         {
           "type": "rendered-video",
-          "reference": "../outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
+          "reference": "outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
           "verifiedAt": "2026-10-02"
         },
         {
           "type": "rendered-alpha-overlay",
-          "reference": "../outputs/DSC_5862_playbook_25s/qa/overlay-alpha.webm",
+          "reference": "outputs/DSC_5862_playbook_25s/qa/overlay-alpha.webm",
           "verifiedAt": "2026-10-02"
         }
       ],
@@ -392,7 +392,7 @@
       "evidence": [
         {
           "type": "rendered-video",
-          "reference": "../outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
+          "reference": "outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
           "verifiedAt": "2026-10-02"
         }
       ],
@@ -437,7 +437,7 @@
       "evidence": [
         {
           "type": "rendered-alpha-overlay",
-          "reference": "../outputs/DSC_5862_playbook_25s/qa/overlay-alpha.webm",
+          "reference": "outputs/DSC_5862_playbook_25s/qa/overlay-alpha.webm",
           "verifiedAt": "2026-10-02"
         }
       ],
@@ -487,12 +487,12 @@
       "evidence": [
         {
           "type": "rendered-video",
-          "reference": "../outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
+          "reference": "outputs/DSC_5862_playbook_25s/DSC_5862_playbook_25s_final.mp4",
           "verifiedAt": "2026-10-02"
         },
         {
           "type": "word-timed-transcript",
-          "reference": "../outputs/DSC_5862_playbook_25s/qa/asr/transcript.json",
+          "reference": "outputs/DSC_5862_playbook_25s/qa/asr/transcript.json",
           "verifiedAt": "2026-10-02"
         }
       ],
@@ -501,6 +501,258 @@
         "evidence": "本地 HTML/CSS/GSAP 实现，字幕文本由用户素材的豆包 ASR 结果校正得到。"
       },
       "notes": "每条字幕使用 GSAP 时间轴上的固定补间，保证 HyperFrames 抽帧时按时间确定性显隐。底部安全区，不遮挡瓶身与结尾提示。"
+    },
+    {
+      "id": "hyperframes/outline-callout-list",
+      "name": "HyperFrames 描边花字列表",
+      "kind": "callout",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "花字",
+        "香调",
+        "描边",
+        "逐条进入"
+      ],
+      "slots": [
+        "callout",
+        "note-list"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_director_20s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf"
+        ]
+      },
+      "inputs": [
+        "items",
+        "anchor",
+        "startTimes",
+        "exitTime",
+        "accent"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "outputs/DSC_5862_director_20s/DSC_5862_director_20s_final.mp4",
+          "verifiedAt": "2026-10-03"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，画面来自用户提供的素材，未引入第三方图片。"
+      },
+      "notes": "白色描边加金色圆点，每条独立落在指定 y 坐标，逐条进入后整组一次性淡出。成片 S001 段 2.24-5.02 秒可见。"
+    },
+    {
+      "id": "hyperframes/black-rectangle-pip-title",
+      "name": "HyperFrames 黑底矩形画中画标题",
+      "kind": "layout",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "黑底",
+        "矩形画中画",
+        "标题",
+        "标签"
+      ],
+      "slots": [
+        "layout",
+        "title",
+        "scene-tag"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_director_20s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf"
+        ]
+      },
+      "inputs": [
+        "crop",
+        "window",
+        "title",
+        "tags",
+        "conclusion",
+        "start",
+        "duration"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "outputs/DSC_5862_director_20s/DSC_5862_director_20s_final.mp4",
+          "verifiedAt": "2026-10-03"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，画面裁切自用户提供素材。"
+      },
+      "notes": "竖版 560x700 画中画居中，源裁 528,0,864,1080；上下分层承载标题与结论标签。成片 S002 段 5.22-8.85 秒可见。"
+    },
+    {
+      "id": "hyperframes/product-follow-label",
+      "name": "HyperFrames 产品跟随花字",
+      "kind": "callout",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "花字",
+        "跟随",
+        "位移",
+        "卖点"
+      ],
+      "slots": [
+        "callout",
+        "product-label"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_director_20s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf"
+        ]
+      },
+      "inputs": [
+        "lines",
+        "anchor",
+        "driftPx",
+        "driftDuration",
+        "accent"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "outputs/DSC_5862_director_20s/DSC_5862_director_20s_final.mp4",
+          "verifiedAt": "2026-10-03"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，画面来自用户提供的素材。"
+      },
+      "notes": "整组花字在 4.5 秒内从 -60px 平移到 +60px，模拟跟随手持产品横移；所有条目共用同一 GSAP 补间目标，避免各自漂移。成片 S003 段 8.85-13.56 秒可见。"
+    },
+    {
+      "id": "hyperframes/black-circle-pip-scene-tags",
+      "name": "HyperFrames 黑底圆形场景标签",
+      "kind": "layout",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "黑底",
+        "圆形画中画",
+        "场景词",
+        "标签"
+      ],
+      "slots": [
+        "layout",
+        "scene-tag"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_director_20s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf"
+        ]
+      },
+      "inputs": [
+        "crop",
+        "window",
+        "tags",
+        "startTimes",
+        "exitTime"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "outputs/DSC_5862_director_20s/DSC_5862_director_20s_final.mp4",
+          "verifiedAt": "2026-10-03"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，画面裁切自用户提供素材。"
+      },
+      "notes": "620 圆形画中画居中，源裁 610,60,700,700；场景词分布上/左/右/下四个方向，底部结论词最大。成片 S004 段 13.56-16.75 秒可见。"
+    },
+    {
+      "id": "hyperframes/product-hero-speaker-pip",
+      "name": "HyperFrames 产品特写加主播圆窗",
+      "kind": "layout",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "产品特写",
+        "主播圆窗",
+        "推近",
+        "大字标题"
+      ],
+      "slots": [
+        "layout",
+        "hero",
+        "speaker-pip",
+        "end-note"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "outputs/DSC_5862_director_20s/overlay/index.html",
+        "portable": true
+      },
+      "integration": {
+        "engine": "hyperframes",
+        "placement": "overlay-composition",
+        "localAssets": [
+          "assets/gsap.min.js",
+          "assets/Chinese-Bold.ttf"
+        ]
+      },
+      "inputs": [
+        "crop",
+        "zoomFrom",
+        "zoomTo",
+        "zoomDuration",
+        "pipCrop",
+        "kicker",
+        "headlineStops"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "outputs/DSC_5862_director_20s/DSC_5862_director_20s_final.mp4",
+          "verifiedAt": "2026-10-03"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HTML/CSS/GSAP 实现，画面裁切自用户提供素材。"
+      },
+      "notes": "产品特写铺满画面并做 transform 推近（scale 1→1.05，不用 left/top/width/height 补间，避免整数像素跳变），右下 304 圆窗使用独立预裁素材，底部单行大字按时间点换词。成片 S005 段 16.75-20.40 秒可见。"
     }
   ]
 }

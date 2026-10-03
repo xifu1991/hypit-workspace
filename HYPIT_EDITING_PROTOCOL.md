@@ -32,6 +32,7 @@
 3. `component-plan.json` 必须记录每个镜头使用的组件 ID、版本、覆盖值、素材替换和许可。组件不存在时先登记并验证，不把一次性代码散落在工程里。
 4. HyperFrames 官方 Registry、动态标题、嵌入式字幕和转场目前按登记状态使用；没有当前素材的真实渲染证据时，不得写成已验证。
 5. 组件的品牌、字体、商标和素材授权必须逐项检查；结构可以复用，未授权资产不能随成片交付。
+6. 涉及 overlay composition 的组件，在登记为 `verified` 之前必须跑通 `hyperframes lint` 与 `hyperframes inspect`（0 error、0 warning、0 layout issue），并把结果和字体、依赖等已知限制写进组件证据与工程 `qa.json`。
 
 ## 参考锁定
 
@@ -58,6 +59,7 @@
 - 原视频音频是否保留、字幕是否与口型同步。
 - 用户提出的开场限制是否实际满足，例如前 3 秒不出现桌面产品。
 - MP4 能播放、时长和画幅正确，且不是静音技术底片或静态图拼接假视频。
+- overlay composition 交付前跑过官方校验：`hyperframes lint` 为 0 error / 0 warning，`hyperframes inspect` 为 0 layout issue；媒体引用全部落在项目根内，缩放与位移只用 `transform`。
 - Studio URL、工程文件和 MP4 路径分别说明用途。
 - 任一门禁未通过时，状态只能是“工程预览/待修复”，不能称为完成或成片。
 

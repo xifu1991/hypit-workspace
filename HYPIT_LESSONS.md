@@ -55,3 +55,31 @@
 - 根因：本地工具目录没有从一开始列入忽略规则。
 - 规则：FFmpeg、whisper 模型、浏览器缓存等本地二进制一律不进 Git；每个仓库的 `.gitignore` 明确列出。
 - 验证：`视频制作/.gitignore` 已加入 `tools/`，`hypit-local-demo/.gitignore` 原有 `examples/**/assets/` 与 `*.mp4` 规则生效。
+
+## L-008 用几何属性做慢速推近会整数像素跳变
+
+- 现象：20s 版 S005 的缓慢推近原本补间 `left/top/width/height`，HyperFrames `lint` 直接判错，指出慢速补间会按整数像素跳变、产生抖动。
+- 根因：`left/top/width/height` 属于布局属性，浏览器按整数像素取整，慢速变化时步进可见；`transform` 走合成层，可以亚像素插值。
+- 规则：缩放和位移一律用 `transform`（`scale` / `translate`），不要补间 `left`、`top`、`width`、`height`。
+- 验证：改成 `scale 1→1.05` 并加 `transform-origin` 后 `hyperframes lint` 回到 0 error，重渲染抽帧确认推近全程平滑。
+
+## L-009 换预裁素材后没有同步复算窗位
+
+- 现象：S005 圆窗改用预裁好的 520×520 素材后，圆窗里只剩脸的一个角。
+- 根因：CSS 的 `left/top/width/height` 还是按全幅 1920×1080 源算的，素材换成预裁版本后偏移没有重算。
+- 规则：任何图层素材换成预裁或预缩放版本时，必须同步复算该图层的窗口几何；换素材和改裁切要当成同一次改动，改完抽帧确认。
+- 验证：圆窗改为 1:1 铺满（`left:0; top:0; width:304px; height:304px`）后整段重渲染，`qa/evidence/t19.0.jpg` 圆窗正常。
+
+## L-010 composition 引用的媒体必须落在项目根内
+
+- 现象：overlay 里写 `<video src="../base-20s.mp4">`，HyperFrames 报「资源越出项目根」并且拒绝接管播放。
+- 根因：HyperFrames 只管理项目根内的媒体，根目录之外的引用无法内联也无法接管时间轴。
+- 规则：composition 用到的所有素材都复制（或硬链接）到项目根内再引用，路径写成项目内相对路径，并补 `data-start` / `data-duration`。
+- 验证：改到 `assets/base-20s.mp4` 并补时间属性后错误清零，`hyperframes inspect --samples 20` 为 0 layout issue。
+
+## L-011 中文字体超过 HyperFrames 内联上限
+
+- 现象：`hyperframes inspect` 提示 `assets/Chinese-Regular.ttf (15.6 MB exceeds the 2 MB inline limit)`、`Chinese-Bold.ttf (15.7 MB)`，打包无法自包含。
+- 根因：等线（DengXian）单文件约 15.6MB，远超 HyperFrames 的 2MB 内联上限，中文字幕工程不可能靠它直接打包。
+- 规则：中文字幕与花字工程不要假设 HyperFrames 能打包自包含。要么先把字体子集化到 2MB 以内，要么继续走本地 HTML/GSAP 加 Chrome 抽帧管线，并把这条限制明确写进 `qa.json` 的 knownIssues。
+- 验证：20s 版 overlay `lint` 为 0 errors / 0 warnings、`inspect` 为 0 layout issue，成片仍由自研抽帧管线渲染；限制已记录在 `outputs/DSC_5862_director_20s/qa.json`。
