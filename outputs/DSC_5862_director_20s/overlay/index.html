@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <title>DSC 5862 · 20s 风格序列版 v2</title>
+  <style>
+    @font-face {
+      font-family: "HanRegular";
+      src: url("assets/Chinese-Regular.ttf") format("truetype");
+      font-style: normal; font-weight: 400; font-display: block;
+    }
+    @font-face {
+      font-family: "HanBold";
+      src: url("assets/Chinese-Bold.ttf") format("truetype");
+      font-style: normal; font-weight: 700; font-display: block;
+    }
+    /* 字体文件缺失时的回落：只声明系统等线，不占体积 */
+    @font-face {
+      font-family: "DengXianFallback";
+      src: local("DengXian"), local("等线"), local("DengXian Regular");
+      font-style: normal; font-weight: 400;
+    }
+    @font-face {
+      font-family: "DengXianFallback";
+      src: local("DengXian Bold"), local("等线 Bold"), local("DengXian-Bold");
+      font-style: normal; font-weight: 700;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+
+    #root {
+      position: relative;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: #0B0A09;
+      color: #FFFFFF;
+      /* 字体文件缺失时回落到系统自带等线（同源字体），换电脑也能渲染 */
+      font-family: "HanRegular", "DengXianFallback", sans-serif;
+    }
+
+    /* ================= 画面窗口 ================= */
+    #stage { position: absolute; inset: 0; overflow: hidden; background: #0B0A09; }
+    .win { position: absolute; overflow: hidden; }
+    .win video { position: absolute; }
+
+    /* S001 · 全屏口播 */
+    body[data-shot="1"] #wA { left: 0; top: 0; width: 1920px; height: 1080px; }
+    body[data-shot="1"] #wA video { left: 0; top: 0; width: 1920px; height: 1080px; }
+
+    /* S002 · 黑底 + 竖版矩形画中画（源裁剪 528,0,864,1080） */
+    body[data-shot="2"] #wA {
+      left: 680px; top: 120px; width: 560px; height: 700px;
+      border-radius: 8px;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.16), 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+    body[data-shot="2"] #wA video { left: -342px; top: 0; width: 1244px; height: 700px; }
+
+    /* S003 · 全屏口播 + 产品跟随花字 */
+    body[data-shot="3"] #wA { left: 0; top: 0; width: 1920px; height: 1080px; }
+    body[data-shot="3"] #wA video { left: 0; top: 0; width: 1920px; height: 1080px; }
+
+    /* S004 · 黑底 + 居中圆形画中画（源裁剪 610,60,700,700） */
+    body[data-shot="4"] #wA {
+      left: 650px; top: 150px; width: 620px; height: 620px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22), 0 0 90px rgba(255, 238, 205, 0.14);
+    }
+    body[data-shot="4"] #wA video { left: -540px; top: -53px; width: 1701px; height: 957px; }
+
+    /* S005 · 产品特写 + 主播圆窗（源裁剪 426,480,1067,600；圆窗 700,30,520,520） */
+    body[data-shot="5"] #wA { left: 0; top: 0; width: 1920px; height: 1080px; }
+    body[data-shot="5"] #wA video {
+      left: -767px; top: -864px; width: 3455px; height: 1943px;
+      transform-origin: 960px 540px;
+    }
+    body[data-shot="5"] #wB {
+      display: block;
+      left: 1540px; top: 620px; width: 304px; height: 304px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.62), 0 18px 44px rgba(0, 0, 0, 0.5);
+    }
+    /* 圆窗源已是预裁好的 520x520（assets/face-closeup.mp4），按窗口 1:1 铺满 */
+    body[data-shot="5"] #wB video { left: 0; top: 0; width: 304px; height: 304px; }
+
+    /* ================= 描边花字 ================= */
+    .outline {
+      font-family: "HanBold", "DengXianFallback", sans-serif;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0;
+      text-shadow:
+        -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000,
+        -5px 0 0 #000, 5px 0 0 #000, 0 -5px 0 #000, 0 5px 0 #000,
+        0 9px 20px rgba(0, 0, 0, 0.5);
+    }
+    .gold { color: #E7B85B; }
+
+    /* ================= 底部跟读字幕 ================= */
+    #cap { position: absolute; right: 0; bottom: 58px; left: 0; text-align: center; }
+    .cue {
+      position: absolute; right: 0; bottom: 0; left: 0; text-align: center;
+      font-size: 46px; line-height: 1.16; white-space: nowrap;
+      opacity: 0; visibility: hidden;
+    }
+    .cue em { color: #E7B85B; font-style: normal; }
+
+    /* ================= S001 香调花字 ================= */
+    #l1 { position: absolute; inset: 0; }
+    #l1 .note { position: absolute; left: 1360px; font-size: 44px; line-height: 1; white-space: nowrap; opacity: 0; }
+    #l1 .note .d {
+      display: inline-block; width: 12px; height: 12px; margin-right: 14px;
+      border-radius: 50%; background: #E7B85B; vertical-align: middle;
+    }
+
+    /* ================= S002 黑底矩形画中画标题 ================= */
+    #l2 { position: absolute; inset: 0; }
+    #l2 .t2 { position: absolute; top: 36px; left: 0; right: 0; text-align: center; font-size: 62px; white-space: nowrap; }
+    #l2 .b2 { position: absolute; bottom: 58px; left: 0; right: 0; text-align: center; }
+    #l2 .tags2 { display: flex; justify-content: center; gap: 26px; margin-bottom: 16px; }
+    #l2 .tag2 {
+      display: inline-flex; align-items: center;
+      padding: 9px 30px 12px;
+      border: 3px solid #FFFFFF; border-radius: 999px;
+      font-family: "HanBold", "DengXianFallback", sans-serif; font-size: 42px; line-height: 1;
+      opacity: 0;
+    }
+    #l2 .line2 { font-size: 60px; line-height: 1.1; opacity: 0; }
+
+    /* ================= S003 产品跟随花字 ================= */
+    #l3 { position: absolute; inset: 0; }
+    #l3 .tag { position: absolute; right: 140px; text-align: right; line-height: 1; white-space: nowrap; opacity: 0; }
+    #l3 .tag .d {
+      display: inline-block; width: 12px; height: 12px; margin-right: 14px;
+      border-radius: 50%; background: #E7B85B; vertical-align: middle;
+    }
+
+    /* ================= S004 黑底圆形场景标签 ================= */
+    #l4 { position: absolute; inset: 0; }
+    #l4 .scene { position: absolute; font-size: 54px; line-height: 1; white-space: nowrap; opacity: 0; }
+    #l4 .s-top { top: 44px; left: 0; right: 0; text-align: center; font-size: 58px; }
+    #l4 .s-left { left: 96px; top: 420px; }
+    #l4 .s-right { right: 96px; top: 420px; }
+    #l4 .s-bottom { bottom: 92px; left: 0; right: 0; text-align: center; font-size: 74px; }
+
+    /* ================= S005 产品特写 + 主播圆窗 ================= */
+    #l5 { position: absolute; inset: 0; }
+    #l5 .kicker { position: absolute; top: 52px; left: 90px; opacity: 0; }
+    #l5 .kicker span {
+      display: inline-flex; align-items: center; gap: 14px;
+      padding: 9px 26px 11px;
+      border: 2px solid rgba(255, 255, 255, 0.6); border-radius: 999px;
+      font-size: 26px; line-height: 1;
+    }
+    #l5 .kicker .pulse { width: 10px; height: 10px; border-radius: 50%; background: #E7B85B; }
+    #l5 .big {
+      position: absolute; bottom: 66px; left: 0; right: 0; text-align: center;
+      font-size: 70px; line-height: 1.1; white-space: nowrap;
+    }
+  </style>
+</head>
+<body data-shot="1">
+  <div id="root" data-composition-id="dsc5862-director-20s" data-width="1920" data-height="1080" data-fps="30" data-duration="20.4">
+
+    <div id="stage">
+      <div class="win" id="wA" data-layout-allow-overflow><video id="va" src="assets/base-20s.mp4" data-start="0" data-duration="20.4" data-layout-allow-overflow muted playsinline preload="auto"></video></div>
+      <div class="win" id="wB" data-layout-allow-overflow><video id="vb" src="assets/face-closeup.mp4" data-start="0" data-duration="20.4" data-layout-allow-overflow muted playsinline preload="auto"></video></div>
+    </div>
+
+    <!-- S001 · 香调花字 -->
+    <div id="l1">
+      <div class="note outline" id="n1a" style="top:368px"><span class="d"></span>黑加仑</div>
+      <div class="note outline" id="n1b" style="top:462px"><span class="d"></span>柠檬</div>
+      <div class="note outline" id="n1c" style="top:556px"><span class="d"></span>玫瑰</div>
+      <div class="note outline" id="n1d" style="top:650px"><span class="d"></span>茉莉</div>
+    </div>
+
+    <!-- S002 · 黑底矩形画中画标题 -->
+    <div id="l2">
+      <div class="t2 outline"><span class="gold">香草木质</span> · 把甜味拖住</div>
+      <div class="b2">
+        <div class="tags2">
+          <span class="tag2 outline">聚会</span>
+          <span class="tag2 outline">约会</span>
+        </div>
+        <div class="line2 outline">都接得住</div>
+      </div>
+    </div>
+
+    <!-- S003 · 产品跟随花字 -->
+    <div id="l3">
+      <div class="tag outline" id="n3a" style="top:420px;font-size:56px">TF 珍华乌木</div>
+      <div class="tag outline" id="n3b" style="top:534px;font-size:44px"><span class="d"></span>乌木</div>
+      <div class="tag outline" id="n3c" style="top:616px;font-size:44px"><span class="d"></span>檀香</div>
+      <div class="tag outline" id="n3d" style="top:698px;font-size:46px"><span class="d"></span><span class="gold">琥珀</span></div>
+    </div>
+
+    <!-- S004 · 黑底圆形场景标签 -->
+    <div id="l4">
+      <div class="scene s-top outline" id="q4a">整体沉静</div>
+      <div class="scene s-left outline" id="q4b">秋冬</div>
+      <div class="scene s-right outline" id="q4c">正式场合</div>
+      <div class="scene s-bottom outline" id="q4d">可以重点试闻</div>
+    </div>
+
+    <!-- S005 · 产品特写 + 主播圆窗 -->
+    <div id="l5">
+      <div class="kicker" id="k5"><span class="outline"><span class="pulse"></span>试香方法</span></div>
+      <div class="big outline" id="b5">同一轮试闻，别挨太近</div>
+    </div>
+
+    <div id="cap"></div>
+  </div>
+
+  <script src="assets/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+
+    const DURATION = 20.4;
+
+    // 时间轴 = 原始 ASR 字级时间 − 4700ms（已砍掉 0–4.70s 的重复半句）
+    const SHOTS = [
+      { id: 1, start: 0.00,  end: 5.22,  style: "full-frame-presenter" },
+      { id: 2, start: 5.22,  end: 8.85,  style: "black-rectangle-pip-title" },
+      { id: 3, start: 8.85,  end: 13.56, style: "product-follow-label" },
+      { id: 4, start: 13.56, end: 16.75, style: "black-circle-pip-scene-tags" },
+      { id: 5, start: 16.75, end: 20.40, style: "product-hero-speaker-pip" }
+    ];
+
+    const CUES = [
+      { start: 0.00, end: 2.20, text: "接着闻阿玛尼红挚爱", first: true },
+      { start: 2.24, end: 5.10, text: "黑加仑、柠檬、玫瑰和茉莉，<em>更饱满</em>" },
+      { start: 8.94, end: 10.46, text: "继续是 TF 珍华乌木" },
+      { start: 10.78, end: 12.40, text: "乌木、檀香，还有琥珀" },
+      { start: 12.56, end: 13.50, text: "<em>琥珀感更深</em>" }
+    ];
+
+    // 单行大字按时间切换内容（用 onUpdate 驱动，避免 GSAP text 插件缺失）
+    const SEQ_TEXT = {
+      "#b5": [
+        { t: 0, text: "同一轮试闻，别挨太近" },
+        { t: 18.58, text: "给每一支一点时间" },
+        { t: 19.74, text: "再判断" }
+      ]
+    };
+
+    const cap = document.getElementById("cap");
+    const cueNodes = CUES.map((cue) => {
+      const node = document.createElement("div");
+      node.className = "cue outline";
+      node.innerHTML = cue.text;
+      cap.appendChild(node);
+      return node;
+    });
+
+    const tl = gsap.timeline({ paused: true });
+
+    tl.eventCallback("onUpdate", () => {
+      const t = tl.time();
+      for (const sel of Object.keys(SEQ_TEXT)) {
+        const stops = SEQ_TEXT[sel];
+        let cur = stops[0].text;
+        for (const s of stops) if (t >= s.t) cur = s.text;
+        const el = document.querySelector(sel);
+        if (el && el.dataset.txt !== cur) {
+          el.textContent = cur;
+          el.dataset.txt = cur;
+        }
+      }
+    });
+
+    // ---- 画面系统切换（硬切，和参考一致）----
+    SHOTS.forEach((s) => {
+      tl.set(document.body, { attr: { "data-shot": String(s.id) } }, s.start);
+    });
+
+    // ---- 底部跟读字幕（只在 S001 / S003 段落内出现）----
+    CUES.forEach((cue, i) => {
+      const node = cueNodes[i];
+      const enter = cue.first ? 0.0 : cue.start;
+      tl.fromTo(node, { autoAlpha: 0, y: 14 },
+        { autoAlpha: 1, y: 0, duration: cue.first ? 0.34 : 0.2, ease: "power3.out", immediateRender: true }, enter)
+        .to(node, { autoAlpha: 0, y: -8, duration: 0.18, ease: "power2.in" }, Math.max(cue.end - 0.14, enter + 0.2));
+    });
+
+    // ---- S001 · 香调花字 ----
+    const n1 = ["#n1a", "#n1b", "#n1c", "#n1d"];
+    [2.24, 3.04, 3.40, 3.76].forEach((t, i) => {
+      tl.fromTo(n1[i], { opacity: 0, x: -26 }, { opacity: 1, x: 0, duration: 0.26, ease: "back.out(2)" }, t)
+        .to(n1[i], { opacity: 0, duration: 0.2, ease: "power2.in" }, 5.02);
+    });
+
+    // ---- S002 · 黑底矩形画中画标题 ----
+    tl.fromTo("#l2 .t2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 5.44)
+      .fromTo("#l2 .tag2", { opacity: 0, scale: 0.84 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2)", stagger: 0.16 }, 7.46)
+      .fromTo("#l2 .line2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.32, ease: "power3.out" }, 7.86)
+      .to(["#l2 .t2", "#l2 .tag2", "#l2 .line2"], { opacity: 0, duration: 0.16, ease: "power2.in" }, 8.68);
+
+    // ---- S003 · 产品跟随花字（横移 220px 模拟跟随）----
+    const n3 = ["#n3a", "#n3b", "#n3c", "#n3d"];
+    [[8.98, 0], [10.78, 1], [11.34, 2], [12.16, 3]].forEach(([t, i]) => {
+      tl.fromTo(n3[i], { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, t);
+    });
+    tl.fromTo(n3, { x: -60 }, { x: 60, duration: 4.5, ease: "sine.inOut" }, 8.94)
+      .to(n3, { opacity: 0, duration: 0.18, ease: "power2.in" }, 13.4);
+
+    // ---- S004 · 黑底圆形场景标签 ----
+    tl.fromTo("#q4a", { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 13.90)
+      .fromTo("#q4b", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.34, ease: "power3.out" }, 14.84)
+      .fromTo("#q4c", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.34, ease: "power3.out" }, 15.56)
+      .fromTo("#q4d", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.36, ease: "back.out(1.6)" }, 16.04)
+      .to(["#q4a", "#q4b", "#q4c", "#q4d"], { opacity: 0, duration: 0.16, ease: "power2.in" }, 16.6);
+
+    // ---- S005 · 产品特写 + 主播圆窗（轻微推近）----
+    tl.fromTo("#k5", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 16.88)
+      .fromTo("#b5", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 16.96)
+      .fromTo("#wA video",
+        { scale: 1, transformOrigin: "960px 540px" },
+        { scale: 1.05, transformOrigin: "960px 540px", duration: 3.6, ease: "sine.inOut", immediateRender: false }, 16.78);
+
+    window.__timelines["dsc5862-director-20s"] = tl;
+    window.__shots = SHOTS;
+  </script>
+</body>
+</html>

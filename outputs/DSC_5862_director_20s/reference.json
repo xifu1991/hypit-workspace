@@ -1,0 +1,169 @@
+{
+  "format": "hypit.video-reference@1",
+  "status": "approved",
+  "projectId": "dsc-5862-director-20s",
+  "briefPath": "brief.json",
+  "sources": [
+    {
+      "label": "cut-source-base-20s",
+      "path": "base-20s.mp4",
+      "url": "",
+      "sha256": "A95C8D4C849D6E4C26CEB0868DB17A0E671B8936AC69E11A91B6DF1B3A7D4EC6",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 20.4
+      },
+      "role": "source-footage",
+      "notes": "本片唯一画面与声音来源，由用户素材 DSC_5862.MP4 的绿幕替换版裁切而来；该 SHA-256 锁定本版使用的确切文件。"
+    },
+    {
+      "label": "style-library/full-frame-presenter@0001",
+      "path": "style-library/full-frame-presenter/0001/analysis/style.json",
+      "url": "",
+      "sha256": "4D0EC6203CEEA27816035534CD4ADBBAC641EB21E58E90163D566904041840C7",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "structure-reference",
+      "notes": "第一段的画面系统来源：真人全屏出镜建立信任，不叠加抢主体的信息层。只借结构，不借其品牌、文案和素材。"
+    },
+    {
+      "label": "style-library/black-rectangle-pip-title@0001",
+      "path": "style-library/black-rectangle-pip-title/0001/analysis/style.json",
+      "url": "",
+      "sha256": "86AD227BBB1C11541918568384BA9765D6BD6BDE6E558BF5015BC9177457A436",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "structure-reference",
+      "notes": "第二段的画面系统来源：黑色背景承托竖版矩形真人画中画，上下分层放标题与结论标签。"
+    },
+    {
+      "label": "style-library/product-follow-label@0001",
+      "path": "style-library/product-follow-label/0001/analysis/style.json",
+      "url": "",
+      "sha256": "BC0F7BF3350E0800B11658BF2186ED73D0118AC97F577C5705466A51CF74A454",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "structure-reference",
+      "notes": "第三段的画面系统来源：产品说明贴在手持产品一侧，并随产品运动做明显位移。"
+    },
+    {
+      "label": "style-library/black-circle-pip-scene-tags@0001",
+      "path": "style-library/black-circle-pip-scene-tags/0001/analysis/style.json",
+      "url": "",
+      "sha256": "6403A35F53D7BA8E98AE18C83430C5F4DF7DF0459B1BF777F3BEAEB15DAC4810",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "structure-reference",
+      "notes": "第四段的画面系统来源：黑色背景承托居中圆形真人画中画，四周用白色场景词包围。"
+    },
+    {
+      "label": "style-library/product-hero-speaker-pip@0001",
+      "path": "style-library/product-hero-speaker-pip/0001/analysis/style.json",
+      "url": "",
+      "sha256": "C6D931070293D9706A8523124C134A89B2C37FA2CD0195E104011FE3F629F167",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "structure-reference",
+      "notes": "第五段的画面系统来源：产品近景铺满画面，主播小圆形画中画固定在右下，底部大字收束。"
+    }
+  ],
+  "selectedStyleIds": [
+    "full-frame-presenter",
+    "black-rectangle-pip-title",
+    "product-follow-label",
+    "black-circle-pip-scene-tags",
+    "product-hero-speaker-pip"
+  ],
+  "structure": {
+    "narrativePattern": "单条口播按语义切成五段：红色香水香调 → 这支的性格与场合 → 换第二支深色香水 → 第二支的场合结论 → 试香方法收口。",
+    "hook": {
+      "timeSeconds": 0,
+      "mechanism": "开场直接给全屏真人持红色香水，字幕同时落「接着闻阿玛尼红挚爱」，第一秒就交代主体和产品。",
+      "onScreenText": "接着闻阿玛尼红挚爱"
+    },
+    "pacing": {
+      "shotCount": 5,
+      "averageShotSeconds": 4.08,
+      "firstCutSeconds": 5.22
+    },
+    "informationDensity": "每个视觉状态只承担一类信息：一段香调、一段性格场合、一段换产品、一段使用场合、一段试香方法；每段内部再分 3-5 次落点。",
+    "shotLanguage": [
+      "S001 全屏真人持瓶，香调花字逐条落在持瓶一侧",
+      "S002 黑底竖版画中画，上方标题、下方标签结论",
+      "S003 全屏真人换深色瓶，右侧花字整组横移跟随",
+      "S004 黑底圆形画中画，场景词分布四个方向",
+      "S005 产品特写铺满并缓慢推近，右下主播圆窗，底部大字换词"
+    ],
+    "captionSystem": [
+      "底部跟读字幕使用白色粗体加黑色描边，关键词转金色",
+      "香调与产品名使用白色描边加金色圆点的花字",
+      "结论词用更大的字号单独占位"
+    ],
+    "transitions": [
+      "五段之间全部为硬切，切点落在语义段落边界",
+      "不出现叠化、闪白、擦除或 shader 转场"
+    ],
+    "ending": "用产品特写加一句试香方法收口，画面停在实物而不是回到纯人脸。"
+  },
+  "evidenceFrames": [
+    {
+      "timeSeconds": 2.6,
+      "path": "qa/evidence/t2.6.jpg",
+      "observation": "S001 全屏真人持红色香水，右侧香调花字已在位，底部跟读字幕与画面同屏不冲突。"
+    },
+    {
+      "timeSeconds": 6.7,
+      "path": "qa/evidence/t6.7.jpg",
+      "observation": "S002 黑底竖版画中画，上方大字标题在位，真人缩为画中画但仍是同一主体。"
+    },
+    {
+      "timeSeconds": 11,
+      "path": "qa/evidence/t11.0.jpg",
+      "observation": "S003 全屏真人换成深色香水，右侧产品跟随花字逐条落下。"
+    },
+    {
+      "timeSeconds": 15,
+      "path": "qa/evidence/t15.0.jpg",
+      "observation": "S004 黑底圆形画中画，场景词分布在画面四周，构图与 S002 的矩形明显区分。"
+    },
+    {
+      "timeSeconds": 19,
+      "path": "qa/evidence/t19.0.jpg",
+      "observation": "S005 产品特写铺满画面，右下圆形画中画保留主播表情，底部大字承载试香方法。"
+    }
+  ],
+  "reusablePatterns": [
+    "同一支口播用五种已拆解风格连续接力，画面出现方式每段都不同",
+    "花字坐标在 S001 与 S003 之间复用，形成同一套视觉语法",
+    "黑底画中画用形状区分（矩形 vs 圆形），避免两段黑底看起来重复",
+    "结尾把主体交还给产品，人物退到小圆窗"
+  ],
+  "forbiddenReuse": [
+    {
+      "type": "brand",
+      "detail": "不引入参考视频的品牌标识、人物、口播或字幕文案。"
+    },
+    {
+      "type": "motion",
+      "detail": "不使用逐字弹跳、连续缩放、闪白或装饰贴纸这类与文案无关的动效。"
+    },
+    {
+      "type": "structure",
+      "detail": "不照搬参考视频的镜头内容和素材，只复用版式与节奏关系。"
+    }
+  ],
+  "originality": {
+    "mode": "style-library-structured",
+    "declaration": "参考对象是本地已拆解并留档的五个风格条目，不是某条第三方视频。画面、音轨和产品信息全部来自用户提供的 DSC_5862.MP4，版式参数为本项目重新实现。"
+  }
+}

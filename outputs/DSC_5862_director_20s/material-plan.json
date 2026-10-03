@@ -1,0 +1,198 @@
+{
+  "format": "hypit.material-plan@1",
+  "status": "approved",
+  "projectId": "dsc-5862-director-20s",
+  "briefPath": "brief.json",
+  "referencePath": "reference.json",
+  "arguments": [
+    {
+      "id": "claim-01",
+      "claim": "20 秒成片需要连续保留原人声与人物画面，并且画面必须是绿幕替换后的版本。",
+      "role": "spoken-through-line",
+      "assets": [
+        {
+          "id": "base-20s",
+          "path": "base-20s.mp4",
+          "mediaType": "video",
+          "source": "由 DSC_5862_background_25s_complete.mp4 裁切并统一为 30fps 得到",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "画面与声音均为用户提供的本地素材，仅用于本次剪辑。"
+          },
+          "availability": "ready",
+          "evidence": "1920x1080、30fps、20.400 秒、612 帧、含 AAC 48kHz 立体声；SHA-256 A95C8D4C849D6E4C26CEB0868DB17A0E671B8936AC69E11A91B6DF1B3A7D4EC6。"
+        },
+        {
+          "id": "background-replaced-master",
+          "path": "C:/Users/admin/Documents/视频制作/outputs/DSC_5862_background_25s_complete.mp4",
+          "mediaType": "video",
+          "source": "用户提供的 DSC_5862.MP4 经绿幕抠像并合成用户指定室内背景后的母版",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "背景图由用户指定，母版在本机生成，未引入第三方图库素材。"
+          },
+          "availability": "ready",
+          "evidence": "1920x1080、30fps、25.100 秒；SHA-256 C3A84EC1D9E1CE317C963AAF7B60F81455816EB14C26E5CA0B17B9D26C105586。本片使用的 base-20s.mp4 由它派生。"
+        },
+        {
+          "id": "original-green-screen",
+          "path": "D:/BaiduNetdiskDownload/DSC_5862.MP4",
+          "mediaType": "video",
+          "source": "用户提供的绿幕原始素材",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "用户自带素材，只作为上游来源留档，成片不直接使用绿幕版本。"
+          },
+          "availability": "ready",
+          "evidence": "561,307,588 字节。已在 qa/provenance 中比对确认其为绿幕原始版本。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-02",
+      "claim": "五个镜头的画面形态分别对应五条已拆解风格，版式参数必须按留档的拆解结果还原。",
+      "role": "style-implementation",
+      "assets": [
+        {
+          "id": "style-full-frame-presenter",
+          "path": "style-library/full-frame-presenter/0001/analysis/style.json",
+          "mediaType": "json",
+          "source": "本地风格库已拆解条目",
+          "license": {
+            "status": "project-owned",
+            "evidence": "拆解结果为本项目自行分析产出，只借结构不复制素材。"
+          },
+          "availability": "ready",
+          "evidence": "用于 S001 全屏口播段。"
+        },
+        {
+          "id": "style-black-rectangle-pip-title",
+          "path": "style-library/black-rectangle-pip-title/0001/analysis/style.json",
+          "mediaType": "json",
+          "source": "本地风格库已拆解条目",
+          "license": {
+            "status": "project-owned",
+            "evidence": "拆解结果为本项目自行分析产出。"
+          },
+          "availability": "ready",
+          "evidence": "用于 S002 黑底矩形画中画段。"
+        },
+        {
+          "id": "style-product-follow-label",
+          "path": "style-library/product-follow-label/0001/analysis/style.json",
+          "mediaType": "json",
+          "source": "本地风格库已拆解条目",
+          "license": {
+            "status": "project-owned",
+            "evidence": "拆解结果为本项目自行分析产出。"
+          },
+          "availability": "ready",
+          "evidence": "用于 S003 产品跟随花字段。"
+        },
+        {
+          "id": "style-black-circle-pip-scene-tags",
+          "path": "style-library/black-circle-pip-scene-tags/0001/analysis/style.json",
+          "mediaType": "json",
+          "source": "本地风格库已拆解条目",
+          "license": {
+            "status": "project-owned",
+            "evidence": "拆解结果为本项目自行分析产出。"
+          },
+          "availability": "ready",
+          "evidence": "用于 S004 黑底圆形场景标签段。"
+        },
+        {
+          "id": "style-product-hero-speaker-pip",
+          "path": "style-library/product-hero-speaker-pip/0001/analysis/style.json",
+          "mediaType": "json",
+          "source": "本地风格库已拆解条目",
+          "license": {
+            "status": "project-owned",
+            "evidence": "拆解结果为本项目自行分析产出。"
+          },
+          "availability": "ready",
+          "evidence": "用于 S005 产品特写加主播圆窗段。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-03",
+      "claim": "底部跟读字幕与花字的进入时刻必须压在口播的字级时间戳上，并且统一减掉被砍掉的开头偏移。",
+      "role": "caption-timing",
+      "assets": [
+        {
+          "id": "doubao-word-timings",
+          "path": "outputs/DSC_5862_playbook_25s/qa/asr/transcript.json",
+          "mediaType": "json",
+          "source": "豆包录音文件识别 2.0（volc.seedasr.auc）对同一支素材的词级识别结果",
+          "license": {
+            "status": "user-account",
+            "evidence": "使用用户自己的火山引擎账号识别本人素材，识别结果仅保存在本地工程。"
+          },
+          "availability": "ready",
+          "evidence": "词级时间戳统一偏移 −4700ms 后写入 overlay/index.html 的 CUES 与花字补间时刻。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-04",
+      "claim": "S005 右下 304 圆窗不能直接复用被推近的主画面，需要一份独立裁好的方形素材。",
+      "role": "derived-crop",
+      "assets": [
+        {
+          "id": "face-closeup",
+          "path": "overlay/assets/face-closeup.mp4",
+          "mediaType": "video",
+          "source": "本项目从 base-20s.mp4 以 crop=520:520:700:30 派生的方形特写",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "派生自用户素材，未引入新画面。"
+          },
+          "availability": "ready",
+          "evidence": "520x520、30fps、612 帧；SHA-256 36E2CE8823F94B5ECF62028F8938EA7B57B53BF34528DB09FED8326F49E77C46。使用独立素材可避免主画面推近时圆窗跟着一起放大。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-05",
+      "claim": "中文描边花字需要一份可离线加载的中文字体文件，渲染时不依赖网络。",
+      "role": "typography",
+      "assets": [
+        {
+          "id": "dengxian-bold",
+          "path": "overlay/assets/Chinese-Bold.ttf",
+          "mediaType": "font",
+          "source": "Windows 系统自带等线（DengXian）字体文件的本地副本；字体内记录版权方为北京方正电子 2012",
+          "license": {
+            "status": "system-font",
+            "evidence": "字体由操作系统提供，本项目只在本机渲染时使用，成片不内嵌字体文件。对外分发字体文件本身需要另行确认授权。"
+          },
+          "availability": "ready",
+          "evidence": "16,450,596 字节，字体家族名等线 / DengXian，用于全部描边花字与大字。"
+        },
+        {
+          "id": "dengxian-regular",
+          "path": "overlay/assets/Chinese-Regular.ttf",
+          "mediaType": "font",
+          "source": "Windows 系统自带等线（DengXian）字体文件的本地副本；字体内记录版权方为北京方正电子 2012",
+          "license": {
+            "status": "system-font",
+            "evidence": "字体由操作系统提供，本项目只在本机渲染时使用，成片不内嵌字体文件。"
+          },
+          "availability": "ready",
+          "evidence": "16,324,168 字节，字体家族名等线 / DengXian，当前作为常规字重兜底。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    }
+  ]
+}

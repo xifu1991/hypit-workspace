@@ -1,0 +1,294 @@
+{
+  "format": "hypit.shotbook@1",
+  "status": "approved",
+  "projectId": "dsc-5862-director-20s",
+  "briefPath": "brief.json",
+  "referencePath": "reference.json",
+  "materialPlanPath": "material-plan.json",
+  "timelineSemantics": "[startFrame,endFrame)",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "aspectRatio": "16:9"
+  },
+  "fps": 30,
+  "totalFrames": 612,
+  "shots": [
+    {
+      "id": "shot-01",
+      "order": 1,
+      "startFrame": 0,
+      "endFrame": 157,
+      "purpose": "用最素的全屏真人建立信任，同时把第一支香水的四个香调逐个钉在口播上。",
+      "referenceMapping": {
+        "styleId": "full-frame-presenter",
+        "startSeconds": 0,
+        "endSeconds": 5.22,
+        "reuse": "全屏真人出镜 + 贴近产品一侧的香调花字"
+      },
+      "narration": "接着闻阿玛尼红挚爱，黑加仑、柠檬、玫瑰和茉莉，更饱满。",
+      "visual": {
+        "assetIds": [
+          "base-20s"
+        ],
+        "description": "主播居中偏右，手持阿玛尼红挚爱红色瓶身，画面无额外背景层；右侧留白承载四枚香调花字。",
+        "subjectFocus": "红色香水瓶与主播持瓶手势",
+        "framing": "全屏真人中景，产品位于画面中偏左，右侧留出花字通道",
+        "crop": "全幅 1920x1080 不裁切"
+      },
+      "captions": [
+        "接着闻阿玛尼红挚爱",
+        "黑加仑、柠檬、玫瑰和茉莉，更饱满"
+      ],
+      "layout": "full-frame-presenter-with-right-scent-callouts",
+      "components": [
+        {
+          "slot": "callout",
+          "componentId": "hyperframes/outline-callout-list",
+          "version": "1",
+          "purpose": "把四个香调按字级时间逐个落到画面上"
+        },
+        {
+          "slot": "caption",
+          "componentId": "hyperframes/caption-band",
+          "version": "1",
+          "purpose": "底部跟读字幕，保证无音频也能读懂"
+        }
+      ],
+      "motion": [
+        "0.00 秒底部字幕由下淡入",
+        "2.24 / 3.04 / 3.40 / 3.76 秒黑加仑、柠檬、玫瑰、茉莉自左弹入",
+        "5.02 秒四枚花字整组淡出，让位给下一段的版式切换"
+      ],
+      "audio": {
+        "mode": "original",
+        "notes": "0.00-5.22 秒原人声连续保留，未做变速或补录。"
+      },
+      "acceptanceCriteria": [
+        "花字不遮脸、不遮瓶身标签",
+        "四枚花字的进入时刻与字级时间戳偏差不超过 0.1 秒",
+        "底部字幕不压住持瓶手势"
+      ]
+    },
+    {
+      "id": "shot-02",
+      "order": 2,
+      "startFrame": 157,
+      "endFrame": 266,
+      "purpose": "第一次换挡：把人物收小、把字放大，让「香草木质」和两个场合变成可读的结论。",
+      "referenceMapping": {
+        "styleId": "black-rectangle-pip-title",
+        "startSeconds": 5.22,
+        "endSeconds": 8.85,
+        "reuse": "黑底承托竖版矩形画中画，上下分层放标题与标签结论"
+      },
+      "narration": "香草木质，把甜味拖住，聚会约会都接得住。",
+      "visual": {
+        "assetIds": [
+          "base-20s"
+        ],
+        "description": "纯黑底，真人缩成居中竖版矩形画中画；上方大字写「香草木质 · 把甜味拖住」，下方两枚圆角标签「聚会 / 约会」压住「都接得住」。",
+        "subjectFocus": "竖版画中画里的主播与手中红色香水",
+        "framing": "黑底居中竖版画中画，上下留出标题带",
+        "crop": "源裁 528,0,864,1080 → 窗口 560x700 位于 680,120"
+      },
+      "captions": [
+        "香草木质 · 把甜味拖住",
+        "聚会 / 约会",
+        "都接得住"
+      ],
+      "layout": "black-canvas-centered-rectangle-pip-with-title-stack",
+      "components": [
+        {
+          "slot": "layout",
+          "componentId": "hyperframes/black-rectangle-pip-title",
+          "version": "1",
+          "purpose": "提供黑底矩形画中画加标题结论的整套版式"
+        }
+      ],
+      "motion": [
+        "5.44 秒顶部大字淡入上移落位",
+        "7.46 秒聚会、约会两枚标签错开 0.16 秒弹出",
+        "7.86 秒「都接得住」压住结论",
+        "8.68 秒整层淡出，准备硬切回全屏"
+      ],
+      "audio": {
+        "mode": "original",
+        "notes": "5.22-8.85 秒原人声连续保留。"
+      },
+      "acceptanceCriteria": [
+        "画中画裁切后人脸完整，不被窗口边缘切到眼睛",
+        "标题与底部标签都不压到画中画主体",
+        "本段不与 S004 的黑底版式看起来重复"
+      ]
+    },
+    {
+      "id": "shot-03",
+      "order": 3,
+      "startFrame": 266,
+      "endFrame": 407,
+      "purpose": "切点落在实物换瓶之后，让观众感觉换的是产品而不是镜头，同时用横移花字模拟跟随手持产品。",
+      "referenceMapping": {
+        "styleId": "product-follow-label",
+        "startSeconds": 8.85,
+        "endSeconds": 13.56,
+        "reuse": "全屏真人 + 贴在产品一侧并随产品位移的花字组"
+      },
+      "narration": "继续是 TF 珍华乌木，乌木、檀香，还有琥珀，琥珀感更深。",
+      "visual": {
+        "assetIds": [
+          "base-20s"
+        ],
+        "description": "主播全屏出镜，手持 TOM FORD 珍华乌木深色瓶身；右侧竖排四行花字「TF 珍华乌木 / 乌木 / 檀香 / 琥珀」，琥珀用金色点出。",
+        "subjectFocus": "深色香水瓶与主播持瓶手势",
+        "framing": "全屏真人中景，产品位于画面中偏左，右侧竖排花字",
+        "crop": "全幅 1920x1080 不裁切"
+      },
+      "captions": [
+        "继续是 TF 珍华乌木",
+        "乌木、檀香，还有琥珀",
+        "琥珀感更深"
+      ],
+      "layout": "full-frame-presenter-with-right-product-follow-labels",
+      "components": [
+        {
+          "slot": "callout",
+          "componentId": "hyperframes/product-follow-label",
+          "version": "1",
+          "purpose": "承载产品名与三个香调，并做跟随位移"
+        },
+        {
+          "slot": "caption",
+          "componentId": "hyperframes/caption-band",
+          "version": "1",
+          "purpose": "底部跟读字幕，把「琥珀感更深」转金色收束"
+        }
+      ],
+      "motion": [
+        "8.98 秒产品名先落位",
+        "10.78 / 11.34 / 12.16 秒乌木、檀香、琥珀依次出现",
+        "8.94-13.44 秒整组花字在 4.5 秒内从 -60px 平移到 +60px，模拟跟随手持产品横移",
+        "13.40 秒整组淡出"
+      ],
+      "audio": {
+        "mode": "original",
+        "notes": "8.85-13.56 秒原人声连续保留。"
+      },
+      "acceptanceCriteria": [
+        "花字横向漂移期间不越过安全边距、不出画",
+        "产品名与瓶身实物一致",
+        "底部字幕不遮挡瓶身"
+      ]
+    },
+    {
+      "id": "shot-04",
+      "order": 4,
+      "startFrame": 407,
+      "endFrame": 503,
+      "purpose": "第二次黑底换挡，但用圆形和四周标签与 S002 做出区分，把使用场合一次铺满画面。",
+      "referenceMapping": {
+        "styleId": "black-circle-pip-scene-tags",
+        "startSeconds": 13.56,
+        "endSeconds": 16.75,
+        "reuse": "黑底承托居中圆形画中画，四周白色场景词包围"
+      },
+      "narration": "整体沉静，秋冬和正式场合可以重点试闻。",
+      "visual": {
+        "assetIds": [
+          "base-20s"
+        ],
+        "description": "纯黑底，真人收进居中圆形画中画；上方「整体沉静」，左「秋冬」，右「正式场合」，底部最大号「可以重点试闻」。",
+        "subjectFocus": "圆形画中画内的主播与深色香水",
+        "framing": "黑底居中圆形画中画，四个方向分布场景词",
+        "crop": "源裁 610,60,700,700 → 620 圆形窗口位于 650,150"
+      },
+      "captions": [
+        "整体沉静",
+        "秋冬",
+        "正式场合",
+        "可以重点试闻"
+      ],
+      "layout": "black-canvas-centered-circle-pip-with-scene-tags",
+      "components": [
+        {
+          "slot": "layout",
+          "componentId": "hyperframes/black-circle-pip-scene-tags",
+          "version": "1",
+          "purpose": "提供黑底圆形画中画加四向场景标签的整套版式"
+        }
+      ],
+      "motion": [
+        "13.90 秒「整体沉静」自上压入",
+        "14.84 秒「秋冬」自左进入",
+        "15.56 秒「正式场合」自右进入",
+        "16.04 秒底部「可以重点试闻」弹出并放大",
+        "16.60 秒整层淡出"
+      ],
+      "audio": {
+        "mode": "original",
+        "notes": "13.56-16.75 秒原人声连续保留。"
+      },
+      "acceptanceCriteria": [
+        "圆形画中画内人脸完整，圆心对齐画面中线",
+        "左右场景词不压到圆形边缘",
+        "与 S002 的黑底段在形状和标签分布上明显不同"
+      ]
+    },
+    {
+      "id": "shot-05",
+      "order": 5,
+      "startFrame": 503,
+      "endFrame": 612,
+      "purpose": "把画面主体交还给产品：用托盘四瓶作为「同一轮试闻」的物证收口，同时保留主播在场。",
+      "referenceMapping": {
+        "styleId": "product-hero-speaker-pip",
+        "startSeconds": 16.75,
+        "endSeconds": 20.4,
+        "reuse": "产品近景铺满 + 右下主播圆窗 + 底部大字"
+      },
+      "narration": "同一轮试闻，别挨太近，给每一支一点时间，再判断。",
+      "visual": {
+        "assetIds": [
+          "base-20s",
+          "face-closeup"
+        ],
+        "description": "主播端起托盘、四支香水同框，产品特写铺满画面并缓慢推近；右下 304 圆形画中画保留主播表情；左上角标「试香方法」，底部单行大字承载方法。",
+        "subjectFocus": "托盘上的四支香水",
+        "framing": "产品特写铺满全屏，右下圆形画中画，左上角标与底部大字分层",
+        "crop": "主画面源裁 426,480,1067,600 铺满并做 scale 1→1.05 推近；圆窗使用独立预裁素材 520x520（源裁 700,30,520,520）铺满 304 圆"
+      },
+      "captions": [
+        "试香方法",
+        "同一轮试闻，别挨太近",
+        "给每一支一点时间",
+        "再判断"
+      ],
+      "layout": "product-hero-with-speaker-pip-and-bottom-headline",
+      "components": [
+        {
+          "slot": "layout",
+          "componentId": "hyperframes/product-hero-speaker-pip",
+          "version": "1",
+          "purpose": "提供产品主打画面加主播圆窗加底部大字的整套版式"
+        }
+      ],
+      "motion": [
+        "16.78-20.38 秒主画面缓慢推近，整段不停",
+        "16.88 秒左上角标「试香方法」落位",
+        "16.96 秒底部大字「同一轮试闻，别挨太近」落位",
+        "18.58 秒大字换成「给每一支一点时间」",
+        "19.74 秒大字换成「再判断」收尾"
+      ],
+      "audio": {
+        "mode": "original",
+        "notes": "16.75-20.40 秒原人声完整收尾，成片在 20.400 秒结束。"
+      },
+      "acceptanceCriteria": [
+        "结尾主画面是产品不是纯脸",
+        "右下圆窗与底部大字互不重叠",
+        "推近过程中不出现整数像素跳变或抖动",
+        "最后一帧前大字收在「再判断」"
+      ]
+    }
+  ]
+}

@@ -52,3 +52,24 @@ tools/
 start_studio_4317.ps1
 start_studio_4317_148971474.ps1
 start_studio_4317_23perfume.ps1
+
+# --- 可复现的最新剪辑管线（DSC_5862 导演版 20s）---
+# 目的：任何一台电脑 pull 之后都能复刻最新效果。
+# 只放行代码、版式、编排文档与证据帧；视频、字体等大文件仍然不进仓库。
+!outputs/
+outputs/**
+!outputs/DSC_5862_director_20s/
+!outputs/DSC_5862_director_20s/*.json
+!outputs/DSC_5862_director_20s/*.md
+!outputs/DSC_5862_director_20s/*.mjs
+!outputs/DSC_5862_director_20s/overlay/
+outputs/DSC_5862_director_20s/overlay/**
+!outputs/DSC_5862_director_20s/overlay/index.html
+!outputs/DSC_5862_director_20s/overlay/assets/
+outputs/DSC_5862_director_20s/overlay/assets/**
+!outputs/DSC_5862_director_20s/overlay/assets/gsap.min.js
+!outputs/DSC_5862_director_20s/qa/
+outputs/DSC_5862_director_20s/qa/**
+!outputs/DSC_5862_director_20s/qa/*.jpg
+!outputs/DSC_5862_director_20s/qa/evidence/
+!outputs/DSC_5862_director_20s/qa/evidence/*.jpg

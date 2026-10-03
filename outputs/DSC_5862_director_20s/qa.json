@@ -1,0 +1,86 @@
+{
+  "format": "hypit.qa-report@1",
+  "status": "pass",
+  "projectId": "dsc-5862-director-20s",
+  "shotbookPath": "shotbook.json",
+  "artifacts": {
+    "outputVideoPath": "DSC_5862_director_20s_final.mp4",
+    "overlayProject": "overlay/index.html",
+    "renderScript": "render-overlay.mjs",
+    "shotbook": "shotbook.json",
+    "componentPlan": "component-plan.json",
+    "visualPlan": "VISUAL_PLAN.md",
+    "evidenceFrames": [
+      "qa/evidence/t2.6.jpg",
+      "qa/evidence/t6.7.jpg",
+      "qa/evidence/t11.0.jpg",
+      "qa/evidence/t15.0.jpg",
+      "qa/evidence/t19.0.jpg"
+    ]
+  },
+  "checks": [
+    {
+      "id": "hook-first-3s",
+      "label": "开场三秒钩子",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "0.00 秒即为全屏真人手持红色香水，底部字幕「接着闻阿玛尼红挚爱」同步落位；2.24 秒第一枚花字「黑加仑」在画面内进入。证据帧 qa/evidence/t2.6.jpg 可见字幕与花字同屏。"
+    },
+    {
+      "id": "reference-structure",
+      "label": "参考结构与风格库复用",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "五段切点为 0/157/266/407/503/612 帧，与 shotbook.json 完全一致；五个镜头分别复用了 style-library 的 full-frame-presenter、black-rectangle-pip-title、product-follow-label、black-circle-pip-scene-tags、product-hero-speaker-pip，每次切换都改变画面出现方式，不再是一镜到底。"
+    },
+    {
+      "id": "pacing-density",
+      "label": "节奏与信息密度",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "平均镜头时长 4.08 秒，五段内部各安排了 3-5 次与口播对齐的落点；没有出现连续两段相同版式，也没有为了动而动的时间段。"
+    },
+    {
+      "id": "caption-sync",
+      "label": "字幕与口播同步",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "底部跟读字幕覆盖 0.00-5.10 秒与 8.94-13.50 秒两段，时间点均取自豆包词级时间戳减 4700ms 偏移；证据帧 t2.6 与 t11.0 中的字幕内容与同帧口播一致。S002/S004/S005 不叠加底部字幕，信息由该段版式的标题文字直接承载，属于设计选择而非缺失。"
+    },
+    {
+      "id": "fact-accuracy",
+      "label": "信息准确性",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "画面中的实物瓶身与文案一致：红色瓶为阿玛尼红挚爱 Sì Passione，深色瓶为 TOM FORD 珍华乌木 Oud Wood；香调描述全部来自口播原文，没有新增卖点或数据。"
+    },
+    {
+      "id": "media-integrity",
+      "label": "成片技术完整性",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "20.400 秒、1920x1080、30fps、612 帧、H.264 High profile、AAC 48kHz 立体声、11,086,579 字节、平均 4.35 Mbps；SHA-256 51D570ED530C0D162281FA0741B2F784047491F01FA3CAE12832194291C77247。"
+    },
+    {
+      "id": "audio-continuity",
+      "label": "音频连续性",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "音轨由 base-20s.mp4 以 -c:a copy 直接复制，未二次编码；全程无断点、无重录拼接痕迹。"
+    },
+    {
+      "id": "authorization",
+      "label": "素材、字体和品牌授权",
+      "status": "pass",
+      "severity": "advisory",
+      "evidence": "画面、背景图和声音全部来自用户自备素材，背景替换在本机完成，未引入第三方图库或参考视频内容。中文字体为本机系统自带等线（DengXian）副本，只用于本地渲染，成片不内嵌字体文件；如需对外分发字体文件本身，需另行确认字体授权。成片尚未公开发布，发布前由用户确认账号与品牌使用口径。"
+    }
+  ],
+  "blockingIssues": [],
+  "finalVerdict": "pass",
+  "knownIssues": [
+    "S001/S003 使用了降噪重编码后的派生素材，画面存在轻微重编码损失。",
+    "本机 HyperFrames 的内联资源上限为 2MB，中文字体文件分别约 16MB，因此成片仍走自研 HTML/GSAP 加 Chrome 抽帧的渲染管线，HyperFrames 用于 lint 与 inspect 校验和动效规则约束。",
+    "底部跟读字幕只覆盖 S001 与 S003 两段，其余三段的文字由版式内的大字承担。"
+  ]
+}

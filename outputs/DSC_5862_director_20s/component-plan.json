@@ -1,0 +1,204 @@
+{
+  "format": "hypit.component-plan@1",
+  "status": "approved",
+  "projectId": "dsc-5862-director-20s",
+  "shotbookPath": "shotbook.json",
+  "components": [
+    {
+      "id": "use-01",
+      "shotId": "shot-01",
+      "slot": "callout",
+      "componentId": "hyperframes/outline-callout-list",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "anchor": "right-x1360",
+        "items": [
+          "黑加仑",
+          "柠檬",
+          "玫瑰",
+          "茉莉"
+        ],
+        "startTimes": [
+          2.24,
+          3.04,
+          3.4,
+          3.76
+        ],
+        "exitTime": 5.02,
+        "accent": "gold-dot"
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，字体由操作系统提供，画面来自用户素材。"
+      },
+      "evidence": "四枚花字进入成片 2.24-5.02 秒，证据帧 qa/evidence/t2.6.jpg 可见。"
+    },
+    {
+      "id": "use-02",
+      "shotId": "shot-01",
+      "slot": "caption",
+      "componentId": "hyperframes/caption-band",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "placement": "bottom-center",
+        "safeZone": "bottom",
+        "palette": "white-outline-gold",
+        "source": "volc-seedasr-2.0 word timings −4700ms"
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，字幕文本由用户素材的豆包 ASR 结果校正得到。"
+      },
+      "evidence": "两条字幕进入成片 0.00-5.10 秒，证据帧 qa/evidence/t2.6.jpg 可见。"
+    },
+    {
+      "id": "use-03",
+      "shotId": "shot-02",
+      "slot": "layout",
+      "componentId": "hyperframes/black-rectangle-pip-title",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "window": {
+          "left": 680,
+          "top": 120,
+          "width": 560,
+          "height": 700
+        },
+        "sourceCrop": "528,0,864,1080",
+        "title": "香草木质 · 把甜味拖住",
+        "tags": [
+          "聚会",
+          "约会"
+        ],
+        "conclusion": "都接得住"
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，画面裁切自用户素材。"
+      },
+      "evidence": "整层进入成片 5.44-8.68 秒，证据帧 qa/evidence/t6.7.jpg 可见。"
+    },
+    {
+      "id": "use-04",
+      "shotId": "shot-03",
+      "slot": "callout",
+      "componentId": "hyperframes/product-follow-label",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "anchor": "right-x140",
+        "lines": [
+          "TF 珍华乌木",
+          "乌木",
+          "檀香",
+          "琥珀"
+        ],
+        "driftPx": [
+          -60,
+          60
+        ],
+        "driftDuration": 4.5,
+        "accent": "gold-on-tf-amber"
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，画面来自用户素材。"
+      },
+      "evidence": "产品名与香调进入成片 8.98-13.40 秒，证据帧 qa/evidence/t11.0.jpg 可见。"
+    },
+    {
+      "id": "use-05",
+      "shotId": "shot-03",
+      "slot": "caption",
+      "componentId": "hyperframes/caption-band",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "placement": "bottom-center",
+        "safeZone": "bottom",
+        "palette": "white-outline-gold",
+        "accentLine": "琥珀感更深"
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，字幕文本由用户素材的豆包 ASR 结果校正得到。"
+      },
+      "evidence": "三条字幕进入成片 8.94-13.50 秒，证据帧 qa/evidence/t11.0.jpg 可见。"
+    },
+    {
+      "id": "use-06",
+      "shotId": "shot-04",
+      "slot": "layout",
+      "componentId": "hyperframes/black-circle-pip-scene-tags",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "window": {
+          "left": 650,
+          "top": 150,
+          "width": 620,
+          "height": 620
+        },
+        "sourceCrop": "610,60,700,700",
+        "tags": {
+          "top": "整体沉静",
+          "left": "秋冬",
+          "right": "正式场合",
+          "bottom": "可以重点试闻"
+        }
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，画面裁切自用户素材。"
+      },
+      "evidence": "整层进入成片 13.90-16.60 秒，证据帧 qa/evidence/t15.0.jpg 可见。"
+    },
+    {
+      "id": "use-07",
+      "shotId": "shot-05",
+      "slot": "layout",
+      "componentId": "hyperframes/product-hero-speaker-pip",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "crop": "426,480,1067,600",
+        "zoomFrom": 1,
+        "zoomTo": 1.05,
+        "zoomDuration": 3.6,
+        "pipCrop": "520x520 from 700,30",
+        "pipWindow": {
+          "left": 1540,
+          "top": 620,
+          "diameter": 304
+        },
+        "kicker": "试香方法",
+        "headlineStops": [
+          "同一轮试闻，别挨太近",
+          "给每一支一点时间",
+          "再判断"
+        ]
+      },
+      "assetReplacements": [
+        {
+          "slot": "speaker-pip-source",
+          "assetId": "face-closeup",
+          "path": "overlay/assets/face-closeup.mp4"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "本地 HyperFrames HTML/CSS/GSAP 实现，主画面与圆窗素材均由用户素材派生。"
+      },
+      "evidence": "整层进入成片 16.75-20.40 秒，推近与圆窗可见性在 qa/evidence/t19.0.jpg 确认。"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format": "hypit.video-brief@1",
+  "status": "approved",
+  "projectId": "dsc-5862-director-20s",
+  "coreQuestion": "同一个主播、同一批香水，怎么用五种不同的画面出现方式，把两支香水的香调和试香方法在 20 秒里讲清楚？",
+  "audience": {
+    "primary": "正在挑香水、希望快速看懂香调与场合差异的观众",
+    "currentSituation": "上一版成片是一镜到底的正脸口播，产品只出现在手边，画面出现方式单一，瓶身和香调细节几乎看不到",
+    "desiredChange": "20 秒里每一段的画面出现方式都不同，并且严格按已拆解的风格库条目还原版式，同时保留完整口播"
+  },
+  "singleTakeaway": "两支香水的香调与适用场合一次看懂，同一轮试闻要给每一支留时间再判断。",
+  "productOrSubject": "DSC_5862.MP4 香水口播素材（绿幕已替换为用户指定室内背景），讲到阿玛尼红挚爱与 TOM FORD 珍华乌木两支产品",
+  "platform": {
+    "name": "横屏产品讲解",
+    "aspectRatio": "16:9",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "duration": {
+    "targetSeconds": 20.4,
+    "minSeconds": 19.5,
+    "maxSeconds": 21
+  },
+  "facts": [
+    "成片画面与音轨只来自用户提供的 DSC_5862.MP4，没有引入任何外部镜头。",
+    "原始素材 0.08-4.08 秒是一遍没说完的重复半句，4.72 秒才重新完整起句；本片砍掉 0-4.70 秒，从 4.72 秒起算得到 20.40 秒。",
+    "画面基底为 base-20s.mp4（1920x1080、30fps、20.400 秒、612 帧），音轨直接复制自该文件，未二次编码。",
+    "字幕与花字的进入时刻都来自豆包录音文件识别 2.0 的字级时间戳，统一减去 4700ms 偏移。",
+    "五个镜头分别对应 style-library 的 full-frame-presenter、black-rectangle-pip-title、product-follow-label、black-circle-pip-scene-tags、product-hero-speaker-pip。",
+    "输出规格为 20.400 秒、1920x1080、30fps、H.264 High profile、AAC 48kHz 立体声。",
+    "实物瓶身核对为阿玛尼红挚爱 Sì Passione 与 TOM FORD 珍华乌木 Oud Wood。"
+  ],
+  "constraints": [
+    "按 Playbook 八步流程组织：选题、参考、素材、编排、组件、动效、检查、复盘。",
+    "不复制任何第三方视频的品牌、人物、口播或字幕。",
+    "保留口播完整性，不新增或改写卖点文案；切口只落在语义段落边界。",
+    "图形层不遮挡人脸、手持瓶身和底部字幕安全区。",
+    "五段之间用硬切，不用叠化、闪白或装饰转场。"
+  ],
+  "prohibitedDirections": [
+    "整支视频持续对脸口播、镜头不动",
+    "复刻第三方视频的画面内容与网感",
+    "把未经校正的 ASR 同音字直接放进成片",
+    "为丰富而增加与文案无关的装饰镜头"
+  ],
+  "approval": {
+    "topicLocked": true,
+    "approvedBy": "user",
+    "approvedAt": "2026-10-03T00:00:00+08:00"
+  }
+}
