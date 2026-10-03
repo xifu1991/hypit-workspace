@@ -1,0 +1,64 @@
+{
+  "format": "hypit.video-retrospective@1",
+  "status": "draft",
+  "projectId": "xianni-ep161-teaser-30s",
+  "qaPath": "qa.json",
+  "publication": {
+    "status": "not-published",
+    "reasonIfNotPublished": "本次是给用户确认剪辑效果的技术样片，用户看过效果后才决定是否补正文、换配音并发布。",
+    "platform": "",
+    "publishedAt": ""
+  },
+  "metrics": {
+    "views": null,
+    "likes": null,
+    "comments": null,
+    "shares": null,
+    "note": "未发布，暂无平台数据。"
+  },
+  "retention": {
+    "averageWatchSeconds": null,
+    "completionRate": null,
+    "curveNotes": "未发布，暂无留存曲线。"
+  },
+  "comments": {
+    "topQuestions": [],
+    "topObjections": [],
+    "note": "未发布，暂无评论反馈。"
+  },
+  "learnings": [
+    {
+      "observation": "小于 1 分钟、文字层只有字幕加花字的片子，不需要走 HTML+GSAP 逐帧抽帧，直接在 ffmpeg 里用 libass 烧 ASS 就能一次编码出片。",
+      "evidence": "本片 900 帧、1920x1080，从读底片到出成片约 21 秒（含 libx264 preset slow 与 loudnorm），而同等长度的抽帧管线要渲染 900 张截图再合成。",
+      "action": "先判断文字层复杂度：只有淡入淡出、缩放弹出的字幕与花字，优先用 ASS；需要视频叠层、跟随位移或遮罩的版面才走抽帧管线。",
+      "updateTarget": "playbook/PLAYBOOK.md 第 6 步动效的门禁"
+    },
+    {
+      "observation": "超宽素材做 16:9 时，上下黑边不是浪费，而是最省事的安全区：新增文字全部进黑边，画面区一个像素都不用动。",
+      "evidence": "2596x1080 缩到 1920x800 后上下各 140px；顶部黑边放常驻品牌条，底部黑边放全部解说字幕，母版烧录字幕留在画面内 y≈820-880，全片三层文字没有任何一帧重叠。",
+      "action": "凡母版画幅比目标画幅更宽、且母版自带烧录字幕的，一律优先考虑等比缩放补黑边 + 黑边承载新增文字，而不是裁切或放大画面。",
+      "updateTarget": "playbook/PLAYBOOK.md 第 4 步编排的门禁"
+    },
+    {
+      "observation": "本机 Windows SAPI 选声会在沙箱安全策略下失败，但列出已安装声音是允许的，容易误判成「没有声音可用」。",
+      "evidence": "同一段脚本里 GetInstalledVoices() 正常返回 Yaoyao / Huihui / Kangkang，SelectVoice() 却抛「No voice installed on the system or none available with the current security setting」；提权运行后一次通过。",
+      "action": "生成 TTS 的步骤在脚本里显式注释需要提权运行，并把声音列表和 rate 一起写进 overlay/narration.json，避免下次重复试错。",
+      "updateTarget": "hypit-local-demo 的配音步骤说明"
+    },
+    {
+      "observation": "用 -ss 放在 -i 之前抽帧验证 ASS 覆盖层，会看到时间戳被重置到 0，误判成「字幕和花字都没渲染」。",
+      "evidence": "同样的 ass 滤镜，-ss 3.2 在 -i 前只出现 0-30 秒的常驻品牌条；把 -ss 移到 -i 之后，解说字幕与花字全部正常出现。",
+      "action": "核对 ASS 时间轴的抽帧一律把 -ss 放在 -i 之后；正式渲染不带 -ss，不受影响。",
+      "updateTarget": "playbook/PLAYBOOK.md 第 7 步检查的取证方法"
+    }
+  ],
+  "libraryUpdates": [
+    {
+      "target": "component-library/index.json",
+      "componentId": "hyperframes/caption-band",
+      "proposedChange": "补充「超宽素材 16:9 上下黑边」变体：顶部黑边放常驻品牌条（align 7/9, marginV 40-46），底部黑边放解说字幕（align 2, marginV 26），用于母版自带烧录字幕位于画面内的场景。",
+      "status": "proposed",
+      "evidence": "本工程 overlay/ep161-overlay.ass 的 TopLeft/TopRight/Narration 三个样式与 qa/provenance/subtitle-timeline.md 的实测坐标。"
+    }
+  ]
+}

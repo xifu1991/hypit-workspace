@@ -1,0 +1,449 @@
+{
+  "format": "hypit.shotbook@1",
+  "status": "locked",
+  "projectId": "xianni-ep161-teaser-30s",
+  "briefPath": "brief.json",
+  "referencePath": "reference.json",
+  "materialPlanPath": "material-plan.json",
+  "timelineSemantics": "frame N 表示成片第 N 帧，覆盖 [N/30, (N+1)/30) 秒；1 帧 = 1/30 秒，总长 900 帧 = 30.000 秒。帧号 0 起算。",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "aspectRatio": "16:9"
+  },
+  "fps": 30,
+  "totalFrames": 900,
+  "shots": [
+    {
+      "id": "shot-01",
+      "order": 1,
+      "startFrame": 0,
+      "endFrame": 54,
+      "purpose": "片头卡：先给片名，再抛集数与章数",
+      "referenceMapping": {
+        "pattern": "reference-xianni-sample-221504 的开场静场手法",
+        "note": "样片用 0.4 秒静音再起 BGM，本片用 1.8 秒片头 logo 卡承接同一功能。"
+      },
+      "narration": "（无配音）",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 44.0 秒起的《仙逆》片头 logo 卡，黑底白字书法 logo",
+        "subjectFocus": "仙逆片名 logo",
+        "framing": "横版全画幅，logo 居中",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边金色标题条：第 161 集 · 原著 905-906 章"
+      ],
+      "layout": "顶部品牌条常驻；底部黑边居中金色标题条，淡入 0.24 秒、淡出 0.24 秒",
+      "components": [
+        "use-01",
+        "use-02"
+      ],
+      "motion": [
+        "标题条 fad(240,240) 淡入淡出，不做位移"
+      ],
+      "audio": {
+        "foreground": "母版片头声，压到 15%",
+        "narration": "无",
+        "note": "整段无人声，实测 mean -38.0 dB"
+      },
+      "acceptanceCriteria": [
+        "片头 logo 完整可辨，未被任何新增文字遮挡",
+        "顶部品牌条从第 0 帧起即在位"
+      ]
+    },
+    {
+      "id": "shot-02",
+      "order": 2,
+      "startFrame": 54,
+      "endFrame": 186,
+      "purpose": "钩子：第一句直接抛出集数与两个章名",
+      "referenceMapping": {
+        "pattern": "reference-xianni-sample-221504 的右侧花字大字卡",
+        "note": "复用「人物在左、花字在右上」的信息分工。"
+      },
+      "narration": "明晚161集，原著905、906两章。先记住这两个标题。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 463.0 秒起：王林背影占画面左侧，正前方是金色巨构与锁链，雷电贯穿画面",
+        "subjectFocus": "王林背影与前方金色巨构",
+        "framing": "超宽横版中远景，人物左侧三分之一",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：明晚 161 集 · 原著 905、906 两章 / 先记住这两个标题",
+        "右上花字：明晚 161 集 / 原著 905 · 906"
+      ],
+      "layout": "花字右对齐、右留白 88px、上边距 178px；解说字幕居中在底部黑边",
+      "components": [
+        "use-01",
+        "use-02",
+        "use-03"
+      ],
+      "motion": [
+        "花字 fscx/fscy 62 -> 100，时长 0.26 秒，配合 fad(200,200)",
+        "解说字幕 fad(150,150)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n02，1900ms 起，5.04 秒",
+        "note": "解说实测段内 mean -16.3 dB / max -1.0 dB"
+      },
+      "acceptanceCriteria": [
+        "花字不覆盖王林面部与画面主体",
+        "母版烧录字幕与新增字幕不重叠",
+        "3 秒内观众能同时看到集数与章数"
+      ]
+    },
+    {
+      "id": "shot-03",
+      "order": 3,
+      "startFrame": 186,
+      "endFrame": 282,
+      "purpose": "承接上集：用强度最高的画面接住上一句",
+      "referenceMapping": {
+        "pattern": "参考样片的「上集结尾快切」段",
+        "note": "本段故意不放花字，让画面密度自己成立。"
+      },
+      "narration": "前一集的血还没冷，王林就被推到了新的位置。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 105.0 秒起：「竟在雷之仙界」传送门，随后切到眼部特写",
+        "subjectFocus": "传送门与眼部特写",
+        "framing": "横版全画幅，主体居中",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：前一集的血还没冷 / 王林就被推到了新的位置"
+      ],
+      "layout": "只有底部解说字幕，画面区完全留白给镜头",
+      "components": [
+        "use-01",
+        "use-02"
+      ],
+      "motion": [
+        "解说字幕 fad(150,150)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n03，7100ms 起，3.10 秒",
+        "note": "本镜没有花字，避免和眼部特写抢注意力"
+      },
+      "acceptanceCriteria": [
+        "画面区无任何新增文字",
+        "眼部特写段母版烧录字幕不出现时，底部解说字幕仍然在安全带内"
+      ]
+    },
+    {
+      "id": "shot-04",
+      "order": 4,
+      "startFrame": 282,
+      "endFrame": 378,
+      "purpose": "悬念铺垫：把节奏压下来",
+      "referenceMapping": {
+        "pattern": "参考样片的空镜过渡段",
+        "note": "用远景空镜做呼吸，为下一段章名反转蓄力。"
+      },
+      "narration": "这一次，他要面对的东西，比敌人更难对付。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 88.0 秒起：王林立于崖边远望，云雾群山与漂浮巨岩",
+        "subjectFocus": "王林与大范围环境",
+        "framing": "超宽横版远景，人物偏左",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：这一次，他要面对的东西 / 比敌人更难对付"
+      ],
+      "layout": "只有底部解说字幕",
+      "components": [
+        "use-01",
+        "use-02"
+      ],
+      "motion": [
+        "解说字幕 fad(150,150)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n04，10450ms 起，3.04 秒",
+        "note": "段内无花字"
+      },
+      "acceptanceCriteria": [
+        "远景空镜不被新增文字压掉层次",
+        "解说与上一句之间留出至少 0.2 秒停顿"
+      ]
+    },
+    {
+      "id": "shot-05",
+      "order": 5,
+      "startFrame": 378,
+      "endFrame": 510,
+      "purpose": "第一次反转：把 905 章名落到身份上",
+      "referenceMapping": {
+        "pattern": "reference-xianni-sample-221504 的花字大字卡 + 母版快切",
+        "note": "花字换到 905 / 下界卑民，母版本段自带三次快切，不做额外剪辑。"
+      },
+      "narration": "905，下界卑民。这两个字讲的不是打斗，是身份。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 373.0 秒起：红色魔首王座开场，随后快切木枷行刑与王林横剑",
+        "subjectFocus": "红色魔首王座、受刑人群、王林横剑",
+        "framing": "横版全画幅，主体居中",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：905 下界卑民 / 讲的不是打斗，是身份",
+        "右上花字：905 / 下界卑民"
+      ],
+      "layout": "花字右对齐在右上安全区；解说字幕居中在底部黑边",
+      "components": [
+        "use-01",
+        "use-02",
+        "use-03"
+      ],
+      "motion": [
+        "花字 fscx/fscy 62 -> 100，时长 0.24 秒，配合 fad(180,180)",
+        "解说字幕 fad(150,150)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n05，13720ms 起，4.13 秒",
+        "note": "本镜是花字与母版快切同时发生的密度高点"
+      },
+      "acceptanceCriteria": [
+        "花字不覆盖画面中的人物面部",
+        "花字与底部解说字幕分居两个区域，不同屏重叠",
+        "这一镜只讲章名含义，不描述任何具体情节"
+      ]
+    },
+    {
+      "id": "shot-06",
+      "order": 6,
+      "startFrame": 510,
+      "endFrame": 588,
+      "purpose": "第二次反转的引子：抛出 906 章名",
+      "referenceMapping": {
+        "pattern": "同 shot-05 的花字系统",
+        "note": "章名花字连用两次，形成同一套视觉语法。"
+      },
+      "narration": "906，蝴蝶之翅。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 343.0 秒起：高空对战，白发施法者与飞身人影，画面下方带「早已是你手下亡魂」烧录字幕",
+        "subjectFocus": "高空对战的双方",
+        "framing": "超宽横版全景，人物分布左右两侧",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：906 蝴蝶之翅",
+        "右上花字：906 / 蝴蝶之翅"
+      ],
+      "layout": "花字右上、字幕底部，母版烧录字幕留在画面内 y≈830",
+      "components": [
+        "use-01",
+        "use-02",
+        "use-03"
+      ],
+      "motion": [
+        "花字 fscx/fscy 62 -> 100，时长 0.24 秒，配合 fad(180,180)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n06，18050ms 起，1.75 秒",
+        "note": "这一句最短，画面承担主要信息量"
+      },
+      "acceptanceCriteria": [
+        "母版烧录字幕、花字、解说字幕三层同屏时互不接触",
+        "章名按用户给的字面使用，不做任何改写"
+      ]
+    },
+    {
+      "id": "shot-07",
+      "order": 7,
+      "startFrame": 588,
+      "endFrame": 684,
+      "purpose": "把 906 的意象推到最大",
+      "referenceMapping": {
+        "pattern": "花字大字卡换词",
+        "note": "同一位置的第二张花字，交代「蝴蝶振翅」的量级。"
+      },
+      "narration": "蝴蝶振翅，能掀起风暴。这个名字不是随便起的。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 236.0 秒起：红发反派端坐王座，殿宇高台与巨型兽首",
+        "subjectFocus": "端坐王座的反派",
+        "framing": "横版全画幅，人物居中偏上",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：蝴蝶振翅，能掀起风暴 / 这个名字不是随便起的",
+        "右上花字：蝴蝶振翅 / 能掀起风暴"
+      ],
+      "layout": "花字右上；解说字幕底部",
+      "components": [
+        "use-01",
+        "use-02",
+        "use-03"
+      ],
+      "motion": [
+        "花字 fscx/fscy 62 -> 100，时长 0.24 秒，配合 fad(180,180)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n07，20000ms 起，3.73 秒",
+        "note": "段内有母版烧录字幕「押下去吧」，与新增字幕不重叠"
+      },
+      "acceptanceCriteria": [
+        "花字不压反派面部",
+        "本镜内容仍然只是对章名的常识性解读，不涉及具体剧情"
+      ]
+    },
+    {
+      "id": "shot-08",
+      "order": 8,
+      "startFrame": 684,
+      "endFrame": 768,
+      "purpose": "悬念收口前的停顿",
+      "referenceMapping": {
+        "pattern": "参考样片的单人特写静场",
+        "note": "用单人镜头把节奏收住，为下一句「我不说」制造停顿。"
+      },
+      "narration": "两章之间到底发生了什么，我不说。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 160.0 秒起：王林单手托起金色光球",
+        "subjectFocus": "王林与手中的金色光球",
+        "framing": "超宽横版中近景，人物居中",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：两章之间到底发生了什么 / 我不说"
+      ],
+      "layout": "只有底部解说字幕",
+      "components": [
+        "use-01",
+        "use-02"
+      ],
+      "motion": [
+        "解说字幕 fad(150,150)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n08，23950ms 起，2.42 秒",
+        "note": "段内无花字"
+      },
+      "acceptanceCriteria": [
+        "解说字幕不覆盖光球与手部动作"
+      ]
+    },
+    {
+      "id": "shot-09",
+      "order": 9,
+      "startFrame": 768,
+      "endFrame": 840,
+      "purpose": "收束：把答案留给正片",
+      "referenceMapping": {
+        "pattern": "参考样片的纯人声收尾",
+        "note": "花字全部撤出，只剩一句短句。"
+      },
+      "narration": "你明天自己看。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 58.0 秒起：红色气团炸开，一道金色光束斜贯画面",
+        "subjectFocus": "红色气团与金色光束",
+        "framing": "横版全画幅，能量中心偏右",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边解说字幕：你明天自己看"
+      ],
+      "layout": "只有底部解说字幕",
+      "components": [
+        "use-01",
+        "use-02"
+      ],
+      "motion": [
+        "解说字幕 fad(150,150)"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n09，26600ms 起，1.38 秒",
+        "note": "段内无花字"
+      },
+      "acceptanceCriteria": [
+        "短句字幕在屏时间不少于 1.3 秒"
+      ]
+    },
+    {
+      "id": "shot-10",
+      "order": 10,
+      "startFrame": 840,
+      "endFrame": 900,
+      "purpose": "关注引导收尾",
+      "referenceMapping": {
+        "pattern": "参考样片结尾的关注引导",
+        "note": "样片用定格加贴纸，本片改用金色字幕收口，不做贴纸动画。"
+      },
+      "narration": "关注，明天见。",
+      "visual": {
+        "assetIds": [
+          "segment-files",
+          "cut-source-base-30s"
+        ],
+        "description": "母版第 493.0 秒起：红色圆形法阵与中央光柱",
+        "subjectFocus": "法阵中央光柱",
+        "framing": "横版全画幅，法阵居中",
+        "crop": "2596x1080 等比缩到 1920x800，上下各补 140px 黑边"
+      },
+      "captions": [
+        "底部黑边金色 CTA 字幕：关注，明天见"
+      ],
+      "layout": "金色 CTA 落在底部黑边，全片最后一帧结束，不黑场",
+      "components": [
+        "use-01",
+        "use-02",
+        "use-04"
+      ],
+      "motion": [
+        "CTA 字幕 fad(150,150)，不做缩放或位移"
+      ],
+      "audio": {
+        "foreground": "母版原声 15%",
+        "narration": "n10，28300ms 起，1.42 秒",
+        "note": "解说配到 29.72 秒；CTA 字幕只淡入不淡出，保持到最后一帧"
+      },
+      "acceptanceCriteria": [
+        "CTA 与前面的白色解说字幕在颜色上可区分",
+        "成片最后一帧仍是画面且 CTA 字幕仍在位，不是黑场"
+      ]
+    }
+  ]
+}

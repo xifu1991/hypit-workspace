@@ -1,0 +1,186 @@
+{
+  "format": "hypit.material-plan@1",
+  "status": "approved",
+  "projectId": "xianni-ep161-teaser-30s",
+  "briefPath": "brief.json",
+  "referencePath": "reference.json",
+  "arguments": [
+    {
+      "id": "claim-01",
+      "claim": "30 秒成片的画面必须全部来自用户提供的 10月3日.mp4，由 10 个母版片段按定稿顺序拼接而成。",
+      "role": "source-footage",
+      "assets": [
+        {
+          "id": "source-master-10yue3",
+          "path": "C:/Users/Administrator/Desktop/10月3日.mp4",
+          "mediaType": "video",
+          "source": "用户提供的《仙逆》动画超清素材",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "用户自带素材，仅用于本次本地剪辑；成片尚未公开发布。"
+          },
+          "availability": "ready",
+          "evidence": "2596x1080、30fps、582.59 秒、888,026,073 字节、H.264 + AAC 44.1kHz 立体声；SHA-256 C30E7030D74987C909A86FE90A36D082628E411FA275E13AC00813AF64660751。"
+        },
+        {
+          "id": "cut-source-base-30s",
+          "path": "overlay-assets-base-30s.mp4",
+          "mediaType": "video",
+          "source": "本项目从母版取 10 段、按定稿顺序拼接、等比缩到 1920x800 并上下补 140px 黑边",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "派生自用户素材，未引入新画面。"
+          },
+          "availability": "ready",
+          "evidence": "1920x1080、30fps、900 帧、30.033 秒、38,206,946 字节、含 AAC 44.1kHz 立体声；SHA-256 BC67D85BBCDEBA147BB0F753F32FAE94184D65267381ECFCFC6AB5D5A5EABD6B。"
+        },
+        {
+          "id": "segment-files",
+          "path": "segments/",
+          "mediaType": "video",
+          "source": "10 个中间片段 seg01-seg10.mp4 与拼接清单 segments/list.txt",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "全部派生自用户素材。"
+          },
+          "availability": "ready",
+          "evidence": "seg01 1.8s / seg02 4.4s / seg03 3.2s / seg04 3.2s / seg05 4.4s / seg06 2.6s / seg07 3.2s / seg08 2.8s / seg09 2.4s / seg10 2.0s，合计 30.0 秒。"
+        },
+        {
+          "id": "source-pick-proof",
+          "path": "qa/source-picks-check.jpg",
+          "mediaType": "image",
+          "source": "母版 10 个入点的抽帧拼图，用于核对 shotbook 里的入点时间码",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "派生自用户素材的核对用图。"
+          },
+          "availability": "ready",
+          "evidence": "10 宫格对应 44.0 / 88.0 / 463.0 / 58.0 / 343.0 / 160.0 / 373.0 / 236.0 / 105.0 / 493.0 秒；qa/seg-first-sheet.jpg 是 10 个片段的起始帧，两者逐格比对一致。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-02",
+      "claim": "母版是 2.4:1 超宽画幅，要放进 16:9 成片必须等比缩放后补黑边，不能拉伸。",
+      "role": "layout-math",
+      "assets": [
+        {
+          "id": "letterbox-layout",
+          "path": "qa/bandcheck.jpg",
+          "mediaType": "image",
+          "source": "本项目对底片的抽帧，用于量出画面区与黑边的边界",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "派生自用户素材的核对用图。"
+          },
+          "availability": "ready",
+          "evidence": "2596x1080 等比缩到 1920x800 后，画面区落在 y=140..940，上下各 140px 黑边；抽帧实测画面从 y=140 开始。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-03",
+      "claim": "母版自带烧录字幕，位置固定，新增解说字幕和花字必须先量出该字幕带再排版。",
+      "role": "caption-collision-avoidance",
+      "assets": [
+        {
+          "id": "burned-subtitle-band",
+          "path": "qa/f4.jpg",
+          "mediaType": "image",
+          "source": "底片抽帧，用于量出母版烧录字幕的垂直位置",
+          "license": {
+            "status": "user-supplied",
+            "evidence": "派生自用户素材的核对用图。"
+          },
+          "availability": "ready",
+          "evidence": "「依旧缥缈难寻」「押下去吧」「早已是你手下亡魂」三条烧录字幕都落在 y 约 820-880、水平居中；因此新增解说字幕只放 y>=940 的底部黑边，花字只放 y=178 起的右上安全区。"
+        },
+        {
+          "id": "subtitle-timeline",
+          "path": "qa/provenance/subtitle-timeline.md",
+          "mediaType": "text",
+          "source": "本项目逐条比对母版烧录字幕与新增解说字幕的时间轴记录",
+          "license": {
+            "status": "project-owned",
+            "evidence": "本项目自行核对产出。"
+          },
+          "availability": "ready",
+          "evidence": "记录 9 条解说字幕的出现时刻与对应镜头，不与其重叠。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-04",
+      "claim": "解说必须是可离线复现的配音，且每句的起止时间要能精确排在 30 秒时间轴上。",
+      "role": "narration-audio",
+      "assets": [
+        {
+          "id": "narration-config",
+          "path": "overlay/narration.json",
+          "mediaType": "json",
+          "source": "9 句解说的文本、声音与语速配置",
+          "license": {
+            "status": "project-owned",
+            "evidence": "本项目撰写的解说文案。"
+          },
+          "availability": "ready",
+          "evidence": "voice = Microsoft Yaoyao，rate = 4，volume = 100；text 与 audio/n02-n10.wav 一一对应。"
+        },
+        {
+          "id": "narration-wavs",
+          "path": "audio/",
+          "mediaType": "audio",
+          "source": "由 overlay/make-narration.ps1 调用本机 Windows SAPI 离线合成",
+          "license": {
+            "status": "project-owned",
+            "evidence": "本机系统 TTS 输出，文案为项目自写。"
+          },
+          "availability": "ready",
+          "evidence": "9 个 wav：n02 5.04s / n03 3.10s / n04 3.04s / n05 4.13s / n06 1.75s / n07 3.73s / n08 2.42s / n09 1.38s / n10 1.42s，合计 26.01 秒；22050Hz 16-bit 单声道 PCM。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    },
+    {
+      "id": "claim-05",
+      "claim": "中文描边字幕与花字需要一份可离线加载的字体，渲染时不依赖网络。",
+      "role": "typography",
+      "assets": [
+        {
+          "id": "dengxian-bold",
+          "path": "overlay/assets/fonts/DengXian-Bold.ttf",
+          "mediaType": "font",
+          "source": "Windows 系统自带等线（DengXian）字体文件 C:\\Windows\\Fonts\\Dengb.ttf 的本地副本",
+          "license": {
+            "status": "system-font",
+            "evidence": "字体由操作系统提供，只在本机渲染时通过 libass 的 fontsdir 加载，成片不内嵌字体文件；对外分发字体文件本身需另行确认授权。"
+          },
+          "availability": "ready",
+          "evidence": "16,450,596 字节，字体家族名「等线 / DengXian」，用于品牌条、解说字幕与花字。"
+        },
+        {
+          "id": "dengxian-regular",
+          "path": "overlay/assets/fonts/DengXian.ttf",
+          "mediaType": "font",
+          "source": "Windows 系统自带 C:\\Windows\\Fonts\\Deng.ttf 的本地副本",
+          "license": {
+            "status": "system-font",
+            "evidence": "字体由操作系统提供，只在本机渲染时使用。"
+          },
+          "availability": "ready",
+          "evidence": "16,324,168 字节，作为常规字重兜底。"
+        }
+      ],
+      "coverage": "complete",
+      "gap": ""
+    }
+  ]
+}

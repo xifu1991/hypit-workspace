@@ -1,0 +1,134 @@
+{
+  "format": "hypit.component-plan@1",
+  "status": "approved",
+  "projectId": "xianni-ep161-teaser-30s",
+  "shotbookPath": "shotbook.json",
+  "note": "本片的文字层不是用 HyperFrames 运行时渲染的，而是在 ffmpeg 里用 libass 执行 overlay/ep161-overlay.ass。下面登记的 componentId 指的是这些版式在组件库里对应的结构定义，overrides 记录本项目实际落地的几何与时间参数。",
+  "components": [
+    {
+      "id": "use-01",
+      "shotId": "shot-01",
+      "slot": "brand-band",
+      "componentId": "hyperframes/caption-band",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "band": "top-letterbox",
+        "yRange": "0-140",
+        "leftText": "仙逆 · 第 161 集 · 超前剧透",
+        "rightText": "原著 905 · 906 章",
+        "align": "left / right",
+        "marginL": 76,
+        "marginR": 76,
+        "fontSize": 44,
+        "fontSizeRight": 38,
+        "durationSeconds": 30.0
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "版式结构沿用组件库的底部字幕带定义，本片在 libass 里实现为上下黑边品牌带；文字为本项目自写。"
+      },
+      "evidence": "常驻成片 0.00-30.00 秒，证据帧 qa/evidence/t2_5.jpg 左上与右上可见。"
+    },
+    {
+      "id": "use-02",
+      "shotId": "shot-02",
+      "slot": "subtitle-band",
+      "componentId": "hyperframes/caption-band",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "band": "bottom-letterbox",
+        "yRange": "940-1080",
+        "align": "center",
+        "fontSize": 52,
+        "outline": 3,
+        "shadow": 2,
+        "marginV": 26,
+        "maxLines": 2,
+        "entries": 10,
+        "firstEntrySeconds": 0.2,
+        "lastEntryEndSeconds": 29.97
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "版式结构沿用组件库的底部字幕带定义，本片在 libass 里实现；解说文案为本项目自写。"
+      },
+      "evidence": "10 条字幕进入成片 0.20-29.72 秒，证据帧 qa/evidence/t3_2.jpg 与 qa/evidence/t29.jpg。"
+    },
+    {
+      "id": "use-03",
+      "shotId": "shot-02",
+      "slot": "callout",
+      "componentId": "hyperframes/outline-callout-list",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "anchor": "top-right",
+        "marginR": 88,
+        "marginV": 178,
+        "align": 9,
+        "primaryColour": "&H0034C4FF gold",
+        "secondaryColour": "white",
+        "fontSizePrimary": 92,
+        "fontSizeSecondary": 44,
+        "outline": 5,
+        "shadow": 3,
+        "enterScale": "62 -> 100 over 0.24-0.26s",
+        "items": [
+          {
+            "start": 2.2,
+            "end": 5.7,
+            "text": "明晚 161 集 / 原著 905 · 906"
+          },
+          {
+            "start": 13.95,
+            "end": 16.5,
+            "text": "905 / 下界卑民"
+          },
+          {
+            "start": 18.15,
+            "end": 20.05,
+            "text": "906 / 蝴蝶之翅"
+          },
+          {
+            "start": 20.25,
+            "end": 22.75,
+            "text": "蝴蝶振翅 / 能掀起风暴"
+          }
+        ]
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "版式结构沿用组件库的描边花字定义，本片在 libass 里实现；花字文案只使用用户给出的集数与章名。"
+      },
+      "evidence": "4 张花字进入成片 2.20-22.75 秒，证据帧 qa/evidence/t2_5.jpg、qa/evidence/t14_5.jpg、qa/evidence/t19.jpg。"
+    },
+    {
+      "id": "use-04",
+      "shotId": "shot-10",
+      "slot": "end-note",
+      "componentId": "hyperframes/end-note",
+      "version": "1",
+      "requiredStatus": "verified",
+      "overrides": {
+        "anchor": "bottom-letterbox-center",
+        "text": "关注，明天见",
+        "colour": "&H0034C4FF gold",
+        "start": 28.3,
+        "end": 29.97,
+        "fade": "150,0",
+        "note": "不做贴纸动画与关注按钮，只用颜色把 CTA 与解说字幕区分开；CTA 保持到最后一帧，只淡入不淡出"
+      },
+      "assetReplacements": [],
+      "license": {
+        "status": "project-owned",
+        "evidence": "版式结构沿用组件库的底部结论提示条定义，本片在 libass 里实现。"
+      },
+      "evidence": "CTA 进入成片 28.30-29.97 秒并保持到最后一帧，证据帧 qa/evidence/t29.jpg。"
+    }
+  ]
+}

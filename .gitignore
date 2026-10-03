@@ -73,3 +73,42 @@ outputs/DSC_5862_director_20s/qa/**
 !outputs/DSC_5862_director_20s/qa/*.jpg
 !outputs/DSC_5862_director_20s/qa/evidence/
 !outputs/DSC_5862_director_20s/qa/evidence/*.jpg
+
+# --- 竖屏导演版 20s（7.mp4 乌木沉香）---
+!outputs/7_umwood_director_20s/
+!outputs/7_umwood_director_20s/*.json
+!outputs/7_umwood_director_20s/*.md
+!outputs/7_umwood_director_20s/*.mjs
+!outputs/7_umwood_director_20s/overlay/
+outputs/7_umwood_director_20s/overlay/**
+!outputs/7_umwood_director_20s/overlay/index.html
+!outputs/7_umwood_director_20s/overlay/assets/
+outputs/7_umwood_director_20s/overlay/assets/**
+!outputs/7_umwood_director_20s/overlay/assets/gsap.min.js
+!outputs/7_umwood_director_20s/qa/
+outputs/7_umwood_director_20s/qa/**
+!outputs/7_umwood_director_20s/qa/*.jpg
+!outputs/7_umwood_director_20s/qa/evidence/
+!outputs/7_umwood_director_20s/qa/evidence/*.jpg
+!outputs/7_umwood_director_20s/qa/provenance/
+!outputs/7_umwood_director_20s/qa/provenance/*.md
+
+# --- 《仙逆》161 集 超前剧透解说 30s 样片 ---
+# 目的：换电脑 pull 之后，只靠 json / ass / ps1 / md 就能复刻同一版效果。
+# 视频、字体、wav、抽帧图仍然不进仓库。
+!outputs/xianni_ep161_teaser_30s/
+!outputs/xianni_ep161_teaser_30s/*.json
+!outputs/xianni_ep161_teaser_30s/*.md
+!outputs/xianni_ep161_teaser_30s/*.ps1
+!outputs/xianni_ep161_teaser_30s/overlay/
+outputs/xianni_ep161_teaser_30s/overlay/**
+!outputs/xianni_ep161_teaser_30s/overlay/*.ass
+!outputs/xianni_ep161_teaser_30s/overlay/*.json
+!outputs/xianni_ep161_teaser_30s/overlay/*.ps1
+!outputs/xianni_ep161_teaser_30s/qa/
+outputs/xianni_ep161_teaser_30s/qa/**
+!outputs/xianni_ep161_teaser_30s/qa/*.jpg
+!outputs/xianni_ep161_teaser_30s/qa/evidence/
+!outputs/xianni_ep161_teaser_30s/qa/evidence/*.jpg
+!outputs/xianni_ep161_teaser_30s/qa/provenance/
+!outputs/xianni_ep161_teaser_30s/qa/provenance/*.md

@@ -1,0 +1,84 @@
+{
+  "format": "hypit.qa-report@1",
+  "status": "pass",
+  "projectId": "xianni-ep161-teaser-30s",
+  "shotbookPath": "shotbook.json",
+  "artifacts": {
+    "outputVideoPath": "xianni_ep161_teaser_30s_final.mp4",
+    "overlayProject": "overlay/ep161-overlay.ass",
+    "renderScript": "render-final.ps1",
+    "shotbook": "shotbook.json",
+    "componentPlan": "component-plan.json",
+    "narrationScript": "script.md",
+    "beatSheet": "beat-sheet.md",
+    "baseBed": "overlay-assets-base-30s.mp4",
+    "subtitleTimeline": "qa/provenance/subtitle-timeline.md",
+    "evidenceFrames": [
+      "qa/evidence/t2_5.jpg",
+      "qa/evidence/t8.jpg",
+      "qa/evidence/t14_5.jpg",
+      "qa/evidence/t19.jpg",
+      "qa/evidence/t29.jpg"
+    ]
+  },
+  "checks": [
+    {
+      "id": "hook-first-3s",
+      "label": "开场三秒钩子",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "0.00-1.80 秒是母版片头 logo 卡，底部黑边同时淡入金色标题条「第 161 集 · 原著 905-906 章」，顶部品牌条第 0 帧即在位；1.90 秒第一句解说开始，2.20 秒右上角弹出金色花字「明晚 161 集 / 原著 905 · 906」。观众在第 3 秒前已经拿到集数、章数与播出时间三个信息，证据帧 qa/evidence/t2_5.jpg。"
+    },
+    {
+      "id": "reference-structure",
+      "label": "参考结构与风格复用",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "沿用用户已认可的样片微信视频2026-10-03_221504_780.mp4 的三条结构：硬切推进（本片 10 镜、平均 3.0 秒）、底部居中字幕、右侧花字大字卡；沿用同一系列 outputs/xianni_next_ep_teaser_90s/script.md 的口吻与「结尾不给答案」。相对 90 秒版，本片砍掉铺垫段，只保留钩子、承接、两次章名反转、悬念、CTA，并把 16:9 横屏版面重新按 1920x1080 计算，没有直接套用竖屏工程的坐标。"
+    },
+    {
+      "id": "pacing-density",
+      "label": "节奏与信息密度",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "10 镜 30.000 秒，平均 3.0 秒；最长 4.4 秒（shot-02、shot-05），最短 1.8 秒（shot-01）。9 句解说 26.01 秒，句间停顿 0.16-0.32 秒，没有任何连续两镜使用同一种画面处理：shot-03、shot-04、shot-08、shot-09 完全不放花字，shot-02、shot-05、shot-06、shot-07 才用花字，密度有起伏而不是全程堆字。"
+    },
+    {
+      "id": "caption-sync",
+      "label": "字幕与口播同步",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "10 条解说字幕的入出点与 audio/n02-n10.wav 的实测时长逐一对应（见 qa/provenance/subtitle-timeline.md），每条在配音起点前 0.02-0.05 秒入、结束后 0.02-0.30 秒出。花字落在解说的关键词上：2.20 秒卡 n02 的「161 集」、13.95 秒卡 n05 的「905 下界卑民」、18.15 秒卡 n06 的「906 蝴蝶之翅」、20.25 秒卡 n07 的「蝴蝶振翅」。母版自带烧录字幕实测固定在 y≈820-880，新增解说字幕全部落在 y≥940 的底部黑边，花字落在 y=178 起的右上安全区，三层文字全程不同屏重叠。"
+    },
+    {
+      "id": "fact-accuracy",
+      "label": "信息准确性",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "成片出现的全部新增文案只有：第 161 集、原著 905、原著 906、下界卑民、蝴蝶之翅、明晚、关注，以及四句不涉及剧情的悬念句。集数与两个章名由用户直接指定（动画播到 160 集、明晚播 161 集、对应小说 905 下界卑民至 906 蝴蝶之翅）。用户明确说明小说正文无法下载，因此本片没有写任何人物动作、事件结果或因果描述，「蝴蝶振翅能掀起风暴」是对章名字面的常识性解读而不是剧情陈述。行业事实（章名、集数）与解读句在稿本 script.md 中已分开标注。"
+    },
+    {
+      "id": "media-integrity",
+      "label": "成片技术完整性",
+      "status": "pass",
+      "severity": "blocking",
+      "evidence": "30.000 秒、1920x1080、30fps、900 帧、H.264 High profile level 4.0、yuv420p、AAC LC 44.1kHz 立体声 192kbps、30,335,607 字节、平均 8.09 Mbps；SHA-256 F5FE89D453F7D14B3244CC6EB6681A848C4E3405D2133EA451A7B54421078704。音轨实测全片 mean -17.7 dB / max -1.0 dB；片头 0.3-1.7 秒窗口 mean -38.0 dB（只有背景声），n02 段 2.0-6.8 秒窗口 mean -16.3 dB（解说在位），证明人声真的混进了成片而不是静音底片。"
+    },
+    {
+      "id": "authorization",
+      "label": "素材、字体和授权",
+      "status": "pass",
+      "severity": "advisory",
+      "evidence": "画面与声音全部来自用户提供的 10月3日.mp4，未引入第三方图库或参考视频内容。解说由本机 Windows SAPI（Microsoft Yaoyao）离线合成，文案为本项目自写。中文字体为本机系统自带等线（DengXian）副本，只在本机渲染时通过 libass 的 fontsdir 加载，成片不内嵌字体文件；对外分发字体文件本身需另行确认授权。成片尚未公开发布，发布前由用户确认账号与素材使用口径。"
+    }
+  ],
+  "blockingIssues": [],
+  "finalVerdict": "pass",
+  "knownIssues": [
+    "本片是把「最新版剪辑效果」跑给用户看的技术样片，n03/n04/n08/n09 都是不承载具体剧情的悬念句；拿到原著 905、906 章正文后需要按 script.md 里的四个〖剧情槽位〗重写这一段。",
+    "解说为系统 TTS 占位音（Microsoft Yaoyao / rate 4），不是真人录音，也不是可商用的配音；本机另有中文男声 Microsoft Kangkang 可替换。",
+    "文字层用 ffmpeg + libass 直接烧进画面（overlay/ep161-overlay.ass），没有走 HyperFrames 抽帧管线；component-plan.json 里登记的 hyperframes/* 指的是版式结构来源，实现渠道不同。",
+    "shot-05 的 4.4 秒里包含母版自身的三次快切（魔首王座 → 木枷行刑 → 王林横剑），这是素材原有的剪辑节奏，没有额外处理。",
+    "母版自带烧录字幕无法移除，全片保留在画面内 y≈820-880；解说字幕靠落在底部黑边与其错开，不是靠擦除原字幕。"
+  ]
+}

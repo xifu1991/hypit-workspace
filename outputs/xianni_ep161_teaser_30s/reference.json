@@ -1,0 +1,146 @@
+{
+  "format": "hypit.video-reference@1",
+  "status": "approved",
+  "projectId": "xianni-ep161-teaser-30s",
+  "briefPath": "brief.json",
+  "sources": [
+    {
+      "label": "source-master-10yue3",
+      "path": "C:/Users/Administrator/Desktop/10月3日.mp4",
+      "url": "",
+      "sha256": "C30E7030D74987C909A86FE90A36D082628E411FA275E13AC00813AF64660751",
+      "timeRange": {
+        "startSeconds": 44.0,
+        "endSeconds": 495.0
+      },
+      "role": "source-footage",
+      "notes": "用户提供的《仙逆》动画 10 分钟超清母版，本片唯一画面与声音来源；10 个镜头分别取 44.0 / 463.0 / 105.0 / 88.0 / 373.0 / 343.0 / 236.0 / 160.0 / 58.0 / 493.0 秒为入点。"
+    },
+    {
+      "label": "cut-source-base-30s",
+      "path": "overlay-assets-base-30s.mp4",
+      "url": "",
+      "sha256": "BC67D85BBCDEBA147BB0F753F32FAE94184D65267381ECFCFC6AB5D5A5EABD6B",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 30.0
+      },
+      "role": "source-footage",
+      "notes": "10 段按定稿顺序拼接、等比缩到 1920x800 并上下补 140px 黑边后的 1920x1080 底片，保留母版原声；overlay 直接烧在这一层上。"
+    },
+    {
+      "label": "reference-xianni-sample-221504",
+      "path": "C:/Users/Administrator/Desktop/微信视频2026-10-03_221504_780.mp4",
+      "url": "",
+      "sha256": "3CB21C2E6690FBBF536B1239395DFD49C60EB0FC5A5D200154B849C9E0223B57",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 134.0
+      },
+      "role": "structure-reference",
+      "notes": "用户此前看过并认可的 134 秒国漫解说样片（960x544 / 22 个硬切 / 底部居中烧录字幕 / 花字大字卡 / 全程 BGM 压人声）。本片只复用它的节奏关系和字幕-花字分工，不复制其文案与画面。"
+    },
+    {
+      "label": "previous-script-90s",
+      "path": "outputs/xianni_next_ep_teaser_90s/script.md",
+      "url": "",
+      "sha256": "0E9BFFFC51D53E8C786CDB53E08D33071280F3C713C9EF070AAD1E8E3F4DE7A3",
+      "timeRange": {
+        "startSeconds": 0,
+        "endSeconds": 0
+      },
+      "role": "structure-reference",
+      "notes": "同一系列的 90 秒解说稿基准：口吻、每 10 秒给一次新信息、结尾不给答案。本 30 秒版是它的压缩版，只保留钩子、承接、章名反转和 CTA。"
+    }
+  ],
+  "selectedStyleIds": [],
+  "structure": {
+    "narrativePattern": "四拍结构：片名卡 → 抛出集数与章名（钩子）→ 用两章章名做身份与意象的两次反转 → 悬念收口 + 关注引导。全程第二人称对观众说话，不给剧情答案。",
+    "hook": {
+      "timeSeconds": 1.9,
+      "mechanism": "片头 logo 卡留 1.8 秒静场后，第一句直接把「明晚 161 集」和「原著 905、906 两章」同时抛出，右上角同步弹出金色花字，3 秒内把集数、章数、时间点全部交代完。",
+      "onScreenText": "明晚 161 集"
+    },
+    "pacing": {
+      "shotCount": 10,
+      "averageShotSeconds": 3.0,
+      "firstCutSeconds": 1.8
+    },
+    "informationDensity": "每个视觉状态只承担一句解说：片头 1 句、抛章名 1 句、承接 2 句、905 章名解析 1 句、906 章名解析 2 句、悬念 2 句、CTA 1 句。没有任何一句是背景科普。",
+    "shotLanguage": [
+      "shot-01 片头 logo 卡，只有标题条在底部黑边淡入",
+      "shot-02 王林背影 + 金色巨构 + 雷电，右上角弹出金色章名花字",
+      "shot-03 雷之仙界传送门切眼部特写，不给花字，让画面自己说话",
+      "shot-04 崖边远望空镜，纯解说字幕，节奏放缓",
+      "shot-05 红色魔首王座内嵌三次快切，配 905 章名花字",
+      "shot-06 高空对战，配 906 章名花字",
+      "shot-07 红发反派端坐王座，花字切换到「蝴蝶振翅 · 能掀起风暴」",
+      "shot-08 王林托起金色光球，纯解说字幕",
+      "shot-09 红色气团炸开 + 金色光束，悬念句",
+      "shot-10 红色圆形法阵光柱，金色 CTA 字幕收尾"
+    ],
+    "captionSystem": [
+      "顶部黑边常驻品牌条：左「仙逆 · 第 161 集 · 超前剧透」，右「原著 905 · 906 章」",
+      "底部黑边承载全部解说字幕，白色描边、居中、最多两行，与母版烧录字幕不在同一区域",
+      "右上安全区承载花字大字卡，金色主色 + 白色副行 + 黑色描边，缩放入场 0.24-0.26 秒",
+      "收尾 CTA 用金色字幕，区别于全片白色解说字幕"
+    ],
+    "transitions": [
+      "10 镜之间全部为硬切，切点落在解说的语义段落边界",
+      "不出现叠化、闪白、擦除或 shader 转场",
+      "镜头内部的快切（shot-05）来自母版本身，未做额外处理"
+    ],
+    "ending": "停在红色法阵光柱上，字幕转金色出「关注，明天见」，不做关注动画贴纸，画面在全片最后一帧自然结束。"
+  },
+  "evidenceFrames": [
+    {
+      "timeSeconds": 2.5,
+      "path": "qa/evidence/t2_5.jpg",
+      "observation": "右上角「明晚 161 集 / 原著 905 · 906」金色花字已落位，底部黑边第一句解说字幕在行内，母版烧录字幕留在画面内，两层文字互不接触。"
+    },
+    {
+      "timeSeconds": 8.0,
+      "path": "qa/evidence/t8.jpg",
+      "observation": "shot-03 眼部特写段不带花字，只有底部解说字幕，验证花字不会为了出场而出场。"
+    },
+    {
+      "timeSeconds": 14.5,
+      "path": "qa/evidence/t14_5.jpg",
+      "observation": "905 章名花字「905 / 下界卑民」在右上角，画面是母版的行刑快切段。"
+    },
+    {
+      "timeSeconds": 19.0,
+      "path": "qa/evidence/t19.jpg",
+      "observation": "906 章名花字「906 / 蝴蝶之翅」与底部解说字幕同屏，花字右对齐到安全边距内。"
+    },
+    {
+      "timeSeconds": 29.0,
+      "path": "qa/evidence/t29.jpg",
+      "observation": "收尾 CTA 用金色字幕落在底部黑边，画面停在法阵光柱上。"
+    }
+  ],
+  "reusablePatterns": [
+    "超宽横版素材做 16:9 时，用上下黑边承接品牌条与解说字幕，新增文字完全不进画面区",
+    "母版已有烧录字幕时，先量出字幕带几何再决定新字幕落点，而不是先排版再避让",
+    "花字只用两个信息位（章号和意象），不为每一句解说都配花字",
+    "解说字幕与花字分居上下两条带，屏幕任何时候最多两层文字"
+  ],
+  "forbiddenReuse": [
+    {
+      "type": "brand",
+      "detail": "不引入参考样片的账号名、片头包装、口播或字幕文案。"
+    },
+    {
+      "type": "motion",
+      "detail": "不使用逐字弹跳、连续缩放、闪白或与文案无关的装饰贴纸。"
+    },
+    {
+      "type": "fact",
+      "detail": "不在缺少 905、906 章正文的情况下编写任何剧情描述，章名只能按用户给的字面使用。"
+    }
+  ],
+  "originality": {
+    "mode": "user-material-with-local-overlay",
+    "declaration": "参考对象是用户自己提供并已认可的样片结构，以及同一系列的 90 秒解说稿口吻，不是第三方视频。画面与声音全部来自用户提供的 10月3日.mp4，版面参数、花字文案与解说词为本项目自行实现。"
+  }
+}

@@ -1,0 +1,43 @@
+[Script Info]
+; 《仙逆》161集 超前剧透解说 · 30 秒样片覆盖层
+; Canvas 1920x1080 / 30fps / 30.000s
+; 画面区 y=140..940（上下各 140px 黑边），原片烧录字幕固定在 y≈820..880
+; 因此：解说字幕只放底部黑边，花字只放右上安全区，任何新增文字都不进 y=780..900
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: TopLeft,等线,44,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,0,0,7,76,76,40,1
+Style: TopRight,等线,38,&H00B0B0B0,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,2,0,1,0,0,9,76,76,46,1
+Style: Narration,等线,52,&H00FFFFFF,&H000000FF,&H00101010,&H96000000,-1,0,0,0,100,100,1,0,1,3,2,2,90,90,26,1
+Style: NarrationKey,等线,52,&H0034C4FF,&H000000FF,&H00101010,&H96000000,-1,0,0,0,100,100,1,0,1,3,2,2,90,90,26,1
+Style: Card,等线,92,&H0034C4FF,&H000000FF,&H00101010,&H96000000,-1,0,0,0,100,100,1,0,1,5,3,9,76,88,178,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Comment: 0,0:00:00.00,0:00:30.00,TopLeft,,0,0,0,,顶部品牌条：常驻
+Dialogue: 0,0:00:00.00,0:00:30.00,TopLeft,,0,0,0,,仙逆 · 第 161 集 · 超前剧透
+Dialogue: 0,0:00:00.00,0:00:30.00,TopRight,,0,0,0,,原著 905 · 906 章
+
+Comment: 0,0:00:00.00,0:00:30.00,Narration,,0,0,0,,解说字幕：一句一条，只在底部黑边内
+Dialogue: 0,0:00:00.20,0:00:01.80,NarrationKey,,0,0,0,,{\fad(240,240)}第 161 集 · 原著 905-906 章
+Dialogue: 0,0:00:01.90,0:00:06.94,Narration,,0,0,0,,{\fad(150,150)}明晚 161 集 · 原著 905、906 两章\N先记住这两个标题
+Dialogue: 0,0:00:07.10,0:00:10.20,Narration,,0,0,0,,{\fad(150,150)}前一集的血还没冷\N王林就被推到了新的位置
+Dialogue: 0,0:00:10.45,0:00:13.49,Narration,,0,0,0,,{\fad(150,150)}这一次，他要面对的东西\N比敌人更难对付
+Dialogue: 0,0:00:13.72,0:00:17.85,Narration,,0,0,0,,{\fad(150,150)}905 下界卑民\N讲的不是打斗，是身份
+Dialogue: 0,0:00:18.05,0:00:19.80,Narration,,0,0,0,,{\fad(150,150)}906 蝴蝶之翅
+Dialogue: 0,0:00:20.00,0:00:23.73,Narration,,0,0,0,,{\fad(150,150)}蝴蝶振翅，能掀起风暴\N这个名字不是随便起的
+Dialogue: 0,0:00:23.95,0:00:26.37,Narration,,0,0,0,,{\fad(150,150)}两章之间到底发生了什么\N我不说
+Dialogue: 0,0:00:26.60,0:00:27.98,Narration,,0,0,0,,{\fad(150,150)}你明天自己看
+Dialogue: 0,0:00:28.30,0:00:29.97,NarrationKey,,0,0,0,,{\fad(150,0)}关注，明天见
+
+Comment: 0,0:00:00.00,0:00:30.00,Card,,0,0,0,,花字：右上安全区，缩放入场 + 淡入淡出
+Dialogue: 0,0:00:02.20,0:00:05.70,Card,,0,0,0,,{\fad(200,200)\fscx62\fscy62\t(0,260,\fscx100\fscy100)}明晚 161 集\N{\fs44\c&H00E4E4E4&}原著 905 · 906
+Dialogue: 0,0:00:13.95,0:00:16.50,Card,,0,0,0,,{\fad(180,180)\fscx62\fscy62\t(0,240,\fscx100\fscy100)}905\N{\fs50\c&H00FFFFFF&}下界卑民
+Dialogue: 0,0:00:18.15,0:00:20.05,Card,,0,0,0,,{\fad(180,180)\fscx62\fscy62\t(0,240,\fscx100\fscy100)}906\N{\fs50\c&H00FFFFFF&}蝴蝶之翅
+Dialogue: 0,0:00:20.25,0:00:22.75,Card,,0,0,0,,{\fad(180,180)\fscx62\fscy62\t(0,240,\fscx100\fscy100)}蝴蝶振翅\N{\fs50\c&H00FFFFFF&}能掀起风暴
