@@ -1,12 +1,12 @@
 {
   "format": "hypit.style-selection@1",
-  "updatedAt": "2026-10-01T03:45:20.021Z",
+  "updatedAt": "2026-10-04T04:43:07.396Z",
   "styles": [
     {
-      "id": "armani-yulong-clean-talk",
-      "name": "阿玛尼玉龙茶香 · 口播种草",
+      "id": "ai-tool-screen-evidence-review",
+      "name": "AI工具测评 · 屏幕证据拆解",
       "version": "0001",
-      "preview": "armani-yulong-clean-talk/0001/preview/cover.jpg"
+      "preview": "ai-tool-screen-evidence-review/0001/preview/cover.jpg"
     }
   ]
 }

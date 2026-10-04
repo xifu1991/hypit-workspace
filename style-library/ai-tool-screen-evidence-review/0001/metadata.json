@@ -1,0 +1,43 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "ai-tool-screen-evidence-review",
+  "version": "0001",
+  "name": "AI工具测评 · 屏幕证据拆解",
+  "summary": "真人判断为轴，屏幕录制、搜索证据和失败样片为主画面；红章、证据链标签、问题卡、编号拆解和时间轴验证共同构成测评打假叙事。",
+  "status": "analyzed",
+  "createdAt": "2026-10-04T03:55:00.000Z",
+  "updatedAt": "2026-10-04T03:55:00.000Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "07AB83C22E3D7E3E9D7A3AC98FA8483D4E4E769011C74CC46C15E4DB6C2286CF",
+    "bytes": 1684646,
+    "durationSec": 18.041905,
+    "width": 720,
+    "height": 1280,
+    "fps": 25
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "volc-seedasr-2.0"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence-1.jpg",
+      "analysis/evidence-2.jpg",
+      "analysis/evidence-3.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "AI剪辑",
+    "软件测评",
+    "屏幕证据",
+    "信息标注",
+    "问题卡片",
+    "打假"
+  ]
+}

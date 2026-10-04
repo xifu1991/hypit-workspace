@@ -1,6 +1,6 @@
 {
   "format": "hypit.style-library@1",
-  "updatedAt": "2026-09-24T03:07:22.0222901Z",
+  "updatedAt": "2026-10-04T04:05:00.000Z",
   "styles": [
     {
       "id": "armani-yulong-clean-talk",
@@ -97,6 +97,24 @@
       ],
       "sourceSha256": "AEF1EC29FAB626060CBAA97895B231BDDE2A75687D9F051B2C89F61FB58CDA2E",
       "preview": "product-hero-speaker-pip/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "ai-tool-screen-evidence-review",
+      "name": "AI工具测评 · 屏幕证据拆解",
+      "summary": "真人判断为轴，屏幕录制、搜索证据和失败样片为主画面；红章、证据链标签、问题卡、编号拆解和时间轴验证共同构成测评打假叙事。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "AI剪辑",
+        "软件测评",
+        "屏幕证据",
+        "信息标注",
+        "问题卡片",
+        "打假"
+      ],
+      "sourceSha256": "07AB83C22E3D7E3E9D7A3AC98FA8483D4E4E769011C74CC46C15E4DB6C2286CF",
+      "preview": "ai-tool-screen-evidence-review/0001/preview/cover.jpg",
       "versionCount": 1
     }
   ]
