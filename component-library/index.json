@@ -1,6 +1,6 @@
 {
   "format": "hypit.component-library@1",
-  "updatedAt": "2026-10-03T00:00:00+08:00",
+  "updatedAt": "2026-10-06T00:00:00+08:00",
   "policy": {
     "validStatuses": [
       "planned",
@@ -753,6 +753,68 @@
         "evidence": "本地 HTML/CSS/GSAP 实现，画面裁切自用户提供素材。"
       },
       "notes": "产品特写铺满画面并做 transform 推近（scale 1→1.05，不用 left/top/width/height 补间，避免整数像素跳变），右下 304 圆窗使用独立预裁素材，底部单行大字按时间点换词。成片 S005 段 16.75-20.40 秒可见。"
+    },
+    {
+      "id": "hypit/chapter-loadbar",
+      "name": "顶部章节加载条",
+      "kind": "overlay",
+      "latestVersion": "1",
+      "status": "draft",
+      "tags": [
+        "章节条",
+        "进度锚点",
+        "常驻 HUD",
+        "漫剧解说"
+      ],
+      "slots": [
+        "chapter-bar"
+      ],
+      "source": {
+        "type": "workspace-evidence",
+        "reference": "style-library/tech-share-chapter-progress/0001",
+        "portable": true
+      },
+      "integration": {
+        "engine": "ass-overlay",
+        "command": "node --import tsx scripts/make-chapter-bar.ts --spec component-library/chapter-loadbar/spec.manhua.json --out outputs/<project>/overlay/chapter-bar.ass --width 1080 --height 1920 --font 等线 --duration 254",
+        "placement": "burn-in-overlay"
+      },
+      "inputs": [
+        "spec",
+        "width",
+        "height",
+        "font",
+        "barY",
+        "duration",
+        "active",
+        "dim",
+        "rule",
+        "pill",
+        "pillAlpha",
+        "scrim"
+      ],
+      "evidence": [
+        {
+          "type": "rendered-video",
+          "reference": "component-library/chapter-loadbar/qa/demo-chapter-bar.mp4",
+          "verifiedAt": "2026-10-06"
+        },
+        {
+          "type": "keyframes",
+          "reference": "component-library/chapter-loadbar/qa/contact-sheet.png",
+          "verifiedAt": "2026-10-06"
+        },
+        {
+          "type": "keyframes",
+          "reference": "component-library/chapter-loadbar/qa/frames/legibility-bright.png",
+          "verifiedAt": "2026-10-06"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "自研 ASS 生成脚本；只移植参考片的版面层级与动效节奏，未复用其品牌、文案、人物和素材。字体使用本机等线，商用前必须替换为可商用字体并随工程附带字体文件。"
+      },
+      "notes": "章节条常驻画面最上层，当前章节亮白、其余压暗，当前格下方进度线按该章真实时长从左往右长满。换章瞬间一枚半透明药丸滑到新格并在约 0.5 秒内淡出，它是切换动效而不是常驻高亮：常驻白块会压在白色章节名上把字抹掉。活跃章节名带 1.6px 深色描边，配 64 段正弦渐变的顶部压暗层，保证在亮画面上仍可读。演示为 7 章各 3.2 秒的压缩版，真实项目按 spec 里的秒数生成。"
     }
   ]
 }

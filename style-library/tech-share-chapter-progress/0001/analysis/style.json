@@ -1,0 +1,81 @@
+{
+  "format": "hypit.style-spec@1",
+  "id": "tech-share-chapter-progress",
+  "version": "0001",
+  "name": "技术分享 · 顶部讲解位与章节进度条",
+  "status": "analyzed",
+  "media": {
+    "canvas": "16:9",
+    "durationSec": 60.066667,
+    "fps": 30,
+    "sourceLanguage": "zh"
+  },
+  "structure": {
+    "opening": "先用后台/活动现场回放做钩子，顶部章节条立即出现并停在“引言”，随后切到演播室幻灯片正式开讲。",
+    "middle": "幻灯片作为主画布，按语义单元换页；每页左上角只留当前的关键讲解位，长篇内容拆成信息图形而不是堆文字。",
+    "ending": "本段以主播正面口播收束并引出“真实例子”，章节条继续保持在同一章节不跳走。",
+    "shotHoldRangeSec": [4, 15],
+    "shotCountFirstMinute": 9,
+    "cutTrigger": "跟读语义与章节推进，不按固定节拍切镜"
+  },
+  "hud": {
+    "chapterBar": {
+      "position": "画面上边缘，整幅宽度，垂直占约 26px",
+      "segments": ["引言", "1. 找到适合你的 Skill", "2. 把你的经验打包成 Skill", "3. 把多个 Skills 组合成工作流", "4. 批量化定时化工作流", "总结"],
+      "separator": "细竖线“|”分隔，字号小、字重中",
+      "activeState": "当前章节为亮白，切换瞬间出现浅色药丸底；未到达和已读章节压暗为灰",
+      "behaviour": "全片常驻，不淡出、不隐藏，B-roll 和全屏口播期间依然压在画面最上层",
+      "evidence": "analysis/evidence-5-chapter-bar-montage.jpg"
+    },
+    "metaRow": {
+      "position": "章节条正下方一行，左右分列",
+      "left": "小号大写章节标签，如 SKILL WORKFLOW · OPENING / SKILL WORKFLOW · 4 STAGES",
+      "right": "页码计数器，如 01 / 33、02 / 33，随换页递增",
+      "evidence": "analysis/evidence-2-keynote-hud.jpg"
+    },
+    "keyPoint": {
+      "position": "主画布左上，约占左半幅",
+      "stack": ["小号眉题（团队工作流 · AI AGENT）", "大字标题（两行，衬线）", "英文副标（Find · Package · Orchestrate · Operate）", "灰色正文一句"],
+      "rule": "一页只讲一个判断，标题就是该段的口播结论，不重复整段字幕",
+      "evidence": "analysis/evidence-2-keynote-hud.jpg"
+    },
+    "presenterPip": {
+      "position": "右上，圆角矩形，约 260×160",
+      "behaviour": "幻灯片为主时固定挂角；切 B-roll 或全屏口播时让位",
+      "evidence": "analysis/evidence-2-keynote-hud.jpg"
+    },
+    "captions": {
+      "position": "底部居中，深色圆角药丸 + 白字",
+      "rule": "只跟读当前口播，单行短句，不换行堆叠"
+    },
+    "footer": {
+      "left": "小号大写关键词序列，如 FIND · PACKAGE · ORCHESTRATE · OPERATE",
+      "right": "日期水印，如 — 2026.04 —"
+    }
+  },
+  "visualSystems": {
+    "canvasStyle": "近黑底（约 #0d0d0d）+ 高对比白色衬线标题，冷色点缀只在图元上出现",
+    "keynoteSlide": "判断句 + 英文副标 + 说明段的论文式版面，承担观点输出。",
+    "infoGraphic": "编号圆形图标 01–04 横排，配箭头连接；当前步骤用发光圆角卡片包边，其余步骤压暗。",
+    "statSlide": "把关键数字放到极大字号，配一张深色界面截图当证据。",
+    "brollInsert": "圆角矩形画面居中，左右用同源画面做模糊铺底，避免黑边。",
+    "sticker": "右侧中部有一枚小幅装饰贴纸，做上下浮动，只提供节奏感。"
+  },
+  "audio": {
+    "voice": "单人男声讲解，语速中偏快，口播为时间主轴。",
+    "music": "低音量氛围垫乐，不与口播抢频段。",
+    "sfx": "换页和步骤点亮处使用极轻的转场音，不覆盖人声。"
+  },
+  "authoringGuidance": {
+    "script": "按“钩子 → 主张 → 路线图 → 章节内递进”组织；每页对应一个可被念出来的判断句。",
+    "layout": "先搭常驻外壳（章节条 + 页码 + 字幕 + 讲解位），再往主画布填页面内容。",
+    "motion": "章节条只做高亮位移和药丸出现；信息图形按解说顺序逐项点亮；页面切换控制在 200–400ms。",
+    "reuse": "复用常驻 HUD 结构、版面层级和节奏，不复用参考中的品牌、头像、原始文案和未授权截图。"
+  },
+  "knownLimits": [
+    "参考为 16:9，竖屏复用需要重新排布章节条与讲解位，不能直接缩放。",
+    "顶部章节条在整幅宽度上承载 6 段中文，字号小；移植时若章节名更长必须减字或换成两行。",
+    "深色幻灯片版面依赖真实的界面截图和数据证据，缺素材时不能编造数字或假界面。",
+    "风格分析不等同于已验证模板，尚未用自有素材替换并渲染验收。"
+  ]
+}

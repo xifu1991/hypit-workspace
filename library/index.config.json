@@ -1,0 +1,21 @@
+{
+  "work": "仙逆",
+  "aliases": ["仙逆动画", "仙逆 弑仙之战"],
+  "note": "镜头索引的输入清单。新增一期成片后，在 sources 里补一行，重跑 scripts/build-shot-index.mjs 即可。",
+  "sources": [
+    {
+      "episode": "EP01",
+      "title": "弑仙之战",
+      "project": "outputs/shishi-zhizhan-commentary",
+      "sourceFile": "D:\\视频库\\国漫\\弑仙之战4k.mp4",
+      "sourceWindow": "4140-5400s"
+    },
+    {
+      "episode": "EP02",
+      "title": "逆行伐仙",
+      "project": "outputs/shishi-zhizhan-02-liyuan",
+      "sourceFile": "D:\\视频库\\国漫\\弑仙之战4k.mp4",
+      "sourceWindow": "1800-3600s"
+    }
+  ]
+}

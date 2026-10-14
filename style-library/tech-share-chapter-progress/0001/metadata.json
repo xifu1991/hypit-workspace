@@ -1,0 +1,45 @@
+{
+  "format": "hypit.style-version@1",
+  "id": "tech-share-chapter-progress",
+  "version": "0001",
+  "name": "技术分享 · 顶部讲解位与章节进度条",
+  "summary": "深色幻灯片为底，顶部常驻章节进度条与页码，左上保留当前关键讲解位，右上挂主播画中画，底部跟读字幕收口。",
+  "status": "analyzed",
+  "createdAt": "2026-10-06T02:40:00.000Z",
+  "updatedAt": "2026-10-06T02:40:00.000Z",
+  "source": {
+    "path": "reference/source.mp4",
+    "sha256": "743BE445F4F05AE41C285C15E44FDD55BA3341F95ACB3B8131B3475DBEC92A79",
+    "bytes": 5845298,
+    "durationSec": 60.066667,
+    "width": 1280,
+    "height": 720,
+    "fps": 30
+  },
+  "reference": {
+    "audio": "reference/audio.wav",
+    "transcript": "reference/transcript.json",
+    "asrEngine": "volc-seedasr-2.0"
+  },
+  "analysis": {
+    "summary": "analysis/ANALYSIS.md",
+    "timeline": "analysis/TIMELINE.md",
+    "style": "analysis/style.json",
+    "evidence": [
+      "analysis/evidence-1-opening-stage.jpg",
+      "analysis/evidence-2-keynote-hud.jpg",
+      "analysis/evidence-3-stage-stepper.jpg",
+      "analysis/evidence-4-broll-insert.jpg",
+      "analysis/evidence-5-chapter-bar-montage.jpg"
+    ]
+  },
+  "preview": "preview/cover.jpg",
+  "tags": [
+    "技术分享",
+    "章节进度条",
+    "顶部讲解位",
+    "主播画中画",
+    "信息图形",
+    "跟读字幕"
+  ]
+}

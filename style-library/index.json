@@ -1,6 +1,6 @@
 {
   "format": "hypit.style-library@1",
-  "updatedAt": "2026-10-04T04:05:00.000Z",
+  "updatedAt": "2026-10-06T02:40:00.000Z",
   "styles": [
     {
       "id": "armani-yulong-clean-talk",
@@ -115,6 +115,24 @@
       ],
       "sourceSha256": "07AB83C22E3D7E3E9D7A3AC98FA8483D4E4E769011C74CC46C15E4DB6C2286CF",
       "preview": "ai-tool-screen-evidence-review/0001/preview/cover.jpg",
+      "versionCount": 1
+    },
+    {
+      "id": "tech-share-chapter-progress",
+      "name": "技术分享 · 顶部讲解位与章节进度条",
+      "summary": "深色幻灯片为底，顶部常驻章节进度条与页码，左上保留当前关键讲解位，右上挂主播画中画，底部跟读字幕收口。",
+      "latestVersion": "0001",
+      "status": "analyzed",
+      "tags": [
+        "技术分享",
+        "章节进度条",
+        "顶部讲解位",
+        "主播画中画",
+        "信息图形",
+        "跟读字幕"
+      ],
+      "sourceSha256": "743BE445F4F05AE41C285C15E44FDD55BA3341F95ACB3B8131B3475DBEC92A79",
+      "preview": "tech-share-chapter-progress/0001/preview/cover.jpg",
       "versionCount": 1
     }
   ]
