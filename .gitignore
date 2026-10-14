@@ -33,6 +33,7 @@ sample_*/
 
 # Nested source repository is synced separately.
 hypit-local-demo/
+Sub-Router/
 
 # Local editor state
 .idea/
