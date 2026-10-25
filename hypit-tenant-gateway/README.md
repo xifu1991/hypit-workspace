@@ -215,9 +215,22 @@ Compose 默认只把端口映射到宿主机 `127.0.0.1`，公网入口仍交给
 
 - 钱包单位是“分”，接口对外显示 `costFen`。
 - 单价配置单位是“微元”，`1 元 = 1,000,000 微元`。
-- TTS 按字符计费，ASR 按音频秒数计费，TOS 按上传 MiB 计费。
+- 租户执行价统一按火山引擎官方标准乘以 3：ASR `¥2.40/小时`、TTS `¥0.90/千字符`、TOS `¥1.50/GB`。
+- ASR 按音频时长、TTS 按字符数、TOS 按上传数据量计费，最终按“分”向上取整。
 - 调用开始时冻结预估费用，完成后按任务快照扣款；供应商失败会释放冻结额度。
 - 服务重启时会回收遗留的 `reserved/processing` 任务，避免余额永久冻结。
+- 历史账单保留当时的价格快照；调整单价只影响后续调用。
+
+已有数据库不会因为修改默认配置自动覆盖价格。部署后执行一次：
+
+```bash
+sudo systemctl stop hypit-tenant-gateway
+DATA_DIR=/var/lib/hypit-tenant-gateway \
+  node /opt/hypit-tenant-gateway/scripts/apply-official-pricing.mjs --apply
+sudo systemctl start hypit-tenant-gateway
+```
+
+不传 `--apply` 时只显示当前价格，不会写入数据库。
 
 ## 备份与恢复
 

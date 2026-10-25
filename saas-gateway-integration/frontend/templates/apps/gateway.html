@@ -668,11 +668,11 @@
           <section class="gw-panel">
             <div class="gw-panel-head">
               <h2>计费单价</h2>
-              <p>调整只影响之后的调用</p>
+              <p>租户执行价按火山官方标准 ×3；调整只影响之后的调用</p>
             </div>
             <div class="gw-table-wrap">
               <table class="gw-table">
-                <thead><tr><th>服务</th><th>计费单位</th><th class="num">微元 / 单位</th><th></th></tr></thead>
+                <thead><tr><th>服务</th><th>计费单位</th><th class="num">租户执行价 / 微元</th><th></th></tr></thead>
                 <tbody id="gwPrices"></tbody>
               </table>
             </div>
@@ -870,6 +870,20 @@
     return "¥" + (Number(fen || 0) / 100).toFixed(2);
   }
 
+  function priceUnitText(unit) {
+    return {
+      hour: "小时",
+      "1000_chars": "千字符",
+      GB: "GB",
+    }[unit] || unit;
+  }
+
+  function priceRateText(price) {
+    const yuan = Number(price.unitPriceMicrofen || 0) / 100_000_000;
+    const amount = yuan.toFixed(yuan < 0.01 ? 6 : 2);
+    return "¥" + amount + " / " + priceUnitText(price.unitName);
+  }
+
   function dateText(value) {
     if (!value) return "-";
     const date = new Date(value);
@@ -1044,7 +1058,7 @@
     document.getElementById("gwAdminMetrics").innerHTML = [
       metric("网关租户", String(data.totals?.tenants || 0), (data.totals?.activeTenants || 0) + " 个正常"),
       metric("客户余额", money(data.totals?.balanceFen), "冻结 " + money(data.totals?.reservedFen)),
-      metric("平台消费", money(data.totals?.spentFen), "已结算调用"),
+      metric("平台消费", money(data.totals?.spentFen), "租户实际扣费"),
       metric("最近充值码", String((data.rechargeCodes || []).length), "最近生成记录"),
     ].join("");
 
@@ -1108,8 +1122,9 @@
     document.getElementById("gwPrices").innerHTML = (data.prices || []).map((price) => `
       <tr>
         <td>${escapeHtml(serviceName(price.service))}</td>
-        <td>${escapeHtml(price.unitName)}</td>
+        <td>${escapeHtml(priceUnitText(price.unitName))}</td>
         <td class="num">
+          <div style="margin-bottom:6px;font-weight:600">${escapeHtml(priceRateText(price))}</div>
           <input data-price-input="${escapeHtml(price.service)}" type="number" min="0" step="1" value="${Number(price.unitPriceMicrofen || 0)}" style="width:130px">
         </td>
         <td><button class="gw-btn small" type="button" onclick="gwSavePrice('${escapeHtml(price.service)}')">保存</button></td>

@@ -53,6 +53,9 @@ make_*.py
 tools_*.py
 scripts/
 tests/
+!hypit-tenant-gateway/scripts/
+!hypit-tenant-gateway/scripts/apply-official-pricing.mjs
+/hypit-tenant-gateway/scripts/reset-admin-password.mjs
 
 # Vendored local binaries: FFmpeg and whisper.cpp builds stay on each machine.
 tools/

@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+import { TENANT_PRICE_RULES } from "./pricing.mjs";
 
 function integer(name, fallback) {
   const raw = process.env[name];
@@ -55,25 +56,34 @@ export function loadConfig(overrides = {}) {
     },
     prices: {
       asr: {
-        unitSize: 1000,
-        unit: "second",
+        unitSize: TENANT_PRICE_RULES.asr.unitSize,
+        unit: TENANT_PRICE_RULES.asr.unit,
         microfen:
           overrides.asrMicrofen ??
-          integer("DEFAULT_ASR_MICROFEN_PER_SECOND", 1_000_000),
+          integer(
+            TENANT_PRICE_RULES.asr.envName,
+            TENANT_PRICE_RULES.asr.microfen,
+          ),
       },
       tts: {
-        unitSize: 1000,
-        unit: "1000_chars",
+        unitSize: TENANT_PRICE_RULES.tts.unitSize,
+        unit: TENANT_PRICE_RULES.tts.unit,
         microfen:
           overrides.ttsMicrofen ??
-          integer("DEFAULT_TTS_MICROFEN_PER_1000_CHARS", 20_000),
+          integer(
+            TENANT_PRICE_RULES.tts.envName,
+            TENANT_PRICE_RULES.tts.microfen,
+          ),
       },
       tos: {
-        unitSize: 1_048_576,
-        unit: "MiB",
+        unitSize: TENANT_PRICE_RULES.tos.unitSize,
+        unit: TENANT_PRICE_RULES.tos.unit,
         microfen:
           overrides.tosMicrofen ??
-          integer("DEFAULT_TOS_MICROFEN_PER_MIB", 1_000_000),
+          integer(
+            TENANT_PRICE_RULES.tos.envName,
+            TENANT_PRICE_RULES.tos.microfen,
+          ),
       },
     },
     volc: {

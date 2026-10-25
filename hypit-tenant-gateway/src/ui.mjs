@@ -39,6 +39,20 @@ function quantityText(row) {
   return `${value.toLocaleString("zh-CN")} 字符`;
 }
 
+function priceUnitText(unit) {
+  return {
+    hour: "小时",
+    "1000_chars": "千字符",
+    GB: "GB",
+  }[unit] ?? unit;
+}
+
+function priceRateText(price) {
+  const yuan = Number(price.unitPriceMicrofen ?? 0) / 100_000_000;
+  const amount = yuan.toFixed(yuan < 0.01 ? 6 : 2);
+  return `¥${amount} / ${priceUnitText(price.unitName)}`;
+}
+
 const styles = `
 :root {
   --ink: #17201d;
@@ -420,8 +434,11 @@ export function renderAdmin(user, data) {
     .map(
       (price) => `<tr>
         <td>${escapeHtml(serviceName(price.service))}</td>
-        <td>${price.unitName}</td>
-        <td class="num">${price.unitPriceMicrofen}</td>
+        <td>${escapeHtml(priceUnitText(price.unitName))}</td>
+        <td class="num">
+          <strong>${escapeHtml(priceRateText(price))}</strong><br>
+          <span class="muted">${price.unitPriceMicrofen} 微元</span>
+        </td>
         <td>
           <form class="actions" onsubmit="updatePrice(event, '${escapeHtml(price.service)}')">
             <input name="microfen" type="number" min="0" step="1" style="width:130px" value="${price.unitPriceMicrofen}" required>
@@ -484,8 +501,8 @@ export function renderAdmin(user, data) {
       </section>
       <section class="panel">
         <div class="panel-head"><h2>计费单价</h2></div>
-        <table><thead><tr><th>服务</th><th>计费单位</th><th class="num">微元 / 单位</th><th></th></tr></thead><tbody>${priceRows}</tbody></table>
-        <p class="muted">1 元 = 1,000,000 微元。调整只影响之后的调用。</p>
+        <table><thead><tr><th>服务</th><th>计费单位</th><th class="num">租户执行价 / 微元</th><th></th></tr></thead><tbody>${priceRows}</tbody></table>
+        <p class="muted">租户执行价按火山官方标准 ×3。1 元 = 1,000,000 微元，调整只影响之后的调用。</p>
       </section>
       <section class="panel">
         <div class="panel-head"><h2>最新用量</h2></div>
