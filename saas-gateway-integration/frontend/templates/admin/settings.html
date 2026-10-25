@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 网关支付设置 · 秒创云</title>
+  <style>
+    :root {
+      --page: #f4f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafb;
+      --text: #17212b;
+      --muted: #66727f;
+      --line: #dce2e7;
+      --accent: #087f73;
+      --accent-hover: #06695f;
+      --warning: #a15c00;
+      --warning-bg: #fff7e8;
+      --success: #167352;
+      --success-bg: #eaf7f1;
+      --danger: #b42318;
+      --danger-bg: #fff1f0;
+      --focus: rgba(8, 127, 115, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--page);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      line-height: 1.5;
+    }
+    button, input, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    .topbar {
+      height: 64px;
+      background: #10232c;
+      color: #fff;
+      border-bottom: 1px solid #263b45;
+    }
+    .topbar-inner {
+      max-width: 1120px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      background: #16a394;
+      display: grid;
+      place-items: center;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #d8e2e7;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .back-link:hover { color: #fff; }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto 56px;
+    }
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .page-heading h1 {
+      margin: 0 0 6px;
+      font-size: 25px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+    .page-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 720px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid #e7cfaa;
+      border-radius: 999px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .status-pill.ready {
+      border-color: #b8ddce;
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .settings-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .panel-head h2 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .scope-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: #edf5f3;
+      color: #086b61;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .missing-box {
+      display: none;
+      margin: 18px 22px 0;
+      padding: 10px 12px;
+      border: 1px solid #f0d29a;
+      border-radius: 7px;
+      background: var(--warning-bg);
+      color: #744300;
+      font-size: 12px;
+    }
+    .missing-box.show { display: block; }
+    form { padding: 20px 22px 22px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px 20px;
+    }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .field small {
+      display: block;
+      min-height: 18px;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .input {
+      width: 100%;
+      min-height: 40px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--focus);
+    }
+    textarea.input {
+      min-height: 122px;
+      resize: vertical;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .divider {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: var(--line);
+      margin: 2px 0;
+    }
+    .actionbar {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .save-state {
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 20px;
+    }
+    .save-state.error { color: var(--danger); }
+    .save-state.success { color: var(--success); }
+    .actions { display: flex; gap: 10px; }
+    .btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .btn:hover { background: var(--surface-soft); }
+    .btn.primary {
+      min-width: 112px;
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn:disabled { opacity: 0.55; cursor: default; }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (max-width: 720px) {
+      .page { margin-top: 22px; }
+      .page-heading, .panel-head, .actionbar { flex-direction: column; }
+      .page-heading h1 { font-size: 21px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full, .divider { grid-column: 1; }
+      .actions { width: 100%; }
+      .actions .btn { flex: 1; }
+      .topbar-inner { padding: 0 16px; }
+      .back-link span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2 4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6l-8-4Z"/>
+            <path d="m9 12 2 2 4-5"/>
+          </svg>
+        </span>
+        秒创云总后台
+      </div>
+      <a class="back-link" href="/admin/tenants">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+        <span>返回商户管理</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-heading">
+      <div>
+        <h1>AI 网关支付设置</h1>
+        <p>统一管理 AI 网关微信支付。此处配置仅用于网关充值，不读取或修改商户小程序自己的支付参数。</p>
+      </div>
+      <span class="status-pill" id="statusPill">正在读取</span>
+    </div>
+
+    <section class="settings-panel">
+      <div class="panel-head">
+        <div>
+          <h2>平台微信支付参数</h2>
+          <p>保存后对所有已开通 AI 网关的租户生效。</p>
+        </div>
+        <span class="scope-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="10" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          平台独立配置
+        </span>
+      </div>
+
+      <div class="missing-box" id="missingBox"></div>
+
+      <form id="paymentForm" autocomplete="off">
+        <div class="form-grid">
+          <div class="field">
+            <label for="wxpayAppid">小程序 AppID</label>
+            <input class="input" id="wxpayAppid" type="text" maxlength="100" autocomplete="off" placeholder="wx...">
+          </div>
+          <div class="field">
+            <label for="wxpayMchid">微信支付商户号</label>
+            <input class="input" id="wxpayMchid" type="text" maxlength="50" autocomplete="off" placeholder="商户号">
+          </div>
+
+          <div class="field">
+            <label for="wxpayApiV3Key">APIv3 密钥</label>
+            <input class="input" id="wxpayApiV3Key" type="password" maxlength="32" autocomplete="new-password" placeholder="32 位密钥">
+            <small>已配置时留空，不会覆盖现有密钥。</small>
+          </div>
+          <div class="field">
+            <label for="wxpaySerialNo">商户 API 证书序列号</label>
+            <input class="input" id="wxpaySerialNo" type="text" maxlength="200" autocomplete="off" placeholder="证书序列号">
+          </div>
+
+          <div class="divider" aria-hidden="true"></div>
+
+          <div class="field full">
+            <label for="wxpayPrivateKey">商户 API 私钥 PEM</label>
+            <textarea class="input" id="wxpayPrivateKey" autocomplete="new-password" placeholder="apiclient_key.pem 文件内容"></textarea>
+            <small>包含 BEGIN PRIVATE KEY 和 END PRIVATE KEY。已配置时留空，不会覆盖。</small>
+          </div>
+
+          <div class="field full">
+            <label for="wxpayPublicKeyPem">微信支付公钥 PEM</label>
+            <textarea class="input" id="wxpayPublicKeyPem" autocomplete="off" placeholder="微信支付公钥文件内容"></textarea>
+            <small>新版微信支付使用。包含 BEGIN PUBLIC KEY 和 END PUBLIC KEY。已配置时留空，不会覆盖。</small>
+          </div>
+          <div class="field">
+            <label for="wxpayPublicKeyId">微信支付公钥 ID</label>
+            <input class="input" id="wxpayPublicKeyId" type="text" maxlength="200" autocomplete="off" placeholder="PUB_KEY_ID_...">
+          </div>
+        </div>
+
+        <div class="actionbar">
+          <div class="save-state" id="saveState" role="status" aria-live="polite"></div>
+          <div class="actions">
+            <button class="btn" id="reloadBtn" type="button">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 11a8 8 0 1 0-2.3 5.7"/>
+                <path d="M20 4v7h-7"/>
+              </svg>
+              重新读取
+            </button>
+            <button class="btn primary" id="saveBtn" type="submit">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/>
+                <path d="M17 21v-8H7v8M7 3v5h8"/>
+              </svg>
+              保存配置
+            </button>
+          </div>
+        </div>
+        <div class="meta">
+          <span>配置范围：秒创云 AI 网关全部租户</span>
+          <span id="updatedAt">最近更新：尚未读取</span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var API = "/api/apps/gateway/admin/payment-config";
+      var form = document.getElementById("paymentForm");
+      var saveBtn = document.getElementById("saveBtn");
+      var reloadBtn = document.getElementById("reloadBtn");
+      var statusPill = document.getElementById("statusPill");
+      var saveState = document.getElementById("saveState");
+      var missingBox = document.getElementById("missingBox");
+
+      function field(id) {
+        return document.getElementById(id);
+      }
+
+      function setState(message, tone) {
+        saveState.textContent = message || "";
+        saveState.className = "save-state" + (tone ? " " + tone : "");
+      }
+
+      function formatDate(value) {
+        if (!value) return "最近更新：尚未保存";
+        var date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "最近更新：" + value;
+        return "最近更新：" + date.toLocaleString("zh-CN", { hour12: false });
+      }
+
+      async function request(method, body) {
+        var response = await fetch(API, {
+          method: method,
+          credentials: "same-origin",
+          headers: body ? { "Content-Type": "application/json" } : {},
+          body: body ? JSON.stringify(body) : undefined
+        });
+        var data = {};
+        try {
+          data = await response.json();
+        } catch (error) {
+          data = {};
+        }
+        if (!response.ok) {
+          throw new Error(data.detail || data.message || ("请求失败（HTTP " + response.status + "）"));
+        }
+        return data;
+      }
+
+      function applyConfig(data) {
+        field("wxpayAppid").value = data.wxpay_appid || "";
+        field("wxpayMchid").value = data.wxpay_mchid || "";
+        field("wxpaySerialNo").value = data.wxpay_serial_no || "";
+        field("wxpayPublicKeyId").value = data.wxpay_public_key_id || "";
+
+        field("wxpayApiV3Key").value = "";
+        field("wxpayPrivateKey").value = "";
+        field("wxpayPublicKeyPem").value = "";
+        field("wxpayApiV3Key").placeholder = data.wxpay_api_v3_key === "****" ? "已配置，留空不修改" : "32 位密钥";
+        field("wxpayPrivateKey").placeholder = data.wxpay_key_pem === "****" ? "已配置，留空不修改" : "apiclient_key.pem 文件内容";
+        field("wxpayPublicKeyPem").placeholder = data.wxpay_public_key_pem === "****" ? "已配置，留空不修改" : "微信支付公钥文件内容";
+
+        statusPill.textContent = data.ready ? "配置完整" : "等待完善";
+        statusPill.classList.toggle("ready", Boolean(data.ready));
+        var missing = Array.isArray(data.missing) ? data.missing : [];
+        missingBox.textContent = missing.length ? "尚缺：" + missing.join("、") : "";
+        missingBox.classList.toggle("show", missing.length > 0);
+        document.getElementById("updatedAt").textContent = formatDate(data.updated_at);
+      }
+
+      async function loadConfig() {
+        setState("正在读取配置…");
+        reloadBtn.disabled = true;
+        try {
+          var data = await request("GET");
+          applyConfig(data);
+          setState("");
+        } catch (error) {
+          statusPill.textContent = "读取失败";
+          statusPill.classList.remove("ready");
+          setState(error.message, "error");
+        } finally {
+          reloadBtn.disabled = false;
+        }
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        var apiKey = field("wxpayApiV3Key").value.trim();
+        if (apiKey && apiKey.length !== 32) {
+          setState("APIv3 密钥必须正好为 32 位", "error");
+          field("wxpayApiV3Key").focus();
+          return;
+        }
+
+        var payload = {
+          wxpay_appid: field("wxpayAppid").value.trim(),
+          wxpay_mchid: field("wxpayMchid").value.trim(),
+          wxpay_serial_no: field("wxpaySerialNo").value.trim(),
+          wxpay_public_key_id: field("wxpayPublicKeyId").value.trim()
+        };
+        if (apiKey) payload.wxpay_api_v3_key = apiKey;
+        var privateKey = field("wxpayPrivateKey").value.trim();
+        var publicKey = field("wxpayPublicKeyPem").value.trim();
+        if (privateKey) payload.wxpay_key_pem = privateKey;
+        if (publicKey) payload.wxpay_public_key_pem = publicKey;
+
+        saveBtn.disabled = true;
+        reloadBtn.disabled = true;
+        setState("正在保存配置…");
+        try {
+          var data = await request("PUT", payload);
+          applyConfig(data);
+          setState(data.ready ? "配置已保存，AI 网关支付已就绪" : "配置已保存，请继续补齐必填项", "success");
+        } catch (error) {
+          setState(error.message, "error");
+        } finally {
+          saveBtn.disabled = false;
+          reloadBtn.disabled = false;
+        }
+      });
+
+      reloadBtn.addEventListener("click", loadConfig);
+      loadConfig();
+    })();
+  </script>
+</body>
+</html>

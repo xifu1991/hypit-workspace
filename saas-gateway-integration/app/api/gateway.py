@@ -5,7 +5,6 @@ import base64
 import io
 import json
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Any, Optional
 from urllib.parse import quote
 from uuid import UUID
@@ -21,7 +20,7 @@ from app.api.auth import get_current_user
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.core.security import decode_access_token
-from app.models.all import Tenant, TenantMiniappConfig
+from app.models.all import GatewayPaymentConfig, Tenant, TenantMiniappConfig
 
 router = APIRouter(prefix="/api/apps/gateway", tags=["apps-gateway"])
 
@@ -71,6 +70,20 @@ class GatewayRedeemRequest(BaseModel):
 
 class GatewayPriceRequest(BaseModel):
     unit_price_microfen: int = Field(..., ge=0)
+
+
+class GatewayPaymentConfigUpdate(BaseModel):
+    wxpay_appid: Optional[str] = Field(None, max_length=100)
+    wxpay_mchid: Optional[str] = Field(None, max_length=50)
+    wxpay_api_v3_key: Optional[str] = Field(None, max_length=200)
+    wxpay_key_pem: Optional[str] = None
+    wxpay_serial_no: Optional[str] = Field(None, max_length=200)
+    wxpay_public_key_pem: Optional[str] = None
+    wxpay_public_key_id: Optional[str] = Field(None, max_length=200)
+
+
+GATEWAY_PAYMENT_CONFIG_ID = 1
+LEGACY_GATEWAY_PAYMENT_TENANT_NAME = "牛莱仕"
 
 
 def _require_admin(current_user: dict) -> None:
@@ -191,40 +204,81 @@ async def _tenant_gateway_id(
     return gateway_tenant_id
 
 
-async def _gateway_wxpay_config(
-    db: AsyncSession,
-    *,
-    require_published: bool = True,
-) -> TenantMiniappConfig:
-    source_name = get_settings().gateway_recharge_payment_tenant_name.strip()
-    if not source_name:
-        raise HTTPException(status_code=503, detail="AI 网关收款商户未配置")
-    tenant_result = await db.execute(select(Tenant).where(Tenant.name == source_name))
-    source_tenant = tenant_result.scalar_one_or_none()
-    if not source_tenant:
-        raise HTTPException(status_code=503, detail="AI 网关收款商户不存在")
+async def _gateway_wxpay_config(db: AsyncSession) -> GatewayPaymentConfig:
     result = await db.execute(
-        select(TenantMiniappConfig).where(
-            TenantMiniappConfig.tenant_id == source_tenant.id
-        )
+        select(GatewayPaymentConfig).where(GatewayPaymentConfig.id == 1)
     )
     cfg = result.scalar_one_or_none()
-    if not cfg or (require_published and not cfg.is_published):
-        raise HTTPException(status_code=400, detail="AI 网关收款商户尚未发布小程序支付配置")
-
+    if not cfg:
+        raise HTTPException(
+            status_code=503,
+            detail="AI 网关支付尚未配置，请在秒创云总后台的设置页中完成配置",
+        )
     required = {
-        "小程序 AppID": cfg.miniapp_appid,
+        "小程序 AppID": cfg.wxpay_appid,
         "微信支付商户号": cfg.wxpay_mchid,
         "APIv3 密钥": cfg.wxpay_api_v3_key,
         "商户私钥": cfg.wxpay_key_pem,
         "证书序列号": cfg.wxpay_serial_no,
+        "微信支付公钥": cfg.wxpay_public_key_pem,
+        "微信支付公钥 ID": cfg.wxpay_public_key_id,
     }
     missing = [label for label, value in required.items() if not str(value or "").strip()]
     if missing:
         raise HTTPException(
             status_code=400,
-            detail="微信支付参数不完整：" + "、".join(missing),
+            detail=(
+                "AI 网关支付配置不完整："
+                + "、".join(missing)
+                + "。请在秒创云总后台的设置页中完成配置"
+            ),
         )
+    if len(str(cfg.wxpay_api_v3_key or "").strip()) != 32:
+        raise HTTPException(
+            status_code=400,
+            detail="AI 网关微信支付 APIv3 密钥必须正好为 32 位，请在秒创云总后台的设置页中修正",
+        )
+    return cfg
+
+
+async def ensure_gateway_payment_config(db: AsyncSession) -> GatewayPaymentConfig:
+    """Create the platform payment row and copy legacy gateway values once."""
+    result = await db.execute(
+        select(GatewayPaymentConfig).where(
+            GatewayPaymentConfig.id == GATEWAY_PAYMENT_CONFIG_ID
+        )
+    )
+    cfg = result.scalar_one_or_none()
+    if cfg:
+        return cfg
+
+    cfg = GatewayPaymentConfig(id=GATEWAY_PAYMENT_CONFIG_ID)
+    tenant_result = await db.execute(
+        select(Tenant).where(Tenant.name == LEGACY_GATEWAY_PAYMENT_TENANT_NAME)
+    )
+    legacy_tenant = tenant_result.scalar_one_or_none()
+    if legacy_tenant:
+        source_result = await db.execute(
+            select(TenantMiniappConfig).where(
+                TenantMiniappConfig.tenant_id == legacy_tenant.id
+            )
+        )
+        source = source_result.scalar_one_or_none()
+        if source:
+            cfg.wxpay_appid = source.miniapp_appid or ""
+            cfg.wxpay_mchid = source.wxpay_mchid or ""
+            cfg.wxpay_api_v3_key = source.wxpay_api_v3_key or ""
+            cfg.wxpay_key_pem = source.wxpay_key_pem or ""
+            cfg.wxpay_serial_no = source.wxpay_serial_no or ""
+            cfg.wxpay_public_key_pem = (
+                getattr(source, "wxpay_public_key_pem", "") or ""
+            )
+            cfg.wxpay_public_key_id = (
+                getattr(source, "wxpay_public_key_id", "") or ""
+            )
+    db.add(cfg)
+    await db.commit()
+    print("[gateway-wxpay] 已初始化秒创云 AI 网关支付配置")
     return cfg
 
 
@@ -235,39 +289,24 @@ def _wechat_notify_url() -> str:
     return f"{base}/api/apps/gateway/tenant/recharge/wechat/notify"
 
 
-def _wechat_public_key_config(cfg: TenantMiniappConfig) -> tuple[str, str]:
-    settings = get_settings()
-    key_path = settings.gateway_wxpay_public_key_path.strip()
-    if key_path:
-        try:
-            public_key_pem = Path(key_path).read_text(encoding="utf-8").strip()
-        except OSError as exc:
-            raise HTTPException(
-                status_code=503,
-                detail=f"无法读取 AI 网关微信支付公钥：{exc}",
-            ) from exc
-        return public_key_pem, settings.gateway_wxpay_public_key_id.strip()
+def _wechat_public_key_config(
+    cfg: GatewayPaymentConfig,
+) -> tuple[str, str]:
     return (
-        str(getattr(cfg, "wxpay_public_key_pem", "") or "").strip(),
-        str(getattr(cfg, "wxpay_public_key_id", "") or "").strip(),
+        str(cfg.wxpay_public_key_pem or "").strip(),
+        str(cfg.wxpay_public_key_id or "").strip(),
     )
 
 
-def _gateway_payment_appid(cfg: TenantMiniappConfig) -> str:
-    return (
-        get_settings().gateway_wxpay_appid.strip()
-        or str(cfg.miniapp_appid or "").strip()
-    )
+def _gateway_payment_appid(cfg: GatewayPaymentConfig) -> str:
+    return str(cfg.wxpay_appid or "").strip()
 
 
-def _gateway_payment_api_v3_key(cfg: TenantMiniappConfig) -> str:
-    return (
-        get_settings().gateway_wxpay_api_v3_key.strip()
-        or str(cfg.wxpay_api_v3_key or "").strip()
-    )
+def _gateway_payment_api_v3_key(cfg: GatewayPaymentConfig) -> str:
+    return str(cfg.wxpay_api_v3_key or "").strip()
 
 
-async def _prepare_wechat_verifier(cfg: TenantMiniappConfig) -> str:
+async def _prepare_wechat_verifier(cfg: GatewayPaymentConfig) -> str:
     from app.services.wxpay_service import (
         prepare_platform_signature_verification,
     )
@@ -310,7 +349,7 @@ def _wechat_qr_data_url(code_url: str) -> str:
 
 async def _credit_wechat_recharge(
     order: dict[str, Any],
-    cfg: TenantMiniappConfig,
+    cfg: GatewayPaymentConfig,
     payment: dict[str, Any],
 ) -> Any:
     if str(payment.get("trade_state") or "").upper() != "SUCCESS":
@@ -336,6 +375,96 @@ async def _credit_wechat_recharge(
             "paidAt": str(payment.get("success_time") or datetime.now(timezone.utc).isoformat()),
         },
     )
+
+
+def _gateway_payment_config_payload(cfg: GatewayPaymentConfig) -> dict[str, Any]:
+    field_labels = {
+        "wxpay_appid": "小程序 AppID",
+        "wxpay_mchid": "微信支付商户号",
+        "wxpay_api_v3_key": "APIv3 密钥",
+        "wxpay_key_pem": "商户私钥",
+        "wxpay_serial_no": "证书序列号",
+        "wxpay_public_key_pem": "微信支付公钥",
+        "wxpay_public_key_id": "微信支付公钥 ID",
+    }
+    missing = [
+        label
+        for field, label in field_labels.items()
+        if not str(getattr(cfg, field, "") or "").strip()
+    ]
+    api_v3_key = str(cfg.wxpay_api_v3_key or "").strip()
+    if api_v3_key and len(api_v3_key) != 32:
+        missing.append("APIv3 密钥必须为 32 位")
+    return {
+        "wxpay_appid": cfg.wxpay_appid or "",
+        "wxpay_mchid": cfg.wxpay_mchid or "",
+        "wxpay_api_v3_key": "****" if cfg.wxpay_api_v3_key else "",
+        "wxpay_key_pem": "****" if cfg.wxpay_key_pem else "",
+        "wxpay_serial_no": cfg.wxpay_serial_no or "",
+        "wxpay_public_key_pem": "****" if cfg.wxpay_public_key_pem else "",
+        "wxpay_public_key_id": cfg.wxpay_public_key_id or "",
+        "ready": not missing,
+        "missing": missing,
+        "updated_at": (
+            cfg.updated_at.isoformat()
+            if cfg.updated_at
+            else None
+        ),
+    }
+
+
+@router.get("/admin/payment-config")
+async def get_admin_payment_config(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    _require_admin(current_user)
+    cfg = await ensure_gateway_payment_config(db)
+    return _gateway_payment_config_payload(cfg)
+
+
+@router.put("/admin/payment-config")
+async def update_admin_payment_config(
+    data: GatewayPaymentConfigUpdate,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    _require_admin(current_user)
+    cfg = await ensure_gateway_payment_config(db)
+    update_map = data.model_dump(exclude_none=True)
+
+    secret_fields = {
+        "wxpay_api_v3_key",
+        "wxpay_key_pem",
+        "wxpay_public_key_pem",
+    }
+    for field, raw_value in update_map.items():
+        value = str(raw_value or "").strip()
+        if field in secret_fields and (not value or value.startswith("****")):
+            continue
+        setattr(cfg, field, value)
+
+    api_v3_key = str(cfg.wxpay_api_v3_key or "").strip()
+    if api_v3_key and len(api_v3_key) != 32:
+        raise HTTPException(
+            status_code=400,
+            detail="微信支付 APIv3 密钥必须正好为 32 位",
+        )
+    private_key = str(cfg.wxpay_key_pem or "").strip()
+    if private_key and "PRIVATE KEY" not in private_key:
+        raise HTTPException(status_code=400, detail="商户私钥 PEM 格式不正确")
+    public_key = str(cfg.wxpay_public_key_pem or "").strip()
+    if public_key and "PUBLIC KEY" not in public_key:
+        raise HTTPException(status_code=400, detail="微信支付公钥 PEM 格式不正确")
+
+    cfg.updated_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(cfg)
+    return {
+        "ok": True,
+        "message": "AI 网关支付配置已保存",
+        **_gateway_payment_config_payload(cfg),
+    }
 
 
 @router.get("/admin/overview")
@@ -562,8 +691,8 @@ async def create_wechat_recharge(
         error_text = str(exc)
         if "平台证书" in error_text and "无可用的平台证书" in error_text:
             detail = (
-                "微信支付验签配置不完整：该商户使用新版微信支付公钥，"
-                "请在阿彭牛排后台补充微信支付公钥 PEM 和公钥 ID。"
+                "微信支付验签配置不完整：请在秒创云总后台的设置页中"
+                "补充微信支付公钥 PEM 和公钥 ID。"
             )
         else:
             detail = f"微信支付验签配置不可用：{error_text[:200]}"
@@ -633,8 +762,8 @@ async def create_wechat_recharge(
         error_text = str(exc)
         if "权限未开通" in error_text or "产品权限" in error_text:
             detail = (
-                f"微信支付暂不可用：{get_settings().gateway_recharge_payment_tenant_name}"
-                "收款商户尚未开通 Native 支付，请先在微信支付商户平台的产品中心开通。"
+                "微信支付暂不可用：AI 网关收款商户尚未开通 Native 支付，"
+                "请先在微信支付商户平台的产品中心开通。"
             )
         else:
             detail = f"微信支付下单失败：{error_text[:200]}"
@@ -679,7 +808,7 @@ async def get_wechat_recharge_status(
     if order.get("status") != "pending":
         return {"ok": True, "status": order.get("status"), "order": order}
 
-    cfg = await _gateway_wxpay_config(db, require_published=False)
+    cfg = await _gateway_wxpay_config(db)
     from app.services.wxpay_service import query_wxpay_order
 
     try:
@@ -736,7 +865,7 @@ async def wechat_recharge_notify(
     from app.services.wxpay_service import verify_notify_signature
 
     try:
-        cfg = await _gateway_wxpay_config(db, require_published=False)
+        cfg = await _gateway_wxpay_config(db)
         await _prepare_wechat_verifier(cfg)
         public_key_pem, public_key_id = _wechat_public_key_config(cfg)
         payment = verify_notify_signature(

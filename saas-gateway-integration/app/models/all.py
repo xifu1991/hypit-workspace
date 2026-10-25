@@ -631,6 +631,26 @@ class TenantMiniappConfig(Base):
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
 
+class GatewayPaymentConfig(Base):
+    """秒创云 AI 网关统一微信支付配置（平台级单例）。"""
+    __tablename__ = "gateway_payment_configs"
+    __table_args__ = {"extend_existing": True}
+
+    id = Column(Integer, primary_key=True, default=1)
+    wxpay_appid = Column(String(100), default="")
+    wxpay_mchid = Column(String(50), default="")
+    wxpay_api_v3_key = Column(String(200), default="")
+    wxpay_key_pem = Column(Text, default="")
+    wxpay_serial_no = Column(String(200), default="")
+    wxpay_public_key_pem = Column(Text, default="")
+    wxpay_public_key_id = Column(String(200), default="")
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
+
+
 # ═══════════════════════════════════════
 # 工作流 — Agent 定义
 # ═══════════════════════════════════════

@@ -40,11 +40,6 @@ class Settings(BaseSettings):
 
     # ── 微信支付回调基础URL ──
     wxpay_notify_base_url: str = "https://niuniu.xhscdn.cn"
-    gateway_recharge_payment_tenant_name: str = "阿彭牛排"
-    gateway_wxpay_appid: str = ""
-    gateway_wxpay_public_key_path: str = ""
-    gateway_wxpay_public_key_id: str = ""
-    gateway_wxpay_api_v3_key: str = ""
 
     # ── 情报局资讯采集 ──
     intelligence_sync_enabled: bool = False

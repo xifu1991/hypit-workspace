@@ -1426,6 +1426,15 @@
   async function saveWxpayConfig() {
     var button = document.getElementById('wxpayConfigSaveBtn');
     var status = document.getElementById('wxpayConfigStatus');
+    var apiKeyInput = document.getElementById('wxpayApiV3Key');
+    var apiKeyValue = apiKeyInput ? apiKeyInput.value.trim() : '';
+    if (apiKeyValue && apiKeyValue !== '****' && apiKeyValue.length !== 32) {
+      if (status) {
+        status.textContent = 'APIv3 密钥必须正好为 32 位';
+        status.style.color = 'var(--destructive)';
+      }
+      return;
+    }
     var payload = {};
     var fields = [
       ['wxpayMchid', 'wxpay_mchid'],

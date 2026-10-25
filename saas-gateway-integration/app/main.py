@@ -51,6 +51,11 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
     print("   ✅ 数据库表已就绪")
 
+    # ── 1.1 初始化平台级 AI 网关支付配置 ──
+    async with AsyncSessionLocal() as session:
+        await gateway.ensure_gateway_payment_config(session)
+    print("   ✅ AI 网关支付配置已就绪")
+
     # ── 2. 自动创建 admin 用户（如果不存在）──
     async with AsyncSessionLocal() as session:
         from sqlalchemy import select
@@ -322,6 +327,10 @@ async def admin_roles(request: Request):
 @app.get("/admin/tenants")
 async def admin_tenants(request: Request):
     return templates_engine.TemplateResponse(request, "admin/tenants.html", {"request": request})
+
+@app.get("/admin/settings")
+async def admin_settings(request: Request):
+    return templates_engine.TemplateResponse(request, "admin/settings.html", {"request": request})
 
 @app.get("/admin/oss")
 async def admin_oss(request: Request):
