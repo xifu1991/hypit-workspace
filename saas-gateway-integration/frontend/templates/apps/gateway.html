@@ -2,7 +2,7 @@
 {% block title %}AI 网关 · 秒创云{% endblock %}
 {% block page_title %}AI 网关{% endblock %}
 {% block page_subtitle %}
-<p class="header-subtitle">余额、语音识别、声音合成与对象存储用量统一管理</p>
+<p class="header-subtitle">字幕转写、声音复刻与云端存储的一站式用量管理</p>
 {% endblock %}
 
 {% block content %}
@@ -471,7 +471,7 @@
       <div class="gw-grid">
         <div class="gw-stack">
           <section class="gw-panel">
-            <div class="gw-panel-head"><h2>服务用量</h2><p>按豆包语音与火山存储分别统计</p></div>
+            <div class="gw-panel-head"><h2>服务用量</h2><p>Speech · Voice · Cloud</p></div>
             <div class="gw-service-grid" id="gwServiceSummary"></div>
           </section>
           <section class="gw-panel">
@@ -598,9 +598,9 @@
 
   function serviceName(service) {
     return {
-      asr: "豆包语音识别",
-      tts: "声音克隆合成",
-      tos: "火山对象存储",
+      asr: "字幕ASR",
+      tts: "声音克隆",
+      tos: "火山OSS",
       recharge: "余额充值",
       wechat_recharge: "微信支付充值",
       recharge_code: "充值码",
@@ -782,7 +782,7 @@
     document.getElementById("gwTenantMetrics").innerHTML = [
       metric("可用余额", money(data.wallet?.availableFen), "冻结 " + money(data.wallet?.reservedFen)),
       metric("累计消费", money(data.summary?.spentFen), "已结算调用"),
-      metric("调用次数", Number(data.summary?.calls || 0).toLocaleString("zh-CN"), "ASR、TTS、TOS"),
+      metric("调用次数", Number(data.summary?.calls || 0).toLocaleString("zh-CN"), "字幕 · 声音 · 存储"),
       metric("账户余额", money(data.wallet?.balanceFen), "含冻结额度"),
     ].join("");
 
