@@ -542,44 +542,325 @@
   font-variant-numeric: tabular-nums;
 }
 .gw-recharge-dialog {
-  width: min(430px, calc(100% - 28px));
+  width: min(540px, calc(100% - 24px));
+  max-height: calc(100dvh - 28px);
+  margin: auto;
   padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card-bg);
-  color: var(--fg);
-  box-shadow: 0 24px 70px rgba(16, 24, 40, .28);
+  overflow-y: auto;
+  border: 1px solid #343a44;
+  border-radius: 12px;
+  background: #17191e;
+  color: #f8fafc;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .58);
 }
-.gw-recharge-dialog::backdrop { background: rgba(15, 23, 42, .56); }
-.gw-dialog-body { padding: 20px; }
+.gw-recharge-dialog::backdrop {
+  background: rgba(8, 10, 14, .74);
+  backdrop-filter: blur(4px);
+}
+.gw-dialog-body {
+  padding: 24px;
+}
 .gw-dialog-head {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: start;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+}
+.gw-dialog-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 .gw-dialog-head h2 {
   margin: 0;
-  font-size: 19px;
+  color: #fff;
+  font-size: 24px;
+  letter-spacing: 0;
+}
+.gw-dialog-head p {
+  margin: 7px 0 0;
+  color: #939baa;
+  font-size: 12px;
+}
+.gw-dialog-badge {
+  padding: 4px 8px;
+  border: 1px solid #383e49;
+  border-radius: 5px;
+  background: #23262d;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
 }
 .gw-dialog-balance {
-  margin-top: 4px;
-  color: var(--muted-fg);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border: 1px solid #303640;
+  border-radius: 8px;
+  background: #20232a;
+  color: #9aa4b2;
   font-size: 12px;
+}
+.gw-dialog-balance strong {
+  color: #fff;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
 }
 .gw-dialog-close {
   display: inline-grid;
-  width: 32px;
-  height: 32px;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
   place-items: center;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted-fg);
-  font-size: 20px;
+  border: 1px solid #343a44;
+  border-radius: 7px;
+  background: #20232a;
+  color: #9aa4b2;
+  font-size: 19px;
   line-height: 1;
   cursor: pointer;
+}
+.gw-dialog-close:hover {
+  border-color: #4c5563;
+  color: #fff;
+}
+.gw-dialog-close:focus-visible,
+.gw-dialog-pay:focus-visible,
+.gw-recharge-dialog .gw-amount:focus-visible,
+.gw-custom-input:focus-within {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+.gw-recharge-dialog .gw-form { gap: 18px; }
+.gw-dialog-section {
+  display: grid;
+  gap: 10px;
+}
+.gw-dialog-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  color: #e5e7eb;
+  font-size: 13px;
+  font-weight: 600;
+}
+.gw-dialog-label span:last-child {
+  color: #778190;
+  font-size: 11px;
+  font-weight: 500;
+}
+.gw-recharge-dialog .gw-amount-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.gw-recharge-dialog .gw-amount {
+  min-height: 42px;
+  padding: 8px 6px;
+  border: 1px solid #363c46;
+  border-radius: 7px;
+  background: #1d2026;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+.gw-recharge-dialog .gw-amount:hover {
+  border-color: #59616f;
+  background: #242831;
+}
+.gw-recharge-dialog .gw-amount:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+.gw-recharge-dialog .gw-amount.active {
+  border-color: #f8fafc;
+  background: #272b32;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px #f8fafc;
+}
+.gw-custom-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #363c46;
+  border-radius: 7px;
+  background: #1d2026;
+  transition: border-color .15s ease;
+}
+.gw-custom-input:focus-within { border-color: #727b89; }
+.gw-custom-input > span {
+  color: #8c96a5;
+  font-size: 12px;
+  font-weight: 600;
+}
+.gw-custom-input > span:first-child {
+  color: #f8fafc;
+  font-size: 20px;
+}
+.gw-custom-input input {
+  min-width: 0;
+  flex: 1;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.gw-custom-input input:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+.gw-pay-method {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 22px;
+  gap: 12px;
+  align-items: center;
+  min-height: 62px;
+  padding: 10px 14px;
+  border: 1px solid #0cb96a;
+  border-radius: 8px;
+  background: rgba(7, 193, 96, .075);
+  box-shadow: inset 0 0 0 1px rgba(7, 193, 96, .18);
+}
+.gw-pay-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 9px;
+  background: #07c160;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.gw-pay-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.gw-pay-copy strong {
+  color: #fff;
+  font-size: 14px;
+}
+.gw-pay-copy span {
+  color: #8d98a8;
+  font-size: 11px;
+}
+.gw-pay-check {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: #07c160;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.gw-dialog-account {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 13px;
+  border: 1px solid #2d323b;
+  border-radius: 7px;
+  background: #1c1f25;
+  color: #8f99a8;
+  font-size: 12px;
+}
+.gw-dialog-account strong {
+  overflow: hidden;
+  color: #d7dde6;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gw-dialog-pay {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #111827;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gw-dialog-pay:hover { background: #e8ebef; }
+.gw-dialog-pay:disabled {
+  cursor: wait;
+  opacity: .58;
+}
+.gw-recharge-dialog .gw-status-line {
+  min-height: 20px;
+  margin-top: -6px;
+  color: #9aa4b2;
+  text-align: center;
+}
+.gw-recharge-dialog .gw-status-line[data-tone="error"] { color: #f87171; }
+.gw-recharge-dialog .gw-status-line[data-tone="success"] { color: #39d98a; }
+.gw-recharge-dialog .gw-qr {
+  gap: 10px;
+  margin-top: 0;
+  padding: 18px;
+  border: 1px solid #303640;
+  border-radius: 8px;
+  background: #1e2127;
+}
+.gw-recharge-dialog .gw-qr[hidden] { display: none; }
+.gw-recharge-dialog .gw-qr::before {
+  content: "微信扫码支付";
+  color: #d7dde6;
+  font-size: 12px;
+  font-weight: 600;
+}
+.gw-recharge-dialog .gw-qr img {
+  width: min(220px, 100%);
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+}
+.gw-recharge-dialog .gw-qr strong {
+  color: #fff;
+  font-size: 22px;
+}
+.gw-recharge-dialog .gw-qr span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: #7f8998;
+  text-align: center;
+}
+.gw-recharge-tips {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #2d323b;
+}
+.gw-recharge-tips strong {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+.gw-recharge-tips ul {
+  display: grid;
+  gap: 6px;
+  margin: 9px 0 0;
+  padding-left: 17px;
+  color: #7f8998;
+  font-size: 11px;
+  line-height: 1.65;
 }
 .gw-btn[href] {
   display: inline-flex;
@@ -595,7 +876,12 @@
   .gw-metrics,
   .gw-summary-grid,
   .gw-analytics-metrics { grid-template-columns: 1fr; }
-  .gw-amount-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gw-recharge-dialog .gw-amount-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gw-dialog-body { padding: 19px; }
+  .gw-recharge-dialog .gw-dialog-head { margin-bottom: 14px; }
+  .gw-recharge-dialog .gw-dialog-head h2 { font-size: 22px; }
+  .gw-recharge-dialog .gw-dialog-balance { margin-bottom: 16px; }
+  .gw-recharge-dialog .gw-form { gap: 16px; }
   .gw-page { gap: 14px; }
   .gw-panel,
   .gw-usage-summary,
@@ -806,29 +1092,76 @@
       <div class="gw-dialog-body">
         <div class="gw-dialog-head">
           <div>
-            <h2 id="gwRechargeTitle">账户充值</h2>
-            <div class="gw-dialog-balance">当前余额 <strong id="gwRechargeDialogBalance">¥0.00</strong></div>
+            <div class="gw-dialog-title-row">
+              <h2 id="gwRechargeTitle">充值</h2>
+              <span class="gw-dialog-badge">在线充值</span>
+            </div>
+            <p>充值后可直接用于当前 AI 网关账户消费</p>
           </div>
           <button class="gw-dialog-close" id="gwCloseRecharge" type="button" aria-label="关闭充值窗口">×</button>
         </div>
+        <div class="gw-dialog-balance">
+          <span>当前可用余额</span>
+          <strong id="gwRechargeDialogBalance">¥0.00</strong>
+        </div>
         <form class="gw-form" id="gwWechatRecharge">
-          <div class="gw-field">
-            <label for="gwWechatAmount">充值金额（元）</label>
-            <input id="gwWechatAmount" type="number" min="0.01" max="50000" step="0.01" value="100" required>
+          <section class="gw-dialog-section" aria-labelledby="gwRechargeAmountLabel">
+            <div class="gw-dialog-label" id="gwRechargeAmountLabel">
+              <span>支付金额</span>
+              <span>CNY</span>
+            </div>
+            <div class="gw-amount-row" aria-label="快捷充值金额">
+              <button class="gw-amount active" type="button" data-recharge-amount="10">¥10</button>
+              <button class="gw-amount" type="button" data-recharge-amount="20">¥20</button>
+              <button class="gw-amount" type="button" data-recharge-amount="50">¥50</button>
+              <button class="gw-amount" type="button" data-recharge-amount="100">¥100</button>
+              <button class="gw-amount" type="button" data-recharge-amount="300">¥300</button>
+              <button class="gw-amount" type="button" data-recharge-amount="500">¥500</button>
+              <button class="gw-amount" id="gwCustomAmountButton" type="button">自定义</button>
+            </div>
+            <label class="gw-dialog-label" for="gwWechatAmount">
+              <span>自定义金额</span>
+              <span>最低 ¥0.01</span>
+            </label>
+            <div class="gw-custom-input">
+              <span>¥</span>
+              <input id="gwWechatAmount" type="number" min="0.01" max="50000" step="0.01" value="10" inputmode="decimal" required>
+              <span>CNY</span>
+            </div>
+          </section>
+
+          <section class="gw-dialog-section" aria-labelledby="gwRechargeMethodLabel">
+            <div class="gw-dialog-label" id="gwRechargeMethodLabel">
+              <span>支付方式</span>
+            </div>
+            <div class="gw-pay-method" aria-label="已选择微信支付">
+              <span class="gw-pay-icon" aria-hidden="true">微</span>
+              <span class="gw-pay-copy">
+                <strong>微信支付</strong>
+                <span>扫码支付，支付成功后自动到账</span>
+              </span>
+              <span class="gw-pay-check" aria-hidden="true">✓</span>
+            </div>
+          </section>
+
+          <div class="gw-dialog-account">
+            <span>到账账户</span>
+            <strong>当前 AI 网关账户</strong>
           </div>
-          <div class="gw-amount-row" aria-label="充值金额">
-            <button class="gw-amount active" type="button" data-recharge-amount="100">¥100</button>
-            <button class="gw-amount" type="button" data-recharge-amount="300">¥300</button>
-            <button class="gw-amount" type="button" data-recharge-amount="500">¥500</button>
-            <button class="gw-amount" type="button" data-recharge-amount="1000">¥1000</button>
+          <button class="gw-dialog-pay" id="gwWechatPayBtn" type="submit">去支付</button>
+          <div class="gw-status-line" id="gwWechatStatus" aria-live="polite"></div>
+          <div class="gw-qr" id="gwWechatQr" hidden>
+            <img id="gwWechatQrImage" alt="微信支付二维码">
+            <strong id="gwWechatQrAmount"></strong>
+            <span id="gwWechatQrOrder"></span>
           </div>
-          <button class="gw-btn" id="gwWechatPayBtn" type="submit">生成支付二维码</button>
-          <div class="gw-status-line" id="gwWechatStatus"></div>
         </form>
-        <div class="gw-qr" id="gwWechatQr" hidden>
-          <img id="gwWechatQrImage" alt="微信支付二维码">
-          <strong id="gwWechatQrAmount"></strong>
-          <span id="gwWechatQrOrder"></span>
+        <div class="gw-recharge-tips">
+          <strong>充值说明</strong>
+          <ul>
+            <li>充值金额仅用于调用 AI 网关服务。</li>
+            <li>支付成功后余额会自动到账，无需手动确认。</li>
+          </ul>
         </div>
       </div>
     </dialog>
@@ -1218,35 +1551,107 @@
     }
   }
 
+  function setRechargeStatus(text, tone = "") {
+    const status = document.getElementById("gwWechatStatus");
+    if (!status) return;
+    status.textContent = text;
+    if (tone) {
+      status.dataset.tone = tone;
+    } else {
+      delete status.dataset.tone;
+    }
+  }
+
+  function setRechargePayButton(text, disabled = false) {
+    const button = document.getElementById("gwWechatPayBtn");
+    if (!button) return;
+    button.textContent = text;
+    button.disabled = disabled;
+    button.setAttribute("aria-busy", disabled ? "true" : "false");
+  }
+
+  function setRechargeAmountControlsDisabled(disabled) {
+    document.querySelectorAll("#gwWechatRecharge [data-recharge-amount], #gwCustomAmountButton, #gwWechatAmount")
+      .forEach((control) => {
+        control.disabled = disabled;
+      });
+  }
+
+  function clearRechargeQr() {
+    const qr = document.getElementById("gwWechatQr");
+    const image = document.getElementById("gwWechatQrImage");
+    if (qr) qr.hidden = true;
+    if (image) image.removeAttribute("src");
+    const amount = document.getElementById("gwWechatQrAmount");
+    const order = document.getElementById("gwWechatQrOrder");
+    if (amount) amount.textContent = "";
+    if (order) order.textContent = "";
+  }
+
+  function syncRechargeAmountSelection(forceCustom = false) {
+    const amount = document.getElementById("gwWechatAmount");
+    const custom = document.getElementById("gwCustomAmountButton");
+    if (!amount || !custom) return;
+
+    const value = Number(amount.value);
+    let hasQuickSelection = false;
+    document.querySelectorAll("[data-recharge-amount]").forEach((button) => {
+      const active = !forceCustom && Number(button.dataset.rechargeAmount) === value;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+      hasQuickSelection ||= active;
+    });
+    const customActive = forceCustom || !hasQuickSelection;
+    custom.classList.toggle("active", customActive);
+    custom.setAttribute("aria-pressed", customActive ? "true" : "false");
+  }
+
+  function resetRechargeDialogState() {
+    stopRechargePolling();
+    setRechargeStatus("");
+    setRechargePayButton("去支付");
+    setRechargeAmountControlsDisabled(false);
+    clearRechargeQr();
+    const amount = document.getElementById("gwWechatAmount");
+    if (amount) amount.value = "10";
+    syncRechargeAmountSelection();
+  }
+
   async function pollWechatRecharge(outTradeNo, amountFen) {
     const generation = ++rechargePollGeneration;
-    const status = document.getElementById("gwWechatStatus");
     const deadline = Date.now() + 31 * 60 * 1000;
 
     async function check() {
       if (generation !== rechargePollGeneration) return;
+      rechargePollTimer = null;
       try {
         const data = await api(`/tenant/recharge/wechat/${encodeURIComponent(outTradeNo)}`);
         if (generation !== rechargePollGeneration) return;
         if (data.status === "credited") {
-          status.textContent = "充值成功，余额已到账";
-          document.getElementById("gwWechatPayBtn").disabled = false;
+          clearRechargeQr();
+          setRechargeStatus("充值成功，余额已到账", "success");
+          setRechargePayButton("继续充值");
+          setRechargeAmountControlsDisabled(false);
           await reloadTenant(document.getElementById("gwUsageDate")?.value || undefined);
           return;
         }
         if (data.status === "failed" || data.status === "closed") {
-          status.textContent = "支付订单已关闭，请重新生成二维码";
-          document.getElementById("gwWechatPayBtn").disabled = false;
+          clearRechargeQr();
+          setRechargeStatus("支付订单已关闭，请重新生成二维码", "error");
+          setRechargePayButton("重新生成二维码");
+          setRechargeAmountControlsDisabled(false);
           return;
         }
-        status.textContent = `等待支付 ${money(amountFen)}`;
+        setRechargeStatus(`等待支付 ${money(amountFen)}`);
       } catch (error) {
         if (generation !== rechargePollGeneration) return;
-        status.textContent = "状态查询暂时失败，正在重试";
+        setRechargeStatus("状态查询暂时失败，正在重试");
       }
       if (Date.now() >= deadline) {
-        status.textContent = "二维码已过期，请重新生成";
-        document.getElementById("gwWechatPayBtn").disabled = false;
+        clearRechargeQr();
+        setRechargeStatus("二维码已过期，请重新生成", "error");
+        setRechargePayButton("重新生成二维码");
+        setRechargeAmountControlsDisabled(false);
         return;
       }
       rechargePollTimer = setTimeout(check, 2200);
@@ -1438,30 +1843,32 @@
   const rechargeDialog = document.getElementById("gwRechargeDialog");
   const openRecharge = document.getElementById("gwOpenRecharge");
   if (rechargeDialog && openRecharge) {
-    openRecharge.addEventListener("click", () => rechargeDialog.showModal());
+    openRecharge.addEventListener("click", () => {
+      resetRechargeDialogState();
+      rechargeDialog.showModal();
+    });
     document.getElementById("gwCloseRecharge")?.addEventListener("click", () => rechargeDialog.close());
     rechargeDialog.addEventListener("click", (event) => {
       if (event.target === rechargeDialog) rechargeDialog.close();
     });
+    rechargeDialog.addEventListener("close", resetRechargeDialogState);
   }
 
   const wechatAmount = document.getElementById("gwWechatAmount");
   document.querySelectorAll("[data-recharge-amount]").forEach((button) => {
     button.addEventListener("click", () => {
       wechatAmount.value = button.dataset.rechargeAmount;
-      document.querySelectorAll("[data-recharge-amount]").forEach((item) => {
-        item.classList.toggle("active", item === button);
-      });
+      syncRechargeAmountSelection();
     });
+  });
+  document.getElementById("gwCustomAmountButton")?.addEventListener("click", () => {
+    syncRechargeAmountSelection(true);
+    wechatAmount.focus();
+    wechatAmount.select();
   });
   if (wechatAmount) {
     wechatAmount.addEventListener("input", () => {
-      document.querySelectorAll("[data-recharge-amount]").forEach((item) => {
-        item.classList.toggle(
-          "active",
-          Number(item.dataset.rechargeAmount) === Number(wechatAmount.value),
-        );
-      });
+      syncRechargeAmountSelection();
     });
   }
 
@@ -1469,34 +1876,39 @@
   if (wechatRechargeForm) {
     wechatRechargeForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const status = document.getElementById("gwWechatStatus");
-      const button = document.getElementById("gwWechatPayBtn");
       const qr = document.getElementById("gwWechatQr");
       const amountYuan = Number(document.getElementById("gwWechatAmount").value);
       const amountFen = Math.round(amountYuan * 100);
       if (!Number.isFinite(amountFen) || amountFen < 1 || amountFen > 5_000_000) {
-        status.textContent = "请输入有效充值金额";
+        setRechargeStatus("请输入有效充值金额", "error");
         return;
       }
 
       stopRechargePolling();
-      button.disabled = true;
-      status.textContent = "正在创建支付订单...";
-      qr.hidden = true;
+      const requestGeneration = rechargePollGeneration;
+      setRechargePayButton("正在创建...", true);
+      setRechargeStatus("正在创建支付订单...");
+      setRechargeAmountControlsDisabled(true);
+      clearRechargeQr();
       try {
         const data = await api("/tenant/recharge/wechat", {
           method: "POST",
           body: JSON.stringify({ amount_fen: amountFen }),
         });
+        if (requestGeneration !== rechargePollGeneration) return;
         document.getElementById("gwWechatQrImage").src = data.qr_data_url;
         document.getElementById("gwWechatQrAmount").textContent = money(data.amount_fen);
         document.getElementById("gwWechatQrOrder").textContent = data.out_trade_no;
         qr.hidden = false;
-        status.textContent = "等待支付";
+        setRechargePayButton("等待支付", true);
+        setRechargeStatus("请使用微信扫码完成支付");
+        requestAnimationFrame(() => qr.scrollIntoView({ behavior: "smooth", block: "nearest" }));
         await pollWechatRecharge(data.out_trade_no, data.amount_fen);
       } catch (error) {
-        status.textContent = error.message;
-        button.disabled = false;
+        if (requestGeneration !== rechargePollGeneration) return;
+        setRechargeStatus(error.message, "error");
+        setRechargePayButton("重新支付");
+        setRechargeAmountControlsDisabled(false);
       }
     });
   }
