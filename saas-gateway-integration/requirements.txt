@@ -1,3 +1,5 @@
+# 秒创云 — Python 依赖
+# 使用：pip3 install -r requirements.txt --break-system-packages
 fastapi>=0.100.0
 uvicorn[standard]>=0.20.0
 pydantic>=2.0.0
@@ -16,4 +18,5 @@ aiofiles>=23.0.0
 APScheduler>=3.10.0
 requests>=2.31.0
 trafilatura>=1.8.0
+Pillow>=10.0.0
 qrcode>=7.4.2

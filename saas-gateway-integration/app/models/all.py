@@ -5,7 +5,19 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, String, Integer, Float, DateTime, Text, Boolean, ForeignKey, Uuid, text
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Float,
+    DateTime,
+    Text,
+    Boolean,
+    ForeignKey,
+    Uuid,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -448,6 +460,8 @@ class MallOrder(Base):
 
     total_amount = Column(Float, nullable=False, default=0.0)     # 商品总额
     shipping_fee = Column(Float, nullable=False, default=0.0)     # 运费
+    coupon_id = Column(Uuid(), ForeignKey("mall_user_coupons.id"), nullable=True, index=True)
+    coupon_discount = Column(Float, nullable=False, default=0.0)  # 优惠券抵扣
     final_amount = Column(Float, nullable=False, default=0.0)     # 实付金额
 
     receiver_name = Column(String(50), default="")
@@ -465,6 +479,59 @@ class MallOrder(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     paid_at = Column(DateTime(timezone=True))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+
+class MallCouponTemplate(Base):
+    """商城优惠券活动模板（当前用于新人礼）。"""
+    __tablename__ = "mall_coupon_templates"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "campaign_key", name="uq_mall_coupon_campaign"),
+        {"extend_existing": True},
+    )
+
+    id = Column(Uuid(), primary_key=True, default=uuid.uuid4)
+    tenant_id = Column(Uuid(), ForeignKey("tenants.id"), nullable=False, index=True)
+    campaign_key = Column(String(50), nullable=False, default="newcomer")
+    name = Column(String(100), nullable=False, default="新人专享券")
+    description = Column(String(500), default="")
+    discount_type = Column(String(20), nullable=False, default="fixed")
+    discount_value = Column(Float, nullable=False, default=20.0)
+    min_amount = Column(Float, nullable=False, default=99.0)
+    total_quantity = Column(Integer, nullable=False, default=0)   # 0 = 不限
+    valid_days = Column(Integer, nullable=False, default=30)
+    is_active = Column(Boolean, nullable=False, default=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
+
+
+class MallUserCoupon(Base):
+    """用户持有的商城券；权益字段落库快照，后台改模板不影响已发券。"""
+    __tablename__ = "mall_user_coupons"
+    __table_args__ = (
+        UniqueConstraint("profile_id", "grant_key", name="uq_mall_user_coupon_grant"),
+        {"extend_existing": True},
+    )
+
+    id = Column(Uuid(), primary_key=True, default=uuid.uuid4)
+    template_id = Column(Uuid(), ForeignKey("mall_coupon_templates.id"), nullable=False, index=True)
+    profile_id = Column(Uuid(), ForeignKey("tenant_user_profiles.id"), nullable=False, index=True)
+    tenant_id = Column(Uuid(), ForeignKey("tenants.id"), nullable=False, index=True)
+    grant_key = Column(String(80), nullable=False, default="newcomer")
+    name = Column(String(100), nullable=False, default="新人专享券")
+    description = Column(String(500), default="")
+    discount_type = Column(String(20), nullable=False, default="fixed")
+    discount_value = Column(Float, nullable=False, default=0.0)
+    min_amount = Column(Float, nullable=False, default=0.0)
+    status = Column(String(20), nullable=False, default="unused")  # unused/locked/used/expired
+    order_id = Column(Uuid(), nullable=True, index=True)          # 当前锁定或核销订单
+    valid_from = Column(DateTime(timezone=True), nullable=False)
+    valid_until = Column(DateTime(timezone=True), nullable=False, index=True)
+    used_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 # ═══════════════════════════════════════
@@ -497,7 +564,7 @@ class IntelligenceArticle(Base):
     __tablename__ = "intelligence_articles"
 
     id = Column(Uuid(), primary_key=True, default=uuid.uuid4)
-    category = Column(String(20), nullable=False, index=True)   # hot/tech/ai/finance/health/food/military/international/business
+    category = Column(String(20), nullable=False, index=True)   # hot/tech/geo/finance/health/food/military/international/business
     title = Column(String(500), nullable=False)
     description = Column(Text, default="")
     source = Column(String(200), default="")                     # 来源名称

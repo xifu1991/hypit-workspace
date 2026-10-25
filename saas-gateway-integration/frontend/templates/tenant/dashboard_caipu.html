@@ -138,6 +138,18 @@
   .config-check { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 11px; border-radius: 8px; background: var(--bg); font-size: 12px; color: var(--muted-fg); }
   .home-banner-preview { display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 25 / 12; overflow: hidden; background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; color: var(--muted-light); font-size: 12px; }
   .home-banner-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .welfare-qr-layout { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: start; }
+  .welfare-qr-preview { width: 150px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; border: 1px dashed var(--border); border-radius: 10px; color: var(--muted-light); font-size: 12px; text-align: center; }
+  .welfare-qr-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .welfare-qr-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .welfare-qr-actions .save-status { flex-basis: 100%; }
+  .welfare-guide-layout { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 16px; align-items: start; }
+  .welfare-guide-preview { width: 128px; aspect-ratio: 750 / 1487; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; color: var(--muted-light); font-size: 12px; text-align: center; }
+  .welfare-guide-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .welfare-guide-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .welfare-guide-actions .save-status { flex-basis: 100%; }
+  .share-link-row { display: flex; align-items: center; gap: 8px; }
+  .share-link-row .form-input { flex: 1; min-width: 0; }
   .spec-editor { display: flex; flex-direction: column; gap: 10px; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
   .spec-empty { padding: 18px 12px; text-align: center; color: var(--muted-light); font-size: 12px; }
   .spec-group { padding: 10px; background: #fff; border: 1px solid var(--border); border-radius: 9px; }
@@ -178,6 +190,11 @@
     .section-head { align-items: flex-start; flex-direction: column; }
     .detail-editor-head { align-items: flex-start; flex-direction: column; gap: 4px; }
     .detail-image-controls { align-items: stretch; flex-direction: column; }
+    .welfare-qr-layout { grid-template-columns: 1fr; }
+    .welfare-qr-preview { width: min(220px, 100%); }
+    .welfare-guide-layout { grid-template-columns: 1fr; }
+    .welfare-guide-preview { width: min(220px, 100%); }
+    .share-link-row { align-items: stretch; flex-direction: column; }
   }
 </style>
 {% endblock %}
@@ -354,6 +371,11 @@
         <tbody id="userTableBody"><tr><td colspan="5" class="table-empty">加载中…</td></tr></tbody>
       </table>
     </div>
+    <div class="pagination" id="userPagination" style="display:none;">
+      <button class="page-btn" id="userPrevPage" onclick="caipuUserPrev()">上一页</button>
+      <span id="userPageInfo" style="font-size:13px;color:var(--muted-fg);">第 1 页</span>
+      <button class="page-btn" id="userNextPage" onclick="caipuUserNext()">下一页</button>
+    </div>
   </div>
 </section>
 
@@ -442,6 +464,59 @@
     <div class="card settings-card">
       <div class="settings-card-head">
         <div>
+          <h3>新人优惠券</h3>
+          <p>用户完成头像和昵称绑定后自动发放一次，可用于商城下单抵扣。</p>
+        </div>
+        <span class="status-badge status-gray" id="newcomerCouponBadge">未启用</span>
+      </div>
+      <div class="form-group">
+        <label class="switch-row"><input id="newcomerCouponEnabled" type="checkbox"> 启用新人券</label>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>优惠券名称</label>
+          <input class="form-input" id="newcomerCouponName" type="text" maxlength="100" placeholder="新人专享券">
+        </div>
+        <div class="form-group">
+          <label>优惠金额（元）</label>
+          <input class="form-input" id="newcomerCouponValue" type="number" min="0.01" step="0.01" placeholder="20">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>使用门槛（元）</label>
+          <input class="form-input" id="newcomerCouponMin" type="number" min="0" step="0.01" placeholder="99">
+          <div class="form-hint">填写 0 表示无门槛。</div>
+        </div>
+        <div class="form-group">
+          <label>领取后有效天数</label>
+          <input class="form-input" id="newcomerCouponDays" type="number" min="1" max="365" step="1" placeholder="30">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>发放总量</label>
+          <input class="form-input" id="newcomerCouponQuantity" type="number" min="0" step="1" placeholder="0">
+          <div class="form-hint">0 表示不限量。</div>
+        </div>
+        <div class="form-group">
+          <label>使用说明</label>
+          <input class="form-input" id="newcomerCouponDesc" type="text" maxlength="500" placeholder="仅限商城商品使用">
+        </div>
+      </div>
+      <div class="settings-actions">
+        <button class="btn btn-primary" id="newcomerCouponSaveBtn" onclick="caipuSaveNewcomerCoupon()">保存新人券配置</button>
+        <span class="save-status" id="newcomerCouponStatus"></span>
+      </div>
+      <div class="config-checks">
+        <div class="config-check"><span>已发放</span><strong id="newcomerCouponIssued">0</strong></div>
+        <div class="config-check"><span>已使用</span><strong id="newcomerCouponUsed">0</strong></div>
+      </div>
+    </div>
+
+    <div class="card settings-card">
+      <div class="settings-card-head">
+        <div>
           <h3>首页 Banner</h3>
           <p>上传图片后小程序首页顶部自动展示；未上传时使用默认文字 Banner。</p>
         </div>
@@ -457,6 +532,72 @@
           <span class="save-status" id="homeBannerStatus"></span>
         </div>
         <div class="form-hint">建议尺寸 750 × 360 px，支持 jpg、png、webp，不超过 5MB。上传即保存，小程序首页同步生效。</div>
+      </div>
+    </div>
+
+    <div class="card settings-card">
+      <div class="settings-card-head">
+        <div>
+          <h3>福利引导海报</h3>
+          <p>用于首页“立即领取”进入的独立引导页，点击海报后进入企业微信二维码页。</p>
+        </div>
+        <span class="status-badge status-gray" id="welfareGuideBadge">未设置</span>
+      </div>
+      <div class="welfare-guide-layout">
+        <div class="welfare-guide-preview" id="welfareGuidePreview"><span>暂无海报</span></div>
+        <div>
+          <input type="file" id="welfareGuideFile" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="caipuUploadWelfareGuide(this)">
+          <div class="welfare-guide-actions">
+            <button class="btn btn-sm btn-outline" type="button" onclick="document.getElementById('welfareGuideFile').click()">上传海报</button>
+            <button class="btn btn-sm btn-outline" type="button" id="welfareGuideRemoveBtn" onclick="caipuRemoveWelfareGuide()">移除</button>
+            <span class="save-status" id="welfareGuideStatus"></span>
+          </div>
+          <div class="form-hint">设计尺寸 750 × 1487 px，支持 jpg、png、webp，不超过 5MB。上传后自动压缩并同步到小程序。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card settings-card">
+      <div class="settings-card-head">
+        <div>
+          <h3>小程序专属链接</h3>
+          <p>生成微信官方永久链接，用户打开后直接进入福利引导页。</p>
+        </div>
+        <span class="status-badge status-gray" id="welfareGuideUrlLinkBadge">未生成</span>
+      </div>
+      <div class="form-group">
+        <label>福利引导页链接</label>
+        <div class="share-link-row">
+          <input class="form-input" id="welfareGuideUrlLink" type="text" readonly placeholder="点击下方按钮生成">
+          <button class="btn btn-sm btn-outline" type="button" id="welfareGuideUrlCopyBtn" onclick="caipuCopyWelfareGuideUrlLink()">复制链接</button>
+        </div>
+        <div class="settings-actions" style="margin-top:10px;">
+          <button class="btn btn-primary" type="button" id="welfareGuideUrlGenerateBtn" onclick="caipuGenerateWelfareGuideUrlLink()">生成专属链接</button>
+          <span class="save-status" id="welfareGuideUrlLinkStatus"></span>
+        </div>
+        <div class="form-hint">链接永久有效，小程序改名不会失效。需先发布包含福利引导页的小程序正式版。</div>
+      </div>
+    </div>
+
+    <div class="card settings-card">
+      <div class="settings-card-head">
+        <div>
+          <h3>企业微信二维码</h3>
+          <p>上传后直接展示在小程序福利通道，用户可长按识别添加。</p>
+        </div>
+        <span class="status-badge status-gray" id="welfareQrBadge">未设置</span>
+      </div>
+      <div class="welfare-qr-layout">
+        <div class="welfare-qr-preview" id="welfareQrPreview"><span>暂无二维码</span></div>
+        <div>
+          <input type="file" id="welfareQrFile" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="caipuUploadWelfareQr(this)">
+          <div class="welfare-qr-actions">
+            <button class="btn btn-sm btn-outline" type="button" onclick="document.getElementById('welfareQrFile').click()">上传二维码</button>
+            <button class="btn btn-sm btn-outline" type="button" id="welfareQrRemoveBtn" onclick="caipuRemoveWelfareQr()">移除</button>
+            <span class="save-status" id="welfareQrStatus"></span>
+          </div>
+          <div class="form-hint">请上传企业微信官方活码，建议正方形、清晰无遮挡，支持 jpg、png、webp，不超过 5MB。上传即保存，小程序福利通道同步生效。</div>
+        </div>
       </div>
     </div>
   </div>
@@ -556,5 +697,5 @@
     </div>
   </div>
 </div>
-<script src="/static/js/tenant_caipu.js?v=9"></script>
+<script src="/static/js/tenant_caipu.js?v=16"></script>
 {% endblock %}

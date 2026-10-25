@@ -2,6 +2,7 @@
   'use strict';
 
   var PAGE_SIZE = 15;
+  var USER_PAGE_SIZE = 10;
   var productPage = 1;
   var userPage = 1;
   var orderPage = 1;
@@ -13,6 +14,9 @@
   var orderSearchTimer = null;
   var orderMap = {};
   var homeBannerImage = '';
+  var welfareGuideImage = '';
+  var welfareGuideUrlLink = '';
+  var welfareQrImage = '';
 
   function token() {
     return localStorage.getItem('tenant_token') || '';
@@ -39,6 +43,12 @@
   function money(value) {
     var n = Number(value || 0);
     return n.toFixed(2);
+  }
+
+  function formatImageSize(bytes) {
+    var value = Number(bytes || 0);
+    if (!value) return '';
+    return Math.max(1, Math.round(value / 1024)) + 'KB';
   }
 
   async function api(path, options) {
@@ -141,8 +151,24 @@
   }
 
   function orderTime(value) {
+    return formatBeijingTime(value);
+  }
+
+  function formatBeijingTime(value) {
     if (!value) return '—';
-    return String(value).replace('T', ' ').slice(0, 16);
+    var text = String(value).trim();
+    if (!/(?:Z|[+-]\d{2}:?\d{2})$/i.test(text)) text += 'Z';
+    var date = new Date(text);
+    if (isNaN(date.getTime())) return text.replace('T', ' ').slice(0, 16);
+    var beijing = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+    function pad(number) {
+      return number < 10 ? '0' + number : String(number);
+    }
+    return beijing.getUTCFullYear() + '-' +
+      pad(beijing.getUTCMonth() + 1) + '-' +
+      pad(beijing.getUTCDate()) + ' ' +
+      pad(beijing.getUTCHours()) + ':' +
+      pad(beijing.getUTCMinutes());
   }
 
   function orderActionButtons(item) {
@@ -283,7 +309,9 @@
         '<div class="order-detail-block"><h4>收货信息</h4><p>' + escHtml(item.receiver_name || '—') + ' ' + escHtml(item.receiver_phone || '') + '<br>' + escHtml((item.receiver_region || '') + (item.receiver_detail || '')) + '</p></div>' +
       '</div>' +
       '<div class="order-detail-items">' + (lines || '<div class="order-detail-item">商品信息缺失</div>') + '</div>' +
-      '<div class="order-detail-total"><span>商品金额 ¥' + money(item.total_amount) + '</span><span>运费 ¥' + money(item.shipping_fee) + '</span><strong>实付 ¥' + money(item.final_amount) + '</strong></div>';
+      '<div class="order-detail-total"><span>商品金额 ¥' + money(item.total_amount) + '</span><span>运费 ¥' + money(item.shipping_fee) + '</span>' +
+        (Number(item.coupon_discount || 0) > 0 ? '<span>优惠券 -¥' + money(item.coupon_discount) + '</span>' : '') +
+        '<strong>实付 ¥' + money(item.final_amount) + '</strong></div>';
     document.getElementById('orderDetailModal').style.display = 'flex';
   }
 
@@ -409,6 +437,7 @@
     var files = Array.prototype.slice.call((fileInput && fileInput.files) || []);
     if (!files.length) return;
     var uploaded = 0;
+    var optimizedBytes = 0;
     setImageStatus('上传中…', 'normal');
     for (var i = 0; i < files.length; i += 1) {
       var file = files[i];
@@ -430,13 +459,21 @@
         });
         var data = await response.json().catch(function () { return {}; });
         if (!response.ok) throw new Error(data.detail || '上传失败');
-        if (addProductImage(data.url || data.image_url || '')) uploaded += 1;
+        if (addProductImage(data.url || data.image_url || '')) {
+          uploaded += 1;
+          optimizedBytes += Number(data.optimized_bytes || 0);
+        }
       } catch (e) {
         setImageStatus(e.message, 'error');
       }
     }
     fileInput.value = '';
-    if (uploaded) setImageStatus('上传成功 ' + uploaded + ' 张，保存后小程序生效', 'success');
+    if (uploaded) {
+      setImageStatus(
+        '上传成功 ' + uploaded + ' 张，共 ' + formatImageSize(optimizedBytes) + '，保存后小程序生效',
+        'success'
+      );
+    }
   }
 
   function detailTextBlock(text) {
@@ -577,7 +614,10 @@
       var data = await response.json().catch(function () { return {}; });
       if (!response.ok) throw new Error(data.detail || '上传失败');
       detailBlocks[index] = detailImageBlock(data.url || data.image_url || '');
-      renderDetailEditor('图片上传成功，保存后小程序生效', 'success');
+      renderDetailEditor(
+        '图片上传成功（' + formatImageSize(data.optimized_bytes) + '），保存后小程序生效',
+        'success'
+      );
     } catch (e) {
       renderDetailEditor(e.message, 'error');
     } finally {
@@ -703,7 +743,10 @@
       if (!response.ok) throw new Error(data.detail || '上传失败');
       option.image = data.url || data.image_url || '';
       renderSpecEditor();
-      setSpecStatus('图片上传成功，保存后小程序生效', 'success');
+      setSpecStatus(
+        '图片上传成功（' + formatImageSize(data.optimized_bytes) + '），保存后小程序生效',
+        'success'
+      );
     } catch (e) {
       setSpecStatus(e.message, 'error');
     } finally {
@@ -860,28 +903,37 @@
       var search = document.getElementById('userSearch');
       var params = new URLSearchParams({
         page: String(userPage),
-        page_size: '15',
+        page_size: String(USER_PAGE_SIZE),
       });
       if (search && search.value.trim()) params.set('search', search.value.trim());
       var data = await api('/api/tenant/miniapp-users?' + params.toString());
       var items = data.items || [];
-      setText('userSummaryCount', data.total || 0);
+      var total = data.total || 0;
+      var totalPages = Math.max(1, Math.ceil(total / USER_PAGE_SIZE));
+      if (userPage > totalPages) userPage = totalPages;
+      setText('userSummaryCount', total);
       if (!items.length) {
         tbody.innerHTML = '<tr><td colspan="5" class="table-empty">暂无小程序用户</td></tr>';
-        return;
+      } else {
+        tbody.innerHTML = items.map(function (u) {
+          var avatar = u.avatar_url
+            ? '<img class="user-avatar" src="' + escHtml(u.avatar_url) + '" alt="">'
+            : '<span class="user-avatar user-avatar-empty">' + escHtml((u.nickname || '用').slice(0, 1)) + '</span>';
+          return '<tr>' +
+            '<td><div class="user-cell">' + avatar + '<span>' + escHtml(u.nickname || '微信用户') + '</span></div></td>' +
+            '<td class="mono-cell">' + escHtml(u.openid || '—') + '</td>' +
+            '<td>' + escHtml(u.phone || '—') + '</td>' +
+            '<td>' + escHtml(formatBeijingTime(u.created_at)) + '</td>' +
+            '<td>' + escHtml(u.address || '—') + '</td>' +
+          '</tr>';
+        }).join('');
       }
-      tbody.innerHTML = items.map(function (u) {
-        var avatar = u.avatar_url
-          ? '<img class="user-avatar" src="' + escHtml(u.avatar_url) + '" alt="">'
-          : '<span class="user-avatar user-avatar-empty">' + escHtml((u.nickname || '用').slice(0, 1)) + '</span>';
-        return '<tr>' +
-          '<td><div class="user-cell">' + avatar + '<span>' + escHtml(u.nickname || '微信用户') + '</span></div></td>' +
-          '<td class="mono-cell">' + escHtml(u.openid || '—') + '</td>' +
-          '<td>' + escHtml(u.phone || '—') + '</td>' +
-          '<td>' + escHtml((u.created_at || '').replace('T', ' ').slice(0, 16) || '—') + '</td>' +
-          '<td>' + escHtml(u.address || '—') + '</td>' +
-        '</tr>';
-      }).join('');
+
+      var pagination = document.getElementById('userPagination');
+      pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+      setText('userPageInfo', '第 ' + userPage + ' 页 / 共 ' + totalPages + ' 页');
+      document.getElementById('userPrevPage').disabled = userPage <= 1;
+      document.getElementById('userNextPage').disabled = userPage >= totalPages;
     } catch (e) {
       tbody.innerHTML = '<tr><td colspan="5" class="table-empty">加载失败：' + escHtml(e.message) + '</td></tr>';
     }
@@ -899,6 +951,12 @@
       setConfigBadge('miniConfigBadge', !!data.app_id, !!data.app_secret, '已配置', '待完善');
       homeBannerImage = data.home_banner_image || '';
       renderHomeBanner();
+      welfareGuideImage = data.welfare_guide_image || '';
+      renderWelfareGuide();
+      welfareGuideUrlLink = data.welfare_guide_url_link || '';
+      renderWelfareGuideUrlLink();
+      welfareQrImage = data.welfare_qr_image || '';
+      renderWelfareQr();
     } catch (e) {
       setText('miniConfigStatus', '配置加载失败：' + e.message);
       setConfigBadge('miniConfigBadge', false, false, '已配置', '读取失败');
@@ -942,6 +1000,7 @@
   function loadSettings() {
     loadMiniConfig();
     loadWxpayConfig();
+    loadNewcomerCoupon();
   }
 
   async function saveMiniConfig() {
@@ -974,6 +1033,75 @@
     } finally {
       button.disabled = false;
       button.textContent = '保存配置';
+    }
+  }
+
+  // ── 新人优惠券 ──
+  async function loadNewcomerCoupon() {
+    try {
+      var data = await api('/api/tenant/mall-coupon-template');
+      var config = data.config || {};
+      document.getElementById('newcomerCouponEnabled').checked = !!config.enabled;
+      document.getElementById('newcomerCouponName').value = config.name || '新人专享券';
+      document.getElementById('newcomerCouponValue').value = config.discount_value || 20;
+      document.getElementById('newcomerCouponMin').value = config.min_amount || 0;
+      document.getElementById('newcomerCouponDays').value = config.valid_days || 30;
+      document.getElementById('newcomerCouponQuantity').value = config.total_quantity || 0;
+      document.getElementById('newcomerCouponDesc').value = config.description || '';
+      var stats = data.stats || {};
+      setText('newcomerCouponIssued', String(stats.issued || 0));
+      setText('newcomerCouponUsed', String(stats.used || 0));
+      var badge = document.getElementById('newcomerCouponBadge');
+      if (badge) {
+        badge.className = 'status-badge ' + (config.enabled ? 'status-green' : 'status-gray');
+        badge.textContent = config.enabled ? '已启用' : '未启用';
+      }
+      setText('newcomerCouponStatus', '');
+    } catch (e) {
+      setText('newcomerCouponStatus', '加载失败：' + e.message);
+    }
+  }
+
+  async function saveNewcomerCoupon() {
+    var button = document.getElementById('newcomerCouponSaveBtn');
+    var status = document.getElementById('newcomerCouponStatus');
+    var payload = {
+      enabled: document.getElementById('newcomerCouponEnabled').checked,
+      name: document.getElementById('newcomerCouponName').value.trim(),
+      description: document.getElementById('newcomerCouponDesc').value.trim(),
+      discount_value: parseFloat(document.getElementById('newcomerCouponValue').value) || 0,
+      min_amount: parseFloat(document.getElementById('newcomerCouponMin').value) || 0,
+      valid_days: parseInt(document.getElementById('newcomerCouponDays').value, 10) || 30,
+      total_quantity: parseInt(document.getElementById('newcomerCouponQuantity').value, 10) || 0,
+    };
+    if (button) {
+      button.disabled = true;
+      button.textContent = '保存中…';
+    }
+    if (status) {
+      status.textContent = '保存中…';
+      status.style.color = 'var(--muted-fg)';
+    }
+    try {
+      await api('/api/tenant/mall-coupon-template', {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+      await loadNewcomerCoupon();
+      if (status) {
+        status.textContent = '保存成功，小程序新人券同步生效';
+        status.style.color = 'var(--success)';
+      }
+    } catch (e) {
+      if (status) {
+        status.textContent = '保存失败：' + e.message;
+        status.style.color = 'var(--destructive)';
+      }
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = '保存新人券配置';
+      }
     }
   }
 
@@ -1042,7 +1170,11 @@
       });
       var data = await response.json().catch(function () { return {}; });
       if (!response.ok) throw new Error(data.detail || '上传失败');
-      await persistHomeBanner(data.url || data.image_url || '');
+      var saved = await persistHomeBanner(data.url || data.image_url || '');
+      if (saved && status) {
+        status.textContent = '已保存（' + formatImageSize(data.optimized_bytes) + '），小程序首页同步生效';
+        status.style.color = 'var(--success)';
+      }
     } catch (e) {
       if (status) { status.textContent = '上传失败：' + e.message; status.style.color = 'var(--destructive)'; }
     } finally {
@@ -1053,6 +1185,242 @@
   function removeHomeBanner() {
     if (!homeBannerImage) return;
     persistHomeBanner('');
+  }
+
+  // ── 企业微信福利引导海报 ──
+  function renderWelfareGuide() {
+    var preview = document.getElementById('welfareGuidePreview');
+    var badge = document.getElementById('welfareGuideBadge');
+    var removeBtn = document.getElementById('welfareGuideRemoveBtn');
+    if (!preview) return;
+    if (welfareGuideImage) {
+      preview.innerHTML = '<img src="' + escHtml(welfareGuideImage) + '" alt="企业微信福利引导海报">';
+      if (badge) { badge.className = 'status-badge status-green'; badge.textContent = '已设置'; }
+      if (removeBtn) removeBtn.disabled = false;
+    } else {
+      preview.innerHTML = '<span>暂无海报</span>';
+      if (badge) { badge.className = 'status-badge status-gray'; badge.textContent = '未设置'; }
+      if (removeBtn) removeBtn.disabled = true;
+    }
+  }
+
+  async function persistWelfareGuide(url) {
+    var status = document.getElementById('welfareGuideStatus');
+    if (status) {
+      status.textContent = '保存中…';
+      status.style.color = 'var(--muted-fg)';
+    }
+    try {
+      await api('/api/tenant/miniapp-config', {
+        method: 'PUT',
+        body: JSON.stringify({ welfare_guide_image: url || '' }),
+      });
+      welfareGuideImage = url || '';
+      renderWelfareGuide();
+      if (status) {
+        status.textContent = welfareGuideImage ? '已保存，小程序福利引导页同步生效' : '已移除，小程序将展示默认引导页';
+        status.style.color = 'var(--success)';
+      }
+      return true;
+    } catch (e) {
+      if (status) {
+        status.textContent = '保存失败：' + e.message;
+        status.style.color = 'var(--destructive)';
+      }
+      return false;
+    }
+  }
+
+  async function uploadWelfareGuide(fileInput) {
+    var files = (fileInput && fileInput.files) || [];
+    if (!files.length) return;
+    var file = files[0];
+    var status = document.getElementById('welfareGuideStatus');
+    if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) < 0) {
+      if (status) { status.textContent = '仅支持 jpg、png、webp'; status.style.color = 'var(--destructive)'; }
+      fileInput.value = '';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      if (status) { status.textContent = '图片超过 5MB'; status.style.color = 'var(--destructive)'; }
+      fileInput.value = '';
+      return;
+    }
+    if (status) { status.textContent = '上传中…'; status.style.color = 'var(--muted-fg)'; }
+    var form = new FormData();
+    form.append('file', file);
+    try {
+      var response = await fetch('/api/tenant/welfare-guide/upload', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token() },
+        body: form,
+      });
+      var data = await response.json().catch(function () { return {}; });
+      if (!response.ok) throw new Error(data.detail || data.message || '上传失败');
+      var saved = await persistWelfareGuide(data.url || data.image_url || '');
+      if (saved && status) {
+        status.textContent = '已保存（' + formatImageSize(data.optimized_bytes) + '），小程序福利引导页同步生效';
+        status.style.color = 'var(--success)';
+      }
+    } catch (e) {
+      if (status) { status.textContent = '上传失败：' + e.message; status.style.color = 'var(--destructive)'; }
+    } finally {
+      fileInput.value = '';
+    }
+  }
+
+  function removeWelfareGuide() {
+    if (!welfareGuideImage) return;
+    persistWelfareGuide('');
+  }
+
+  // ── 小程序专属链接 ──
+  function renderWelfareGuideUrlLink() {
+    var input = document.getElementById('welfareGuideUrlLink');
+    var badge = document.getElementById('welfareGuideUrlLinkBadge');
+    var copyBtn = document.getElementById('welfareGuideUrlCopyBtn');
+    if (input) input.value = welfareGuideUrlLink;
+    if (badge) {
+      badge.className = 'status-badge ' + (welfareGuideUrlLink ? 'status-green' : 'status-gray');
+      badge.textContent = welfareGuideUrlLink ? '已生成' : '未生成';
+    }
+    if (copyBtn) copyBtn.disabled = !welfareGuideUrlLink;
+  }
+
+  async function generateWelfareGuideUrlLink() {
+    var button = document.getElementById('welfareGuideUrlGenerateBtn');
+    var status = document.getElementById('welfareGuideUrlLinkStatus');
+    if (button) {
+      button.disabled = true;
+      button.textContent = '生成中…';
+    }
+    if (status) {
+      status.textContent = '正在向微信申请永久链接…';
+      status.style.color = 'var(--muted-fg)';
+    }
+    try {
+      var data = await api('/api/tenant/miniapp-config/url-link', { method: 'POST' });
+      welfareGuideUrlLink = data.url_link || '';
+      renderWelfareGuideUrlLink();
+      if (status) {
+        status.textContent = welfareGuideUrlLink ? '已生成永久链接' : '微信未返回链接';
+        status.style.color = welfareGuideUrlLink ? 'var(--success)' : 'var(--destructive)';
+      }
+    } catch (e) {
+      if (status) {
+        status.textContent = '生成失败：' + e.message;
+        status.style.color = 'var(--destructive)';
+      }
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = '生成专属链接';
+      }
+    }
+  }
+
+  async function copyWelfareGuideUrlLink() {
+    var status = document.getElementById('welfareGuideUrlLinkStatus');
+    if (!welfareGuideUrlLink) return;
+    try {
+      await navigator.clipboard.writeText(welfareGuideUrlLink);
+    } catch (_) {
+      var input = document.getElementById('welfareGuideUrlLink');
+      input.focus();
+      input.select();
+      document.execCommand('copy');
+    }
+    if (status) {
+      status.textContent = '链接已复制';
+      status.style.color = 'var(--success)';
+    }
+  }
+
+  // ── 企业微信福利二维码 ──
+  function renderWelfareQr() {
+    var preview = document.getElementById('welfareQrPreview');
+    var badge = document.getElementById('welfareQrBadge');
+    var removeBtn = document.getElementById('welfareQrRemoveBtn');
+    if (!preview) return;
+    if (welfareQrImage) {
+      preview.innerHTML = '<img src="' + escHtml(welfareQrImage) + '" alt="企业微信福利二维码">';
+      if (badge) { badge.className = 'status-badge status-green'; badge.textContent = '已设置'; }
+      if (removeBtn) removeBtn.disabled = false;
+    } else {
+      preview.innerHTML = '<span>暂无二维码</span>';
+      if (badge) { badge.className = 'status-badge status-gray'; badge.textContent = '未设置'; }
+      if (removeBtn) removeBtn.disabled = true;
+    }
+  }
+
+  async function persistWelfareQr(url) {
+    var status = document.getElementById('welfareQrStatus');
+    if (status) {
+      status.textContent = '保存中…';
+      status.style.color = 'var(--muted-fg)';
+    }
+    try {
+      await api('/api/tenant/miniapp-config', {
+        method: 'PUT',
+        body: JSON.stringify({ welfare_qr_image: url || '' }),
+      });
+      welfareQrImage = url || '';
+      renderWelfareQr();
+      if (status) {
+        status.textContent = welfareQrImage ? '已保存，小程序福利通道同步生效' : '已移除，小程序福利页不再展示二维码';
+        status.style.color = 'var(--success)';
+      }
+      return true;
+    } catch (e) {
+      if (status) {
+        status.textContent = '保存失败：' + e.message;
+        status.style.color = 'var(--destructive)';
+      }
+      return false;
+    }
+  }
+
+  async function uploadWelfareQr(fileInput) {
+    var files = (fileInput && fileInput.files) || [];
+    if (!files.length) return;
+    var file = files[0];
+    var status = document.getElementById('welfareQrStatus');
+    if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) < 0) {
+      if (status) { status.textContent = '仅支持 jpg、png、webp'; status.style.color = 'var(--destructive)'; }
+      fileInput.value = '';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      if (status) { status.textContent = '图片超过 5MB'; status.style.color = 'var(--destructive)'; }
+      fileInput.value = '';
+      return;
+    }
+    if (status) { status.textContent = '上传中…'; status.style.color = 'var(--muted-fg)'; }
+    var form = new FormData();
+    form.append('file', file);
+    try {
+      var response = await fetch('/api/tenant/welfare-qr/upload', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token() },
+        body: form,
+      });
+      var data = await response.json().catch(function () { return {}; });
+      if (!response.ok) throw new Error(data.detail || data.message || '上传失败');
+      var saved = await persistWelfareQr(data.url || data.image_url || '');
+      if (saved && status) {
+        status.textContent = '已保存（' + formatImageSize(data.optimized_bytes) + '），小程序福利通道同步生效';
+        status.style.color = 'var(--success)';
+      }
+    } catch (e) {
+      if (status) { status.textContent = '上传失败：' + e.message; status.style.color = 'var(--destructive)'; }
+    } finally {
+      fileInput.value = '';
+    }
+  }
+
+  function removeWelfareQr() {
+    if (!welfareQrImage) return;
+    persistWelfareQr('');
   }
 
   async function saveWxpayConfig() {
@@ -1230,6 +1598,16 @@
     userPage = 1;
     loadUsers();
   };
+  window.caipuUserPrev = function () {
+    if (userPage > 1) {
+      userPage -= 1;
+      loadUsers();
+    }
+  };
+  window.caipuUserNext = function () {
+    userPage += 1;
+    loadUsers();
+  };
   window.caipuOrderStatus = setOrderStatus;
   window.caipuOrderPrev = function () {
     if (orderPage > 1) {
@@ -1247,8 +1625,15 @@
   window.caipuRefreshOrders = loadOrders;
   window.caipuSaveMiniConfig = saveMiniConfig;
   window.caipuSaveWxpayConfig = saveWxpayConfig;
+  window.caipuSaveNewcomerCoupon = saveNewcomerCoupon;
   window.caipuUploadHomeBanner = uploadHomeBanner;
   window.caipuRemoveHomeBanner = removeHomeBanner;
+  window.caipuUploadWelfareGuide = uploadWelfareGuide;
+  window.caipuRemoveWelfareGuide = removeWelfareGuide;
+  window.caipuGenerateWelfareGuideUrlLink = generateWelfareGuideUrlLink;
+  window.caipuCopyWelfareGuideUrlLink = copyWelfareGuideUrlLink;
+  window.caipuUploadWelfareQr = uploadWelfareQr;
+  window.caipuRemoveWelfareQr = removeWelfareQr;
   window.caipuAddSpecGroup = caipuAddSpecGroup;
   window.caipuRemoveSpecGroup = caipuRemoveSpecGroup;
   window.caipuAddSpecOption = caipuAddSpecOption;

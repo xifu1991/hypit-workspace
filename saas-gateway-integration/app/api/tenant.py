@@ -26,15 +26,19 @@ from app.models.all import (
     TenantUserProfile,
     Product,
     MallOrder,
+    MallCouponTemplate,
+    MallUserCoupon,
     CarWashStore,
     CarWashOrder,
     CarWashCouponTemplate,
 )
 from app.services import oss_service
+from app.services.image_optimizer import optimize_upload_image
 from app.services.product_specs import normalize_specs
 from app.services.wechat_miniapp import (
     WechatMiniProgramError,
     generate_miniapp_code,
+    generate_miniapp_url_link,
 )
 
 router = APIRouter(prefix="/api/tenant", tags=["tenant"])
@@ -169,6 +173,27 @@ def _sanitize_filename(name: str) -> str:
     # 去掉首尾下划线和点
     name = name.strip("_.")
     return name or "image"
+
+
+async def _optimize_upload_or_400(
+    content: bytes,
+    *,
+    profile: str,
+    max_dimension: int,
+):
+    """Run the CPU-heavy image optimizer off the event loop with a clean 400."""
+    try:
+        return await asyncio.to_thread(
+            optimize_upload_image,
+            content,
+            profile=profile,
+            max_dimension=max_dimension,
+        )
+    except (ValueError, OSError) as exc:
+        raise HTTPException(
+            status_code=400,
+            detail="图片无法压缩至 30KB 以内，请换一张内容更简单的图片",
+        ) from exc
 
 
 # ── 登录 ──
@@ -1330,16 +1355,121 @@ async def upload_product_image(
     img_type = _detect_image_type(content, file.filename)
     if img_type not in ("jpeg", "png", "gif", "webp", "bmp"):
         raise HTTPException(status_code=400, detail="仅支持 jpg / png / gif / webp 图片")
-    ext = "jpg" if img_type == "jpeg" else img_type
+    optimized = await _optimize_upload_or_400(
+        content,
+        profile="photo",
+        max_dimension=1600,
+    )
+    ext = optimized.extension
 
     oss_path = f"tenants/{tenant_id_str}/products/{uuid_lib.uuid4().hex}.{ext}"
     try:
-        url = oss_service.upload_file(content, oss_path, content_type=f"image/{img_type}")
+        url = oss_service.upload_file(
+            optimized.data,
+            oss_path,
+            content_type=optimized.mime_type,
+        )
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"图片上传失败: {str(e)[:200]}")
 
     public_url = _public_image_url(url)
-    return {"success": True, "url": public_url, "image_url": public_url}
+    return {
+        "success": True,
+        "url": public_url,
+        "image_url": public_url,
+        "original_bytes": optimized.original_bytes,
+        "optimized_bytes": optimized.optimized_bytes,
+    }
+
+
+@router.post("/welfare-qr/upload")
+async def upload_welfare_qr(
+    file: UploadFile = File(...),
+    request: Request = None,
+):
+    """商户端：上传企业微信福利二维码到 OSS。"""
+    tenant_id_str = _extract_tenant_id(request)
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="文件内容为空")
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="二维码图片不能超过 5MB")
+
+    img_type = _detect_image_type(content, file.filename)
+    if img_type not in ("jpeg", "png", "webp"):
+        raise HTTPException(status_code=400, detail="二维码仅支持 jpg / png / webp 图片")
+    optimized = await _optimize_upload_or_400(
+        content,
+        profile="qr",
+        max_dimension=900,
+    )
+    ext = optimized.extension
+
+    oss_path = f"tenants/{tenant_id_str}/welfare/qrcode-{uuid_lib.uuid4().hex}.{ext}"
+    try:
+        url = oss_service.upload_file(
+            optimized.data,
+            oss_path,
+            content_type=optimized.mime_type,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"二维码上传失败: {str(e)[:200]}")
+
+    public_url = _public_image_url(url)
+    return {
+        "success": True,
+        "url": public_url,
+        "image_url": public_url,
+        "original_bytes": optimized.original_bytes,
+        "optimized_bytes": optimized.optimized_bytes,
+    }
+
+
+@router.post("/welfare-guide/upload")
+async def upload_welfare_guide(
+    file: UploadFile = File(...),
+    request: Request = None,
+):
+    """商户端：上传福利引导页海报到 OSS。"""
+    tenant_id_str = _extract_tenant_id(request)
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="文件内容为空")
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="引导海报不能超过 5MB")
+
+    img_type = _detect_image_type(content, file.filename)
+    if img_type not in ("jpeg", "png", "webp"):
+        raise HTTPException(status_code=400, detail="引导海报仅支持 jpg / png / webp 图片")
+    optimized = await _optimize_upload_or_400(
+        content,
+        profile="photo",
+        max_dimension=1600,
+    )
+    ext = optimized.extension
+
+    oss_path = f"tenants/{tenant_id_str}/welfare/guide-{uuid_lib.uuid4().hex}.{ext}"
+    try:
+        url = oss_service.upload_file(
+            optimized.data,
+            oss_path,
+            content_type=optimized.mime_type,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"引导海报上传失败: {str(e)[:200]}")
+
+    public_url = _public_image_url(url)
+    return {
+        "success": True,
+        "url": public_url,
+        "image_url": public_url,
+        "original_bytes": optimized.original_bytes,
+        "optimized_bytes": optimized.optimized_bytes,
+        "width": optimized.width,
+        "height": optimized.height,
+    }
 
 
 @router.delete("/products/{product_id}")
@@ -1428,6 +1558,7 @@ def _mall_order_merchant_json(
         "item_count": order.item_count or sum(item["qty"] for item in items),
         "total_amount": float(order.total_amount or 0),
         "shipping_fee": float(order.shipping_fee or 0),
+        "coupon_discount": float(order.coupon_discount or 0),
         "final_amount": float(order.final_amount or 0),
         "receiver_name": order.receiver_name or "",
         "receiver_phone": order.receiver_phone or "",
@@ -1680,6 +1811,8 @@ class MiniappConfigUpdate(BaseModel):
     share_title: Optional[str] = None
     share_image: Optional[str] = None
     home_banner_image: Optional[str] = None
+    welfare_guide_image: Optional[str] = None
+    welfare_qr_image: Optional[str] = None
 
 
 @router.get("/miniapp-config")
@@ -1713,6 +1846,9 @@ async def get_miniapp_config(
         "share_title": settings.get("share_title", ""),
         "share_image": settings.get("share_image", ""),
         "home_banner_image": settings.get("home_banner_image", ""),
+        "welfare_guide_image": settings.get("welfare_guide_image", ""),
+        "welfare_guide_url_link": settings.get("welfare_guide_url_link", ""),
+        "welfare_qr_image": settings.get("welfare_qr_image", ""),
     }
 
 
@@ -1778,6 +1914,65 @@ async def upsert_miniapp_config(
 
     await db.commit()
     return {"success": True, "message": "配置已更新"}
+
+
+@router.post("/miniapp-config/url-link")
+async def create_miniapp_url_link(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """生成福利引导页的微信官方永久 URL Link。"""
+    from app.models.all import TenantMiniappConfig
+    from uuid import UUID
+
+    tenant_id_str = _extract_tenant_id(request)
+    try:
+        tid = UUID(tenant_id_str)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=401, detail="商户登录信息无效")
+
+    config_result = await db.execute(
+        select(TenantMiniappConfig).where(TenantMiniappConfig.tenant_id == tid)
+    )
+    miniapp_config = config_result.scalar_one_or_none()
+    if (
+        not miniapp_config
+        or not miniapp_config.miniapp_appid
+        or not miniapp_config.miniapp_appsecret
+    ):
+        raise HTTPException(status_code=400, detail="请先配置小程序 AppID 和 AppSecret")
+
+    try:
+        url_link = await generate_miniapp_url_link(
+            miniapp_config.miniapp_appid,
+            miniapp_config.miniapp_appsecret,
+            page="/pages/welfare-guide/index",
+        )
+    except WechatMiniProgramError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"生成小程序专属链接失败: {str(exc)[:200]}",
+        )
+
+    tenant_result = await db.execute(select(Tenant).where(Tenant.id == tid))
+    tenant = tenant_result.scalar_one_or_none()
+    if not tenant:
+        raise HTTPException(status_code=404, detail="商户不存在")
+
+    settings = json.loads(tenant.settings) if isinstance(tenant.settings, str) else (tenant.settings or {})
+    settings["welfare_guide_url_link"] = url_link
+    tenant.settings = json.dumps(settings, ensure_ascii=False)
+    db.add(tenant)
+    await db.commit()
+
+    return {
+        "success": True,
+        "url_link": url_link,
+        "path": "/pages/welfare-guide/index",
+        "expires": "never",
+    }
 
 
 # ── 微信支付配置（直接操作 TenantMiniappConfig 表）──
@@ -2613,6 +2808,122 @@ async def tenant_landing_rotator_log(
         }
     except Exception as e:
         return {"success": False, "message": f"读取日志失败: {e}"}
+
+
+# ═══════════════════════════════════════════════
+# 菜谱商城：新人优惠券配置
+# ═══════════════════════════════════════════════
+
+
+class MallNewcomerCouponConfig(BaseModel):
+    enabled: bool = True
+    name: str = "新人专享券"
+    description: str = "完成头像和昵称绑定后自动发放"
+    discount_value: float = 20.0
+    min_amount: float = 99.0
+    valid_days: int = 30
+    total_quantity: int = 0
+
+
+def _mall_coupon_config_json(template: MallCouponTemplate | None) -> dict:
+    return {
+        "configured": bool(template),
+        "enabled": bool(template.is_active) if template else False,
+        "name": template.name if template else "新人专享券",
+        "description": (template.description or "") if template else "完成头像和昵称绑定后自动发放",
+        "discount_type": "fixed",
+        "discount_value": float(template.discount_value or 0) if template else 20.0,
+        "min_amount": float(template.min_amount or 0) if template else 99.0,
+        "valid_days": int(template.valid_days or 30) if template else 30,
+        "total_quantity": int(template.total_quantity or 0) if template else 0,
+    }
+
+
+@router.get("/mall-coupon-template")
+async def get_mall_coupon_template(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    tid = uuid_lib.UUID(_extract_tenant_id(request))
+    template = (await db.execute(
+        select(MallCouponTemplate).where(
+            MallCouponTemplate.tenant_id == tid,
+            MallCouponTemplate.campaign_key == "newcomer",
+        )
+    )).scalar_one_or_none()
+
+    stats = {"issued": 0, "unused": 0, "used": 0, "expired": 0}
+    if template:
+        rows = (await db.execute(
+            select(MallUserCoupon.status, func.count(MallUserCoupon.id))
+            .where(MallUserCoupon.template_id == template.id)
+            .group_by(MallUserCoupon.status)
+        )).all()
+        status_counts = {status: int(count or 0) for status, count in rows}
+        stats = {
+            "issued": sum(status_counts.values()),
+            "unused": status_counts.get("unused", 0),
+            "used": status_counts.get("used", 0),
+            "expired": status_counts.get("expired", 0),
+        }
+
+    return {
+        "config": _mall_coupon_config_json(template),
+        "stats": stats,
+    }
+
+
+@router.put("/mall-coupon-template")
+async def save_mall_coupon_template(
+    data: MallNewcomerCouponConfig,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    tid = uuid_lib.UUID(_extract_tenant_id(request))
+    discount_value = round(float(data.discount_value or 0), 2)
+    min_amount = round(float(data.min_amount or 0), 2)
+    if discount_value <= 0:
+        raise HTTPException(status_code=400, detail="优惠金额必须大于 0")
+    if min_amount < 0:
+        raise HTTPException(status_code=400, detail="使用门槛不能小于 0")
+    if min_amount and discount_value >= min_amount:
+        raise HTTPException(status_code=400, detail="优惠金额必须小于使用门槛")
+    if data.valid_days < 1 or data.valid_days > 365:
+        raise HTTPException(status_code=400, detail="有效天数需在 1 至 365 天之间")
+    if data.total_quantity < 0:
+        raise HTTPException(status_code=400, detail="发放总量不能小于 0")
+
+    template = (await db.execute(
+        select(MallCouponTemplate).where(
+            MallCouponTemplate.tenant_id == tid,
+            MallCouponTemplate.campaign_key == "newcomer",
+        )
+    )).scalar_one_or_none()
+    if not template:
+        template = MallCouponTemplate(
+            id=uuid_lib.uuid4(),
+            tenant_id=tid,
+            campaign_key="newcomer",
+        )
+        db.add(template)
+
+    template.name = data.name.strip() or "新人专享券"
+    template.description = data.description.strip()
+    template.discount_type = "fixed"
+    template.discount_value = discount_value
+    template.min_amount = min_amount
+    template.valid_days = int(data.valid_days)
+    template.total_quantity = int(data.total_quantity)
+    template.is_active = bool(data.enabled)
+    template.updated_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(template)
+
+    return {
+        "success": True,
+        "message": "新人券配置已保存",
+        "config": _mall_coupon_config_json(template),
+    }
 
 
 # ═══════════════════════════════════════════════
