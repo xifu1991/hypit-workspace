@@ -112,23 +112,26 @@ __pycache__/
 .venv/
 ```
 
-## 第二台电脑：获取代码
+## 第二台电脑：首次获取代码
 
 ```powershell
-New-Item -ItemType Directory -Force -Path 'C:\HYPIT'
-Set-Location 'C:\HYPIT'
+Set-Location "$HOME\Documents"
 
-git clone 'git@github.com:YOUR_NAME/hypit-workbench.git' 'hypit-workbench'
-Set-Location 'C:\HYPIT\hypit-workbench'
-git remote add upstream 'https://github.com/hypit-ai/hypit.git'
+git clone 'https://github.com/xifu1991/hypit-workspace.git' '视频制作'
+Set-Location '视频制作'
+git clone -b workbench/main 'https://github.com/xifu1991/hypit-workbench.git' 'hypit-local-demo'
 ```
 
-第二台电脑获取工作区：
+这里必须保持 `视频制作\hypit-local-demo` 的嵌套结构，现有启动脚本、同步脚本和相对路径都依赖它。如果第二台电脑已经有工作区，只需要进入原目录执行 `git pull --rebase`，代码仓也执行一次 `git pull --rebase`。
+
+首次运行前，从模板创建本机环境文件，再填写各自的密钥：
 
 ```powershell
-Set-Location 'C:\HYPIT'
-git clone 'git@github.com:YOUR_NAME/hypit-workspace.git' 'hypit-workspace'
+Set-Location 'hypit-tenant-gateway'
+Copy-Item '.env.example' '.env'
 ```
+
+真实的 `config.json`、`.env`、SSH 私钥和服务器数据库不会进入 Git，也不应通过聊天发送。需要原样迁移这些配置时，请使用密码管理器、加密压缩包或服务器密钥管理系统。
 
 ## 日常双电脑协作
 
