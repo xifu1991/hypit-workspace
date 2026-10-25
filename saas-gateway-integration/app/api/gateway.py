@@ -10,7 +10,7 @@ from urllib.parse import quote
 from uuid import UUID
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -635,6 +635,7 @@ async def create_gateway_recharge_code(
 
 @router.get("/tenant/summary")
 async def tenant_gateway_summary(
+    date: Optional[str] = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -643,10 +644,13 @@ async def tenant_gateway_summary(
         raise HTTPException(status_code=403, detail="当前账号不属于商户")
     tenant = await _tenant_row(db, tenant_id)
     gateway_tenant_id = await _tenant_gateway_id(db, tenant)
-    return await _gateway_call(
+    dashboard = await _gateway_call(
         "GET",
-        f"/saas/v1/tenants/{gateway_tenant_id}/dashboard",
+        f"/saas/v1/tenants/{gateway_tenant_id}/dashboard"
+        + (f"?date={quote(date, safe='')}" if date else ""),
     )
+    dashboard.pop("voices", None)
+    return dashboard
 
 
 @router.post("/tenant/redeem")

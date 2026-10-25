@@ -235,7 +235,13 @@ export function createApplication(config = loadConfig()) {
           const action = bridgeTenantMatch[2] ?? "";
 
           if (method === "GET" && action === "dashboard") {
-            sendJson(res, 200, store.tenantDashboard(tenantId));
+            sendJson(
+              res,
+              200,
+              store.tenantDashboard(tenantId, {
+                date: url.searchParams.get("date") || undefined,
+              }),
+            );
             return;
           }
 

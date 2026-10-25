@@ -172,6 +172,10 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.equal(summary.data.wallet.availableFen, 999);
   assert.equal(summary.data.summary.calls, 1);
   assert.equal(summary.data.usage.length, 1);
+  assert.equal(summary.data.dailyUsage.amountFen, 1);
+  assert.equal(summary.data.dailyUsage.apiRequests, 1);
+  assert.equal(summary.data.dailyUsage.tokens, 3);
+  assert.equal(summary.data.dailyUsage.hourly.length, 24);
 
   const asr = await fetch(`${base}/gateway/v1/asr`, {
     method: "POST",
@@ -193,6 +197,10 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.equal(afterAsr.data.wallet.availableFen, 997);
   assert.equal(afterAsr.data.wallet.reservedFen, 0);
   assert.equal(afterAsr.data.summary.calls, 3);
+  assert.equal(afterAsr.data.summary.apiRequests, 2);
+  assert.equal(afterAsr.data.dailyUsage.amountFen, 3);
+  assert.equal(afterAsr.data.dailyUsage.apiRequests, 2);
+  assert.equal(afterAsr.data.dailyUsage.tokens, 3);
   assert.deepEqual(
     afterAsr.data.summary.byService.map((item) => item.service),
     ["asr", "tos", "tts"],

@@ -30,6 +30,43 @@ function parseJson(value, fallback = null) {
   }
 }
 
+function shanghaiDate(now = new Date()) {
+  return new Date(now.getTime() + 8 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+function shanghaiDayRange(date = shanghaiDate()) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/u.exec(String(date));
+  if (!match) throw badRequest("date must use YYYY-MM-DD");
+  const start = new Date(`${date}T00:00:00+08:00`);
+  if (Number.isNaN(start.getTime()) || shanghaiDate(start) !== date) {
+    throw badRequest("date is not a valid calendar day");
+  }
+  return {
+    date,
+    start: start.toISOString(),
+    end: new Date(start.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+  };
+}
+
+function usageTokenCount(metadata) {
+  const providerUsage = metadata?.providerUsage ?? {};
+  const candidates = [
+    providerUsage.tokens,
+    providerUsage.total_tokens,
+    providerUsage.text_tokens,
+    metadata?.tokens,
+    metadata?.tokenCount,
+    metadata?.chars,
+  ];
+  for (const candidate of candidates) {
+    const value = Number(candidate);
+    if (Number.isFinite(value) && value >= 0) return Math.round(value);
+  }
+  return 0;
+}
+
 function rechargeOrderId() {
   return `GW${Date.now().toString(36).toUpperCase()}${crypto
     .randomUUID()
@@ -1056,21 +1093,26 @@ export class Store {
     });
   }
 
-  usage(tenantId, { limit = 100, service } = {}) {
+  usage(tenantId, { limit = 100, service, date } = {}) {
     const safeLimit = Math.min(500, Math.max(1, Number(limit) || 100));
-    const rows = service
-      ? this.db
-          .prepare(
-            `SELECT * FROM usage_events WHERE tenant_id = ? AND service = ?
-             ORDER BY created_at DESC LIMIT ?`,
-          )
-          .all(tenantId, service, safeLimit)
-      : this.db
-          .prepare(
-            `SELECT * FROM usage_events WHERE tenant_id = ?
-             ORDER BY created_at DESC LIMIT ?`,
-          )
-          .all(tenantId, safeLimit);
+    const conditions = ["tenant_id = ?"];
+    const parameters = [tenantId];
+    if (service) {
+      conditions.push("service = ?");
+      parameters.push(service);
+    }
+    if (date) {
+      const range = shanghaiDayRange(date);
+      conditions.push("created_at >= ? AND created_at < ?");
+      parameters.push(range.start, range.end);
+    }
+    parameters.push(safeLimit);
+    const rows = this.db
+      .prepare(
+        `SELECT * FROM usage_events WHERE ${conditions.join(" AND ")}
+         ORDER BY created_at DESC LIMIT ?`,
+      )
+      .all(...parameters);
     return rows.map((row) => ({
       id: row.id,
       taskId: row.task_id,
@@ -1086,6 +1128,58 @@ export class Store {
       metadata: parseJson(row.metadata_json, {}),
       createdAt: row.created_at,
     }));
+  }
+
+  dailyUsage(tenantId, date = shanghaiDate()) {
+    const range = shanghaiDayRange(date);
+    const rows = this.db
+      .prepare(
+        `SELECT id, task_id, amount_fen, metadata_json, created_at
+         FROM usage_events
+         WHERE tenant_id = ? AND status = 'completed'
+           AND created_at >= ? AND created_at < ?
+         ORDER BY created_at`,
+      )
+      .all(tenantId, range.start, range.end);
+    const hourlyTasks = Array.from({ length: 24 }, () => new Set());
+    const hourly = Array.from({ length: 24 }, (_, hour) => ({
+      hour,
+      amountFen: 0,
+      apiRequests: 0,
+      tokens: 0,
+    }));
+    const dayTasks = new Set();
+    let amountFen = 0;
+    let tokens = 0;
+
+    for (const row of rows) {
+      const createdAt = new Date(row.created_at);
+      if (Number.isNaN(createdAt.getTime())) continue;
+      const hour = (createdAt.getUTCHours() + 8) % 24;
+      const taskId = row.task_id || row.id;
+      const rowAmountFen = number(row.amount_fen);
+      const rowTokens = usageTokenCount(parseJson(row.metadata_json, {}));
+      hourly[hour].amountFen += rowAmountFen;
+      hourly[hour].tokens += rowTokens;
+      hourlyTasks[hour].add(taskId);
+      dayTasks.add(taskId);
+      amountFen += rowAmountFen;
+      tokens += rowTokens;
+    }
+
+    for (let hour = 0; hour < 24; hour += 1) {
+      hourly[hour].apiRequests = hourlyTasks[hour].size;
+    }
+
+    return {
+      date: range.date,
+      currency: "CNY",
+      amountFen,
+      apiRequests: dayTasks.size,
+      calls: rows.length,
+      tokens,
+      hourly,
+    };
   }
 
   usageSummary(tenantId) {
@@ -1106,12 +1200,15 @@ export class Store {
       }));
     const totals = this.db
       .prepare(
-        `SELECT COUNT(*) AS calls, COALESCE(SUM(amount_fen), 0) AS amount_fen
+        `SELECT COUNT(*) AS calls,
+                COUNT(DISTINCT COALESCE(task_id, id)) AS api_requests,
+                COALESCE(SUM(amount_fen), 0) AS amount_fen
          FROM usage_events WHERE tenant_id = ? AND status = 'completed'`,
       )
       .get(tenantId);
     return {
       calls: number(totals.calls),
+      apiRequests: number(totals.api_requests),
       spentFen: number(totals.amount_fen),
       byService,
     };
@@ -1139,11 +1236,12 @@ export class Store {
       }));
   }
 
-  tenantDashboard(tenantId) {
+  tenantDashboard(tenantId, { date } = {}) {
     const tenant = this.db
       .prepare("SELECT id, name, status, created_at FROM tenants WHERE id = ?")
       .get(tenantId);
     if (!tenant) throw notFound("Tenant not found");
+    const usageDate = date || shanghaiDate();
     return {
       tenant: {
         id: tenant.id,
@@ -1153,7 +1251,8 @@ export class Store {
       },
       wallet: this.wallet(tenantId),
       summary: this.usageSummary(tenantId),
-      usage: this.usage(tenantId, { limit: 25 }),
+      dailyUsage: this.dailyUsage(tenantId, usageDate),
+      usage: this.usage(tenantId, { limit: 25, date: usageDate }),
       ledger: this.ledger(tenantId, 25),
       voices: this.listVoices(tenantId),
       tokens: this.listApiTokens(tenantId),

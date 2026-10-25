@@ -59,8 +59,9 @@
   grid-template-columns: minmax(0, 1.55fr) minmax(280px, .75fr);
   gap: 18px;
   align-items: start;
+  min-width: 0;
 }
-.gw-stack { display: grid; gap: 18px; }
+.gw-stack { display: grid; gap: 18px; min-width: 0; }
 .gw-panel {
   min-width: 0;
   padding: 20px;
@@ -230,27 +231,6 @@
   border: 1px solid var(--border);
   border-radius: 6px;
 }
-.gw-service-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-.gw-service {
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--muted-bg);
-}
-.gw-service strong {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--fg);
-}
-.gw-service span {
-  color: var(--muted-fg);
-  font-size: 12px;
-  line-height: 1.6;
-}
 .gw-status-line {
   min-height: 18px;
   color: var(--muted-fg);
@@ -322,6 +302,152 @@
   color: var(--muted-fg);
   font-size: 12px;
 }
+.gw-usage-analytics {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid #2c3037;
+  border-radius: 10px;
+  background: #171a1f;
+  color: #f5f7fa;
+  box-shadow: 0 18px 42px rgba(16, 24, 40, .12);
+}
+.gw-analytics-head,
+.gw-chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.gw-analytics-head { margin-bottom: 18px; }
+.gw-analytics-head h2,
+.gw-chart-head h3 {
+  margin: 0;
+  color: #f8fafc;
+}
+.gw-analytics-head h2 { font-size: 18px; }
+.gw-analytics-head p,
+.gw-chart-head span {
+  margin: 4px 0 0;
+  color: #98a2b3;
+  font-size: 12px;
+}
+.gw-date-filter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+.gw-date-filter input {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid #3a404a;
+  border-radius: 7px;
+  background: #23272e;
+  color: #f8fafc;
+  color-scheme: dark;
+  font: inherit;
+}
+.gw-date-filter input:focus {
+  border-color: #f97316;
+  outline: 2px solid rgba(249, 115, 22, .2);
+}
+.gw-analytics-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.gw-analytics-metric {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #30353d;
+  border-radius: 9px;
+  background: #24282f;
+}
+.gw-analytics-label {
+  margin-bottom: 8px;
+  color: #aab2bf;
+  font-size: 12px;
+}
+.gw-analytics-value {
+  overflow: hidden;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gw-analytics-note {
+  margin-top: 6px;
+  color: #8f99a8;
+  font-size: 11px;
+}
+.gw-chart-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid #30353d;
+  border-radius: 9px;
+  background: #24282f;
+}
+.gw-chart-head { margin-bottom: 16px; }
+.gw-chart-head h3 { font-size: 14px; }
+.gw-chart-total {
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.gw-chart-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.gw-hour-chart {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(24, minmax(16px, 1fr));
+  gap: 7px;
+  min-width: 650px;
+  height: 224px;
+  padding: 8px 4px 0;
+  border-bottom: 1px solid #3a404a;
+  background-image: repeating-linear-gradient(
+    to top,
+    transparent 0,
+    transparent 54px,
+    rgba(148, 163, 184, .12) 54px,
+    rgba(148, 163, 184, .12) 55px
+  );
+}
+.gw-hour-column {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 22px;
+  gap: 4px;
+  min-width: 0;
+}
+.gw-hour-track {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+}
+.gw-hour-bar {
+  display: block;
+  width: 100%;
+  min-height: 3px;
+  border-radius: 3px 3px 1px 1px;
+  background: #f97316;
+}
+.gw-hour-bar.zero { background: #414750; }
+.gw-hour-label {
+  overflow: hidden;
+  color: #8f99a8;
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+}
 .gw-btn[href] {
   display: inline-flex;
   align-items: center;
@@ -334,10 +460,18 @@
 }
 @media (max-width: 640px) {
   .gw-metrics,
-  .gw-service-grid { grid-template-columns: 1fr; }
+  .gw-analytics-metrics { grid-template-columns: 1fr; }
   .gw-amount-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gw-page { gap: 14px; }
-  .gw-panel { padding: 16px; }
+  .gw-panel,
+  .gw-usage-analytics { padding: 16px; }
+  .gw-analytics-value { font-size: 24px; }
+  .gw-hour-chart {
+    min-width: 0;
+    gap: 2px;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+  }
+  .gw-hour-label { font-size: 8px; }
   .gw-table th:nth-child(4),
   .gw-table td:nth-child(4) { display: none; }
 }
@@ -467,15 +601,35 @@
         </div>
         <button class="gw-btn secondary small" id="gwRefreshTenant" type="button" onclick="gwReloadTenant()">刷新数据</button>
       </div>
-      <div class="gw-metrics" id="gwTenantMetrics"></div>
+      <section class="gw-usage-analytics" aria-labelledby="gwUsageTitle">
+        <div class="gw-analytics-head">
+          <div>
+            <h2 id="gwUsageTitle">消费概览</h2>
+            <p>北京时间 · 00:00—23:00</p>
+          </div>
+          <label class="gw-date-filter" for="gwUsageDate">
+            <span>日期</span>
+            <input id="gwUsageDate" type="date">
+          </label>
+        </div>
+        <div class="gw-analytics-metrics" id="gwTenantMetrics"></div>
+        <div class="gw-chart-card">
+          <div class="gw-chart-head">
+            <div>
+              <h3>消费金额 (CNY)</h3>
+              <span>按小时汇总</span>
+            </div>
+            <span class="gw-chart-total" id="gwChartTotal">¥0.00</span>
+          </div>
+          <div class="gw-chart-scroll">
+            <div class="gw-hour-chart" id="gwHourlyChart" role="img" aria-label="按小时消费金额柱状图"></div>
+          </div>
+        </div>
+      </section>
       <div class="gw-grid">
         <div class="gw-stack">
           <section class="gw-panel">
-            <div class="gw-panel-head"><h2>服务用量</h2><p>Speech · Voice · Cloud</p></div>
-            <div class="gw-service-grid" id="gwServiceSummary"></div>
-          </section>
-          <section class="gw-panel">
-            <div class="gw-panel-head"><h2>最近用量</h2></div>
+            <div class="gw-panel-head"><h2>用量明细</h2><p id="gwUsageDetailDate">当日记录</p></div>
             <div class="gw-table-wrap">
               <table class="gw-table">
                 <thead><tr><th>时间</th><th>服务</th><th>用量</th><th class="num">金额</th><th>状态</th></tr></thead>
@@ -517,14 +671,6 @@
             </div>
           </section>
           <section class="gw-panel">
-            <div class="gw-panel-head"><h2>充值码</h2></div>
-            <form class="gw-form" id="gwRedeem">
-              <div class="gw-field"><label for="gwRedeemCode">充值码</label><input id="gwRedeemCode" required placeholder="HG-XXXXX-XXXXX-XXXXX-XXXXX"></div>
-              <button class="gw-btn" type="submit">充值到余额</button>
-              <div class="gw-status-line" id="gwRedeemStatus"></div>
-            </form>
-          </section>
-          <section class="gw-panel">
             <div class="gw-panel-head"><h2>API 令牌</h2></div>
             <form class="gw-form" id="gwCreateToken">
               <div class="gw-field"><label for="gwTokenName">令牌名称</label><input id="gwTokenName" value="秒创云 Studio" required maxlength="100"></div>
@@ -535,18 +681,6 @@
               <table class="gw-table">
                 <thead><tr><th>名称</th><th>前缀</th><th>状态</th><th></th></tr></thead>
                 <tbody id="gwTokens"></tbody>
-              </table>
-            </div>
-          </section>
-          <section class="gw-panel">
-            <div class="gw-panel-head">
-              <h2>音色与配音</h2>
-              <a class="gw-btn secondary small" href="/tenant/apps/studio">打开配音工作台</a>
-            </div>
-            <div class="gw-table-wrap">
-              <table class="gw-table">
-                <thead><tr><th>名称</th><th>状态</th><th>分配时间</th></tr></thead>
-                <tbody id="gwVoices"></tbody>
               </table>
             </div>
           </section>
@@ -574,6 +708,7 @@
   const tenantRoot = document.getElementById("gwTenant");
   let adminData = null;
   let tenantData = null;
+  let tenantRequestId = 0;
   let rechargePollTimer = null;
   let rechargePollGeneration = 0;
 
@@ -653,6 +788,47 @@
       <div class="gw-metric-value">${escapeHtml(value)}</div>
       <div class="gw-metric-note">${escapeHtml(note || "")}</div>
     </div>`;
+  }
+
+  function analyticsMetric(label, value, note) {
+    return `<div class="gw-analytics-metric">
+      <div class="gw-analytics-label">${escapeHtml(label)}</div>
+      <div class="gw-analytics-value">${escapeHtml(value)}</div>
+      <div class="gw-analytics-note">${escapeHtml(note || "")}</div>
+    </div>`;
+  }
+
+  function localDateValue(date = new Date()) {
+    const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+    return local.toISOString().slice(0, 10);
+  }
+
+  function renderHourlyChart(hourly) {
+    const rows = Array.isArray(hourly) ? hourly : [];
+    const maxAmount = Math.max(1, ...rows.map((item) => Number(item.amountFen || 0)));
+    const labelHours = new Set([0, 8, 15, 23]);
+    return Array.from({ length: 24 }, (_, hour) => {
+      const item = rows.find((entry) => Number(entry.hour) === hour) || {
+        hour,
+        amountFen: 0,
+        apiRequests: 0,
+        tokens: 0,
+      };
+      const amountFen = Number(item.amountFen || 0);
+      const percent = amountFen > 0
+        ? Math.max(4, Math.round((amountFen / maxAmount) * 100))
+        : 0;
+      const label = labelHours.has(hour)
+        ? String(hour).padStart(2, "0") + ":00"
+        : "";
+      const title = `${String(hour).padStart(2, "0")}:00 消费 ${money(amountFen)} · API ${Number(item.apiRequests || 0).toLocaleString("zh-CN")} 次 · Tokens ${Number(item.tokens || 0).toLocaleString("zh-CN")}`;
+      return `<div class="gw-hour-column" title="${escapeHtml(title)}">
+        <div class="gw-hour-track">
+          <span class="gw-hour-bar${amountFen > 0 ? "" : " zero"}" style="height:${percent}%"></span>
+        </div>
+        <span class="gw-hour-label">${label}</span>
+      </div>`;
+    }).join("");
   }
 
   async function reloadAdmin() {
@@ -767,40 +943,51 @@
     adminRoot.hidden = false;
   }
 
-  async function reloadTenant() {
-    tenantData = await api("/tenant/summary");
+  async function reloadTenant(date) {
+    const requestId = ++tenantRequestId;
+    const query = date ? "?date=" + encodeURIComponent(date) : "";
+    const data = await api("/tenant/summary" + query);
+    if (requestId !== tenantRequestId) return;
+    tenantData = data;
     renderTenant();
   }
 
   function renderTenant() {
     const data = tenantData;
     const tenantStatus = data.tenant?.status === "suspended" ? "已停用" : "正常";
+    const dailyUsage = data.dailyUsage || {
+      date: localDateValue(),
+      amountFen: 0,
+      apiRequests: 0,
+      tokens: 0,
+      hourly: [],
+    };
+    const usageDate = dailyUsage.date || localDateValue();
     document.getElementById("gwTenantName").textContent = data.tenant?.name || "当前网关账户";
     document.getElementById("gwTenantSyncMeta").textContent =
       "数据已同步 · 账户状态：" + tenantStatus +
+      " · 可用余额 " + money(data.wallet?.availableFen) +
+      " · 账户余额 " + money(data.wallet?.balanceFen) +
       " · 读取于 " + new Date().toLocaleTimeString("zh-CN", { hour12: false });
+    const dateInput = document.getElementById("gwUsageDate");
+    dateInput.value = usageDate;
+    dateInput.max = localDateValue();
     document.getElementById("gwTenantMetrics").innerHTML = [
-      metric("可用余额", money(data.wallet?.availableFen), "冻结 " + money(data.wallet?.reservedFen)),
-      metric("累计消费", money(data.summary?.spentFen), "已结算调用"),
-      metric("调用次数", Number(data.summary?.calls || 0).toLocaleString("zh-CN"), "字幕 · 声音 · 存储"),
-      metric("账户余额", money(data.wallet?.balanceFen), "含冻结额度"),
+      analyticsMetric("消费金额", money(dailyUsage.amountFen), usageDate + " · CNY"),
+      analyticsMetric(
+        "API 请求次数",
+        Number(dailyUsage.apiRequests || 0).toLocaleString("zh-CN"),
+        "按唯一调用任务统计",
+      ),
+      analyticsMetric(
+        "Tokens",
+        Number(dailyUsage.tokens || 0).toLocaleString("zh-CN"),
+        "文本字符口径",
+      ),
     ].join("");
-
-    const byService = data.summary?.byService || [];
-    const serviceRows = ["asr", "tts", "tos"].map((service) => {
-      const row = byService.find((item) => item.service === service) || {
-        service,
-        calls: 0,
-        quantity: 0,
-        amountFen: 0,
-      };
-      return `
-        <div class="gw-service">
-          <strong>${escapeHtml(serviceName(row.service))}</strong>
-          <span>${Number(row.calls || 0)} 次调用<br>${escapeHtml(quantityText(row))}<br>${money(row.amountFen)}</span>
-        </div>`;
-    }).join("");
-    document.getElementById("gwServiceSummary").innerHTML = serviceRows;
+    document.getElementById("gwChartTotal").textContent = money(dailyUsage.amountFen);
+    document.getElementById("gwHourlyChart").innerHTML = renderHourlyChart(dailyUsage.hourly);
+    document.getElementById("gwUsageDetailDate").textContent = usageDate + " · 最近记录";
 
     document.getElementById("gwTenantUsage").innerHTML = (data.usage || []).length
       ? data.usage.map((row) => `
@@ -811,7 +998,7 @@
           <td class="num">${money(row.amountFen)}</td>
           <td>${statusPill(row.status)}</td>
         </tr>`).join("")
-      : '<tr><td colspan="5" class="gw-empty">已从网关同步，暂无用量记录</td></tr>';
+      : '<tr><td colspan="5" class="gw-empty">该日期暂无用量记录</td></tr>';
 
     document.getElementById("gwLedger").innerHTML = (data.ledger || []).length
       ? data.ledger.map((row) => `
@@ -833,15 +1020,6 @@
           <td>${item.enabled ? `<button class="gw-btn small danger" type="button" onclick="gwDisableToken('${escapeHtml(item.id)}')">停用</button>` : ""}</td>
         </tr>`).join("")
       : '<tr><td colspan="4" class="gw-empty">尚未创建令牌</td></tr>';
-
-    document.getElementById("gwVoices").innerHTML = (data.voices || []).length
-      ? data.voices.map((item) => `
-        <tr>
-          <td>${escapeHtml(item.name)}</td>
-          <td>${item.enabled ? '<span class="gw-pill">启用</span>' : '<span class="gw-pill off">停用</span>'}</td>
-          <td>${dateText(item.createdAt)}</td>
-        </tr>`).join("")
-      : '<tr><td colspan="3" class="gw-empty">已从网关同步，管理员尚未分配音色</td></tr>';
 
     loading.hidden = true;
     tenantRoot.hidden = false;
@@ -898,7 +1076,7 @@
     button.disabled = true;
     button.textContent = "刷新中...";
     try {
-      await reloadTenant();
+      await reloadTenant(document.getElementById("gwUsageDate")?.value || undefined);
     } catch (error) {
       showError(error);
     } finally {
@@ -1039,22 +1217,19 @@
     });
   }
 
-  const redeemForm = document.getElementById("gwRedeem");
-  if (redeemForm) {
-    redeemForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const status = document.getElementById("gwRedeemStatus");
-      status.textContent = "正在充值...";
+  const usageDateInput = document.getElementById("gwUsageDate");
+  if (usageDateInput) {
+    usageDateInput.value = localDateValue();
+    usageDateInput.max = localDateValue();
+    usageDateInput.addEventListener("change", async () => {
+      if (!usageDateInput.value) return;
+      usageDateInput.disabled = true;
       try {
-        const data = await api("/tenant/redeem", {
-          method: "POST",
-          body: JSON.stringify({ code: document.getElementById("gwRedeemCode").value }),
-        });
-        status.textContent = "充值成功，余额 " + money(data.wallet?.availableFen);
-        document.getElementById("gwRedeemCode").value = "";
-        await reloadTenant();
+        await reloadTenant(usageDateInput.value);
       } catch (error) {
-        status.textContent = error.message;
+        showError(error);
+      } finally {
+        usageDateInput.disabled = false;
       }
     });
   }

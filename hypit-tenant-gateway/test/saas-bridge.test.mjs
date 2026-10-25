@@ -193,6 +193,23 @@ test("SaaS bridge manages a tenant without exposing the browser session", async 
   assert.equal(dashboard.response.status, 200);
   assert.equal(dashboard.data.wallet.availableFen, 2000);
   assert.equal(dashboard.data.tokens.length, 1);
+  assert.equal(dashboard.data.dailyUsage.hourly.length, 24);
+
+  const datedDashboard = await jsonRequest(
+    base,
+    `/saas/v1/tenants/${tenantId}/dashboard?date=2026-10-20`,
+    { secret: "bridge-test-secret" },
+  );
+  assert.equal(datedDashboard.response.status, 200);
+  assert.equal(datedDashboard.data.dailyUsage.date, "2026-10-20");
+  assert.equal(datedDashboard.data.dailyUsage.amountFen, 0);
+
+  const invalidDate = await jsonRequest(
+    base,
+    `/saas/v1/tenants/${tenantId}/dashboard?date=2026-02-31`,
+    { secret: "bridge-test-secret" },
+  );
+  assert.equal(invalidDate.response.status, 400);
 
   const code = await jsonRequest(base, "/saas/v1/recharge-codes", {
     method: "POST",
