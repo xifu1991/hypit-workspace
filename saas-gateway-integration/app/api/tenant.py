@@ -2066,6 +2066,16 @@ async def upsert_wxpay_config(
         db.add(cfg)
 
     update_map = data.model_dump(exclude_none=True)
+    raw_api_v3_key = update_map.pop("wxpay_api_v3_key", None)
+    if raw_api_v3_key is not None:
+        api_v3_key = str(raw_api_v3_key).strip()
+        if api_v3_key and not api_v3_key.startswith("****"):
+            if len(api_v3_key) != 32:
+                raise HTTPException(
+                    status_code=400,
+                    detail="微信支付 APIv3 密钥必须正好为 32 位",
+                )
+            update_map["wxpay_api_v3_key"] = api_v3_key
     for k, v in update_map.items():
         if v is not None:
             setattr(cfg, k, v)
