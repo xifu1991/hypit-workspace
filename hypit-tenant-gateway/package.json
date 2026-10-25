@@ -1,0 +1,23 @@
+{
+  "name": "hypit-tenant-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Single-server tenant gateway and billing control plane for Hypit provider calls.",
+  "exports": {
+    ".": "./src/client.mjs"
+  },
+  "bin": {
+    "hypit-gateway": "./bin/hypit-gateway.mjs"
+  },
+  "engines": {
+    "node": ">=22.15"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.mjs",
+    "gateway": "node --env-file-if-exists=.env bin/hypit-gateway.mjs",
+    "reset-admin-password": "node --env-file-if-exists=.env scripts/reset-admin-password.mjs",
+    "test": "node --test",
+    "check": "node --check src/config.mjs && node --check src/database.mjs && node --check src/errors.mjs && node --check src/money.mjs && node --check src/security.mjs && node --check src/server.mjs && node --check src/store.mjs && node --check src/providers.mjs && node --check src/gateway.mjs && node --check src/ui.mjs && node --check src/client.mjs && node --check bin/hypit-gateway.mjs && node --check scripts/reset-admin-password.mjs"
+  }
+}

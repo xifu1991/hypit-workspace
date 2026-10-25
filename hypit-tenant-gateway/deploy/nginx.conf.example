@@ -1,0 +1,44 @@
+limit_req_zone $binary_remote_addr zone=hypit_login:10m rate=10r/m;
+
+upstream hypit_tenant_gateway {
+    server 127.0.0.1:8787;
+    keepalive 16;
+}
+
+server {
+    listen 80;
+    server_name studio.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name studio.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/studio.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/studio.example.com/privkey.pem;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    client_max_body_size 64m;
+
+    location = /api/auth/login {
+        limit_req zone=hypit_login burst=5 nodelay;
+        proxy_pass http://hypit_tenant_gateway;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://hypit_tenant_gateway;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+}

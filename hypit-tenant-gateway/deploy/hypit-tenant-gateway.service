@@ -1,0 +1,23 @@
+[Unit]
+Description=Hypit tenant gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hypit
+Group=hypit
+WorkingDirectory=/opt/hypit-tenant-gateway
+EnvironmentFile=/etc/hypit-tenant-gateway.env
+ExecStart=/usr/bin/node src/server.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/hypit-tenant-gateway
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

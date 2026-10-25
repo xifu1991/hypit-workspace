@@ -764,7 +764,8 @@
         "章节条",
         "进度锚点",
         "常驻 HUD",
-        "漫剧解说"
+        "漫剧解说",
+        "连续加载"
       ],
       "slots": [
         "chapter-bar"
@@ -791,7 +792,12 @@
         "rule",
         "pill",
         "pillAlpha",
-        "scrim"
+        "scrim",
+        "loadBlock",
+        "loadMode",
+        "noPill",
+        "noRule",
+        "noMeta"
       ],
       "evidence": [
         {
@@ -814,7 +820,59 @@
         "status": "project-owned",
         "evidence": "自研 ASS 生成脚本；只移植参考片的版面层级与动效节奏，未复用其品牌、文案、人物和素材。字体使用本机等线，商用前必须替换为可商用字体并随工程附带字体文件。"
       },
-      "notes": "章节条常驻画面最上层，当前章节亮白、其余压暗，当前格下方进度线按该章真实时长从左往右长满。换章瞬间一枚半透明药丸滑到新格并在约 0.5 秒内淡出，它是切换动效而不是常驻高亮：常驻白块会压在白色章节名上把字抹掉。活跃章节名带 1.6px 深色描边，配 64 段正弦渐变的顶部压暗层，保证在亮画面上仍可读。演示为 7 章各 3.2 秒的压缩版，真实项目按 spec 里的秒数生成。"
+      "notes": "动漫剪辑标准档为连续加载：章节条常驻画面最上层，当前章节亮白、其余压暗；一条约 50% 透明度的灰色加载条固定从最左侧起步，按整段解说总时长持续向右增长，章节切换不回退、不跳格。只用章节文字和底部字幕，不加换章药丸、章节下方细进度线或顶栏小字。实现参数为 --load-mode video --load-color \"#cfd3d9\" --load-alpha 138 --no-pill --no-rule --no-meta；已在《仙逆》姚长东两分钟剪辑验收。"
+    },
+    {
+      "id": "hypit/bouncing-brand",
+      "name": "弹球品牌文字",
+      "kind": "overlay",
+      "latestVersion": "1",
+      "status": "verified",
+      "tags": [
+        "品牌水印",
+        "贝噜漫剧",
+        "弹球运动",
+        "漫剧解说"
+      ],
+      "slots": [
+        "brand"
+      ],
+      "source": {
+        "type": "project-owned",
+        "reference": "component-library/bouncing-brand/brand.mjs",
+        "portable": true
+      },
+      "integration": {
+        "engine": "ass-overlay",
+        "command": "import { buildBouncingBrandAss } from './component-library/bouncing-brand/brand.mjs'",
+        "placement": "burn-in-overlay"
+      },
+      "inputs": [
+        "width",
+        "height",
+        "duration",
+        "text",
+        "font",
+        "fontSize",
+        "alpha",
+        "speedX",
+        "speedY",
+        "marginX",
+        "marginTop",
+        "marginBottom"
+      ],
+      "evidence": [
+        {
+          "type": "project-output",
+          "reference": "outputs/xianni-yaochangdong-2min/xianni-yaochangdong-2min.mp4",
+          "verifiedAt": "2026-10-18"
+        }
+      ],
+      "license": {
+        "status": "project-owned",
+        "evidence": "自研 ASS 动效生成器，仅使用项目文字与本地字体。"
+      },
+      "notes": "动漫剪辑默认使用“贝噜漫剧”文字水印，约 50% 透明度，在安全区内匀速直线运动并在四边反射。默认避开顶部章节条和底部字幕；旧版图片 logo 不再进入成片。"
     }
   ]
 }

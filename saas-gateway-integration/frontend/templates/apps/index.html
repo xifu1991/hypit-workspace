@@ -1,0 +1,288 @@
+{% extends tenant_base|default('_base.html') %}
+{% block page_title %}应用中心{% endblock %}
+{% block page_subtitle %}小功能插件合集 — 提升投放效率{% endblock %}
+{% block header_actions %}{% endblock %}
+
+{% block content %}
+<style>
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+.app-card {
+  background: var(--card-bg, #ffffff);
+  border: none;
+  border-radius: 14px;
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  text-decoration: none;
+  color: inherit;
+}
+.app-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+a.app-card {
+  text-decoration: none !important;
+}
+.app-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 16px;
+}
+.app-card-icon.blue {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+.app-card-icon.pink {
+  background: linear-gradient(135deg, #ec4899, #f97316);
+}
+.app-card-icon.green {
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+}
+.app-card-icon.purple {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+}
+.app-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary, #111827);
+}
+.app-card-desc {
+  font-size: 14px;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.6;
+}
+.app-card-status {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.app-card-status.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+.app-card-status.beta {
+  background: #fef3c7;
+  color: #92400e;
+}
+.app-card-status.soon {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+</style>
+
+<div class="app-grid">
+  <!-- 情报局 -->
+  <a class="app-card" href="/apps/intelligence">
+    <div class="app-card-icon blue">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">情报局</div>
+    <div class="app-card-desc">每日行业最新新闻</div>
+  </a>
+
+  <!-- 商户管理（仅总后台） -->
+  {% if not is_tenant %}
+  <a class="app-card" href="/admin/tenants">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #f97316, #ef4444);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 11h.01"/><path d="M12 11h.01"/><path d="M8 11h.01"/><path d="M16 15h.01"/><path d="M12 15h.01"/><path d="M8 15h.01"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">商户管理</div>
+    <div class="app-card-desc">电商行业管理后台，商户新建、编辑、删除与用户关联</div>
+  </a>
+  {% endif %}
+
+  <!-- Hypit 租户网关 -->
+  {% if not is_tenant %}
+  <a class="app-card" href="/apps/gateway">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #0f766e, #0ea5e9);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01M11 7h6M11 17h6"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">AI 网关</div>
+    <div class="app-card-desc">租户余额、语音识别、声音合成与对象存储用量统一管理</div>
+  </a>
+  {% endif %}
+
+  <!-- 文案狗 -->
+  <a class="app-card" href="/apps/wenangou">
+    <div class="app-card-icon blue">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/><path d="M8 9h1"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">文案狗</div>
+    <div class="app-card-desc">AI辅助文案脚本撰写、润色与风格迁移</div>
+  </a>
+
+  <!-- 声音克隆 -->
+  <div class="app-card" onclick="alert('即将上线')">
+    <div class="app-card-icon pink">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </div>
+    <span class="app-card-status beta">开发中</span>
+    <div class="app-card-title">声音克隆</div>
+    <div class="app-card-desc">AI声音克隆合成、语音转文字与配音素材生成</div>
+  </div>
+
+  <!-- 数字人 -->
+  <a class="app-card" href="{% if is_tenant %}/tenant/apps/digital-human{% else %}/apps/digital-human{% endif %}">
+    <div class="app-card-icon purple">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16l-6.4 5.2L8 14l-6-4.8h7.6L12 2z"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">数字人</div>
+    <div class="app-card-desc">文案→配音→数字人视频·一键生成</div>
+  </a>
+
+  <!-- 小红书聚光 -->
+  <a class="app-card" href="/apps/juguang">
+    <div class="app-card-icon pink">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">小红书聚光</div>
+    <div class="app-card-desc">Cookie采集、广告计划提交与广告单元搭建管理</div>
+  </a>
+
+  <!-- DIY小程序 -->
+  <a class="app-card" href="/apps/diy-miniapp">
+    <div class="app-card-icon green">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><circle cx="8" cy="11" r="1.5"/><circle cx="16" cy="11" r="1.5"/><path d="M10 14a2 2 0 014 0"/></svg>
+    </div>
+    <span class="app-card-status beta">开发中</span>
+    <div class="app-card-title">DIY小程序</div>
+    <div class="app-card-desc">微信小程序，小红书团购小程序，抖音团购小程序</div>
+  </a>
+
+  <!-- 全民奇奇战机 -->
+  <!-- 企业官网 / 茶文化学会网站 -->
+  <a class="app-card" href="/apps/tea-society">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #3fba45, #197b35);">
+      <span style="font-size:26px">🍵</span>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">企业官网</div>
+    <div class="app-card-desc">茶文化学会网站模板、内容管理与租户独立站点</div>
+  </a>
+
+  <!-- 全民奇奇战机 -->
+  <a class="app-card" href="/apps/qiji-fighter">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">全民奇奇战机</div>
+    <div class="app-card-desc">微信小游戏运营后台 · 玩家管理 · 战斗记录 · 排行榜</div>
+  </a>
+
+  <!-- 菜谱小程序 -->
+  {% if not is_tenant or 'xiawazhibo' in (tenant_plugins or []) %}
+  <a class="app-card" href="{% if is_tenant %}/tenant/apps/xiawazhibo{% else %}/apps/xiawazhibo{% endif %}">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #FF6B6B, #FF8A65);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">菜谱小程序</div>
+    <div class="app-card-desc">AI智能菜谱 · 视频教学 · 宝宝辅食 · 家庭烹饪好帮手</div>
+  </a>
+  {% endif %}
+
+  <!-- 优惠券管理 -->
+  {% if not is_tenant or 'coupon_mgmt' in (tenant_plugins or []) %}
+  {% if is_tenant %}<a class="app-card" href="/tenant/apps/coupon-mgmt">{% else %}<div class="app-card" onclick="alert('请在商户后台 → 应用中心 使用该功能')">{% endif %}
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M20 12c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M2 7v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2h-4l-2-2H8L6 7H4a2 2 0 00-2 2z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">优惠券管理</div>
+    <div class="app-card-desc">创建和管理优惠券模板，查看领取和使用统计</div>
+  {% if is_tenant %}</a>{% else %}</div>{% endif %}
+  {% endif %}
+
+  <!-- 核销员管理 -->
+  {% if not is_tenant or 'verifier_mgmt' in (tenant_plugins or []) %}
+  {% if is_tenant %}<a class="app-card" href="/tenant/apps/verifier-mgmt">{% else %}<div class="app-card" onclick="alert('请在商户后台 → 应用中心 使用该功能')">{% endif %}
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #6366f1, #3b82f6);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1.5"/><path d="M12 13v2"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">核销员管理</div>
+    <div class="app-card-desc">管理核销员，分配门店进行订单核销</div>
+  {% if is_tenant %}</a>{% else %}</div>{% endif %}
+  {% endif %}
+
+  <!-- 手机管理 -->
+  {% if not is_tenant or 'manager_mgmt' in (tenant_plugins or []) %}
+  {% if is_tenant %}<a class="app-card" href="/tenant/apps/manager-mgmt">{% else %}<div class="app-card" onclick="alert('请在商户后台 → 应用中心 使用该功能')">{% endif %}
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #f97316, #eab308);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">手机管理</div>
+    <div class="app-card-desc">添加管理员，手机上即可查看所有订单列表明细</div>
+  {% if is_tenant %}</a>{% else %}</div>{% endif %}
+  {% endif %}
+
+  <!-- 团购管理 -->
+  {% if not is_tenant or 'group_buy_mgmt' in (tenant_plugins or []) %}
+  {% if is_tenant %}<a class="app-card" href="/tenant/apps/group-buy-mgmt">{% else %}<div class="app-card" onclick="alert('请在商户后台 → 应用中心 使用该功能')">{% endif %}
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #10b981, #06b6d4);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    </div>
+    <span class="app-card-status active">已启用</span>
+    <div class="app-card-title">团购管理</div>
+    <div class="app-card-desc">创建和管理团购活动，设置成团人数与价格</div>
+  {% if is_tenant %}</a>{% else %}</div>{% endif %}
+  {% endif %}
+
+  <!-- 快手卡片 -->
+  {% if not is_tenant or 'kuaishou_card' in (tenant_plugins or []) %}
+  <a class="app-card" href="{% if is_tenant %}/tenant/apps/kuaishou-card{% else %}/apps/kuaishou-card{% endif %}">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #FF4906, #FF6A00);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 3.5c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5zm3 6.5c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm-3 5.5c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/><circle cx="12" cy="12" r="2"/></svg>
+    </div>
+    <div class="app-card-title">快手多卡</div>
+    <div class="app-card-desc">Cookie采集、图片上传、落地页一键提交辅助投放</div>
+  </a>
+  {% endif %}
+
+  <!-- 快手单卡(OSS图片替换) -->
+  {% if not is_tenant or 'kuaishou_single_card' in (tenant_plugins or []) %}
+  <a class="app-card" href="{% if is_tenant %}/tenant/apps/oss-replace{% else %}/apps/oss-replace{% endif %}">
+    <div class="app-card-icon" style="background: linear-gradient(135deg, #FF4906, #FF6A00);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
+    <div class="app-card-title">快手单卡</div>
+    <div class="app-card-desc">落地页二维码图片替换与管理</div>
+  </a>
+  {% endif %}
+
+  <!-- 卡秘兑换 -->
+  <div class="app-card" onclick="alert('即将上线')">
+    <div class="app-card-icon green">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    </div>
+    <span class="app-card-status beta">开发中</span>
+    <div class="app-card-title">卡秘兑换</div>
+    <div class="app-card-desc">兑换码批量生成、用户卡密充值与Token余额管理</div>
+  </div>
+</div>
+{% endblock %}

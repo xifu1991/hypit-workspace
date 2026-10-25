@@ -1,4 +1,5 @@
 config.json
+config.json.*
 
 # Local credential notes: never commit.
 doubao.txt
@@ -38,6 +39,11 @@ Sub-Router/
 # Local editor state
 .idea/
 .vscode/
+
+# Local secrets, temporary review files and machine-specific state
+.codex_keys/
+.tmp-*/
+.tmp_*/
 
 # Legacy local-only tooling and experiments
 FEEDBACK.json

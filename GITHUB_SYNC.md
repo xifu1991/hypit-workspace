@@ -206,6 +206,35 @@ workbench/computer-b
 - `hypit.runtime.json` 模板，但不含密钥
 - `migration/` 引导脚本
 
+## 不会随 git 自动同步的东西
+
+两台电脑效果不一致，通常不是模型理解不同，而是下面这些根本不在仓库里：
+
+- **Skill 本体**：`C:\Users\admin\.codex\skills\hypit` 不是 git 仓库，是每台机器单独安装的。第二台必须执行同样的安装或更新，并保持版本一致：
+
+  ```powershell
+  npx skills add hypit-ai/hypit -g    # 首次安装
+  npx skills update hypit -g          # 更新
+  ```
+
+- **`scripts/`**：被 `.gitignore` 排除。配音（`narration-doubao.ts`）、ASR、镜头检索等入口只在单机存在，换电脑要单独拷，或者另建仓库管理。
+- **`config.json`**：火山凭证和 TTS 音色表，按设计不进仓库，第二台需要单独配置。
+- **`tools/`、`.venv/`、`node_modules/`**：FFmpeg、Whisper 权重、依赖都在本机安装，版本按下面的「质量同步原则」对齐。
+- **`assets/`、`sample_*`、`outputs/**` 里的媒体**：只有白名单内的 json / md / ps1 / 证据帧会同步，源视频、成片、中间音频不会。第二台看不到同样的素材，agent 只能靠文字猜画面，很多「按帧量」的规则（L-002、L-003、L-015）在那边无法执行。
+- **`.hypit/runtimes/`**：构建数据库和 worker 状态，属于机器本地，不需要同步。
+- **聊天里的判断**：不会同步。只有写进 `HYPIT_LESSONS.md`、`playbook/` 或项目文档的决定，另一台电脑的 agent 才看得到。注意 `ChatGPT\视频制作ds版本` 这个工作区目前没有任何提交和远端，写在那里的经验等于只留在本机。
+
+## 路径约定必须一致
+
+本机的工作区是嵌套结构：`视频制作\hypit-local-demo`。而上面「第二台电脑」的命令把代码仓 clone 成兄弟目录 `C:\HYPIT\hypit-workbench`，这会造成：
+
+- `start_studio_*.ps1` 里的 `Join-Path $root "hypit-local-demo"` 找不到；
+- `Sync-HypitGit.ps1` 默认的 `$PSScriptRoot\hypit-local-demo` 找不到（必须显式传 `-CodeRepo`）；
+- 工作区脚本里 `../hypit-local-demo/packages/...` 的相对 import 断掉；
+- `hypit.runtime.json` 里 `configPath`、`ffmpegPath/ffprobePath` 是 `C:/Users/admin/...` 绝对路径，用户名或目录不同就失效。
+
+两种做法选一种，不要混用：第二台也 clone 成 `<工作区>\hypit-local-demo`，或者统一改脚本和 runtime 里的路径。
+
 ## 质量同步原则
 
 两台电脑升级后必须保持一致：

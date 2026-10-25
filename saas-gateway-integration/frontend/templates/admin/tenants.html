@@ -1,0 +1,1105 @@
+{% extends "_base.html" %}
+{% block page_title %}商户管理{% endblock %}
+{% block page_subtitle %}<p class="header-subtitle">管理所有SaaS商户，支持创建、编辑、删除及用户关联</p>{% endblock %}
+{% block header_actions %}
+<button class="btn btn-primary" onclick="showTenantForm(null)" style="gap:6px;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  新建商户
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="tenants-container">
+  <!-- Stats -->
+  <div class="tenants-stats">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-total">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value" id="totalTenants">—</span>
+        <span class="stat-label">总商户数</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value" id="activeTenants">—</span>
+        <span class="stat-label">活跃商户数</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value" id="totalTenantUsers">—</span>
+        <span class="stat-label">总关联用户数</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Table -->
+  <div class="card tenants-table-card">
+    <div class="tenants-toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索商户名 / 子域名..." oninput="debouncedSearch()">
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table" id="tenantsTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>商户名称</th>
+            <th>商户ID</th>
+            <th>子域名</th>
+            <th>联系人</th>
+            <th>邮箱</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>登录地址</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="tenantsBody">
+          <tr>
+            <td colspan="10" class="table-empty">加载中...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<!-- Create / Edit Tenant Modal -->
+<div class="modal-overlay" id="tenantModal" style="display:none;" onclick="if(event.target===this)closeTenantForm()">
+  <div class="modal-content" style="width:560px;">
+    <div class="modal-header">
+      <h3 id="tenantModalTitle">新建商户</h3>
+      <button class="btn-close" onclick="closeTenantForm()">✕</button>
+    </div>
+    <form id="tenantForm" onsubmit="saveTenant(event)">
+      <input type="hidden" id="editTenantId">
+      <div class="form-group">
+        <label>商户名称 <span class="required">*</span></label>
+        <input type="text" id="formTenantName" class="form-input" placeholder="例如：苏州创点传媒" required maxlength="100">
+      </div>
+      <div class="form-group">
+        <label>子域名 <span class="required">*</span></label>
+        <input type="text" id="formTenantSubdomain" class="form-input" placeholder="例如：chuangdian（字母/数字/连字符）" required maxlength="50" pattern="^[a-zA-Z0-9-]+$">
+        <div style="font-size:11px;color:var(--muted-fg);margin-top:4px;">
+          <code id="subdomainUrlPreview" style="font-size:11px;">https://<span id="subdomainPreviewText">chuangdian</span>.xhscdn.cn/tenant/login</code>
+          <span style="cursor:pointer;color:var(--accent);margin-left:4px;" onclick="const s=document.getElementById('formTenantSubdomain').value||'chuangdian';navigator.clipboard.writeText('https://'+s+'.xhscdn.cn/tenant/login')" title="复制">📋</span>
+        </div>
+      </div>
+      <div class="form-group" id="tenantAccountGroup">
+        <label>管理员账号 <span class="required">*</span></label>
+        <input type="text" id="formTenantUsername" class="form-input" placeholder="商户管理员登录账号" maxlength="50">
+      </div>
+      <div class="form-group" id="tenantPasswordGroup">
+        <label>管理员密码 <span class="required">*</span></label>
+        <input type="text" id="formTenantPassword" class="form-input" placeholder="商户管理员登录密码，留空自动生成" maxlength="100">
+      </div>
+      <div class="form-group">
+        <label>联系人</label>
+        <input type="text" id="formTenantContact" class="form-input" placeholder="联系人姓名" maxlength="50">
+      </div>
+      <div class="form-group">
+        <label>邮箱</label>
+        <input type="email" id="formTenantEmail" class="form-input" placeholder="contact@example.com" maxlength="100">
+      </div>
+      <div class="form-group" id="tenantStatusGroup" style="display:none;">
+        <label>状态</label>
+        <label class="toggle-label">
+          <input type="checkbox" id="formTenantActive" checked>
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-text" id="toggleStatusText">启用</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label>商户后台类型</label>
+        <select id="formDashboardType" class="form-input">
+          <option value="">自动识别（推荐）</option>
+          <option value="carwash">洗车服务后台</option>
+          <option value="caipu">菜谱商城后台</option>
+        </select>
+        <div style="font-size:11px;color:var(--muted-fg);margin-top:4px;">
+          自动识别：开通「菜谱小程序」插件的商户进入菜谱后台，其余商户继续使用洗车后台。
+        </div>
+      </div>
+      <!-- 插件选择 -->
+      <div class="form-group" style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+        <label style="margin-bottom:10px;">应用插件权限 <span style="font-weight:400;color:var(--muted-fg);font-size:12px;">— 勾选的功能卡片对该商户开放</span></label>
+        <div class="plugin-grid">
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="intelligence">
+            <span class="plugin-checkbox-label">🌐 情报局</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="wenangou">
+            <span class="plugin-checkbox-label">✍️ 文案狗</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="digital_human">
+            <span class="plugin-checkbox-label">🎭 数字人</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="juguang">
+            <span class="plugin-checkbox-label">⭐ 小红书聚光</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="voice_clone">
+            <span class="plugin-checkbox-label">🎤 声音克隆</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="gateway">
+            <span class="plugin-checkbox-label">🔌 AI 网关</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="diy_miniapp">
+            <span class="plugin-checkbox-label">📱 DIY小程序</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="kami_exchange">
+            <span class="plugin-checkbox-label">🔑 卡秘兑换</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="kuaishou_card">
+            <span class="plugin-checkbox-label">🎴 快手多卡</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="kuaishou_single_card">
+            <span class="plugin-checkbox-label">🃏 快手单卡</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="coupon_mgmt">
+            <span class="plugin-checkbox-label">💰 优惠券管理</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="verifier_mgmt">
+            <span class="plugin-checkbox-label">🔐 核销员管理</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="group_buy_mgmt">
+            <span class="plugin-checkbox-label">🎯 团购管理</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="manager_mgmt">
+            <span class="plugin-checkbox-label">📱 手机管理</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="xiawazhibo">
+            <span class="plugin-checkbox-label">📹 菜谱小程序</span>
+          </label>
+          <label class="plugin-checkbox">
+            <input type="checkbox" class="plugin-cb" data-key="tea_society">
+            <span class="plugin-checkbox-label">🍵 企业官网</span>
+          </label>
+        </div>
+      </div>
+      <!-- 导航栏展示 -->
+      <div class="form-group" style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+        <label style="margin-bottom:10px;">导航栏展示 <span style="font-weight:400;color:var(--muted-fg);font-size:12px;">— 勾选的导航菜单项对该商户可见，未勾选的隐藏</span></label>
+        <div class="nav-grid">
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="dashboard" checked>
+            <span class="nav-checkbox-label">📊 数据概览</span>
+          </label>
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="orders" checked>
+            <span class="nav-checkbox-label">📋 订单管理</span>
+          </label>
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="products" checked>
+            <span class="nav-checkbox-label">📦 商品管理</span>
+          </label>
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="users" checked>
+            <span class="nav-checkbox-label">👥 用户管理</span>
+          </label>
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="content" checked>
+            <span class="nav-checkbox-label">📝 内容管理</span>
+          </label>
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="apps" checked>
+            <span class="nav-checkbox-label">🧩 应用中心</span>
+          </label>
+          <label class="nav-checkbox">
+            <input type="checkbox" class="nav-cb" data-key="settings" checked>
+            <span class="nav-checkbox-label">⚙️ 设置</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 品牌配置 -->
+      <div class="form-group" style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+        <label style="margin-bottom:10px;">品牌配置 <span style="font-weight:400;color:var(--muted-fg);font-size:12px;">— 商户后台侧边栏显示</span></label>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:var(--muted-fg);margin-bottom:4px;display:block;">品牌名称 (brand_name)</label>
+            <input type="text" id="formBrandName" class="form-input" placeholder="例如：我的品牌" maxlength="50" style="max-width:280px;">
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted-fg);margin-bottom:4px;display:block;">Logo 图片 URL (logo_url)</label>
+            <input type="url" id="formLogoUrl" class="form-input" placeholder="https://example.com/logo.png" maxlength="500">
+            <div style="margin-top:6px;display:flex;align-items:center;gap:10px;">
+              <img id="formLogoPreview" src="" alt="logo预览" style="width:32px;height:32px;border-radius:6px;border:1px solid var(--border);object-fit:contain;display:none;" onerror="this.style.display='none'">
+              <span style="font-size:11px;color:var(--muted-light);">建议尺寸 128×128px，上传至 OSS 后粘贴 URL</span>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted-fg);margin-bottom:4px;display:block;">企业官网自定义域名 (custom_domain)</label>
+            <input type="text" id="formCustomDomain" class="form-input" placeholder="例如：www.example.com" maxlength="200">
+            <span style="font-size:11px;color:var(--muted-light);">将域名 DNS 指向当前 ECS 后生效</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeTenantForm()">取消</button>
+        <button type="submit" class="btn btn-primary" id="saveTenantBtn">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal" style="display:none;" onclick="if(event.target===this)closeDeleteModal()">
+  <div class="modal-content" style="width:380px;">
+    <div class="modal-header">
+      <h3>确认删除</h3>
+      <button class="btn-close" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <div style="padding:8px 0 16px;font-size:14px;color:var(--muted-fg);line-height:1.6;">
+      确定要删除商户「<strong id="deleteTenantName" style="color:var(--fg);"></strong>」吗？<br>此操作不可撤销，该商户的所有数据将被永久移除。
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn btn-ghost" onclick="closeDeleteModal()">取消</button>
+      <button type="button" class="btn btn-primary" id="deleteConfirmBtn" style="background:var(--destructive);" onclick="confirmDelete()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Users Modal -->
+<div class="modal-overlay" id="usersModal" style="display:none;" onclick="if(event.target===this)closeUsersModal()">
+  <div class="modal-content" style="width:540px;max-height:85vh;overflow-y:auto;">
+    <div class="modal-header">
+      <h3 id="usersModalTitle">管理商户用户</h3>
+      <button class="btn-close" onclick="closeUsersModal()">✕</button>
+    </div>
+    <input type="hidden" id="usersModalTenantId">
+    <input type="hidden" id="usersModalTenantName">
+
+    <!-- Add user form -->
+    <div class="add-user-form">
+      <div class="add-user-row">
+        <div class="form-group" style="flex:1;margin-bottom:0;">
+          <input type="text" id="addUserInput" class="form-input" placeholder="输入用户名..." maxlength="100">
+        </div>
+        <div class="form-group" style="flex:0 0 140px;margin-bottom:0;">
+          <select id="addUserRole" class="form-input">
+            <option value="admin">管理员 (admin)</option>
+            <option value="editor">编辑 (editor)</option>
+            <option value="viewer" selected>查看 (viewer)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="addTenantUser()" style="flex-shrink:0;padding:9px 16px;height:40px;">添加</button>
+      </div>
+    </div>
+
+    <!-- User list -->
+    <div style="margin-top:16px;">
+      <div style="font-size:13px;font-weight:600;color:var(--muted-fg);margin-bottom:8px;">已有用户</div>
+      <div id="tenantUsersList">
+        <div style="text-align:center;padding:24px;color:var(--muted-light);font-size:13px;">加载中…</div>
+      </div>
+    </div>
+
+    <div class="form-actions" style="margin-top:16px;">
+      <button type="button" class="btn btn-ghost" onclick="closeUsersModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Kuaishou Single Card OSS Config Modal -->
+<div class="modal-overlay" id="ksOssModal" style="display:none;" onclick="if(event.target===this)closeKsOssModal()">
+  <div class="modal-content" style="width:420px;">
+    <div class="modal-header">
+      <h3>🃏 快手单卡 OSS 配置</h3>
+      <button class="btn-close" onclick="closeKsOssModal()">✕</button>
+    </div>
+    <input type="hidden" id="ksOssTenantId">
+    <div style="padding:4px 0 12px;">
+      <div style="font-size:13px;color:var(--muted-fg);margin-bottom:16px;">
+        为商户 <strong id="ksOssTenantName" style="color:var(--fg);"></strong> 设置阿里云 OSS 图片上传目录
+      </div>
+      <div class="form-group">
+        <label>OSS 路径 <span class="required">*</span></label>
+        <input type="text" id="ksOssPath" class="form-input"
+               placeholder="例如：kuaishou/guowang" maxlength="200">
+        <div style="font-size:11px;color:var(--muted-light);margin-top:4px;">
+          商户后台上传主图时 OSS 存储目录，请使用小写字母、数字、斜杠
+        </div>
+      </div>
+      <div class="form-group">
+        <label>固定文件名 <span class="required">*</span></label>
+        <input type="text" id="ksOssFilename" class="form-input"
+               placeholder="例如：jiaju060201" maxlength="100">
+        <div style="font-size:11px;color:var(--muted-light);margin-top:4px;">
+          商户上传任意图片均替换为此固定文件名，不加扩展名（仅快手单卡生效）
+        </div>
+      </div>
+      <div style="background:var(--muted-bg);border-radius:8px;padding:12px;border:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--muted-fg);margin-bottom:6px;">📎 完整 OSS 路径预览：</div>
+        <code id="ksOssPreview" style="font-size:12px;word-break:break-all;color:var(--accent);">oss://hypelux2024/<span id="ksOssPreviewVal">kuaishou/</span></code>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn btn-ghost" onclick="closeKsOssModal()">取消</button>
+      <button type="button" class="btn btn-primary" id="saveKsOssBtn" onclick="saveKsOssConfig()">保存配置</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<style>
+.tenants-container { max-width:1200px; }
+
+/* Stats */
+.tenants-stats { display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap; }
+.stat-card {
+  display:flex;align-items:center;gap:14px;
+  background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+  padding:16px 24px;min-width:180px;flex:1;
+}
+.stat-icon {
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.stat-icon svg { width:22px;height:22px; }
+.stat-icon-total { background:#e8f1ff;color:#1d4ed8; }
+.stat-icon-active { background:#e6f7e6;color:#15803d; }
+.stat-icon-users { background:#f0e6ff;color:#7c3aed; }
+.stat-info { display:flex;flex-direction:column; }
+.stat-value { font-size:28px;font-weight:700;color:var(--fg);line-height:1.1; }
+.stat-label { font-size:13px;color:var(--muted-fg);margin-top:2px; }
+
+/* Toolbar */
+.tenants-toolbar {
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.search-wrap {
+  position:relative;flex:1;max-width:360px;
+}
+.search-icon {
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--muted-light);pointer-events:none;
+}
+.search-wrap .search-input {
+  width:100%;padding:8px 12px 8px 36px;
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);font-size:14px;color:var(--fg);
+  transition:border-color 200ms;
+}
+.search-wrap .search-input::placeholder { color:var(--border-hover); }
+.search-wrap .search-input:focus { outline:none;border-color:var(--accent); }
+
+/* Table card */
+.tenants-table-card { overflow:hidden; }
+.table-empty { text-align:center;padding:40px 20px;color:var(--muted-fg);font-size:14px; }
+.table-wrapper { overflow-x:auto; }
+
+/* Pagination */
+.pagination {
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:14px 20px;border-top:1px solid var(--border);
+}
+.page-btn {
+  min-width:32px;height:32px;padding:0 8px;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--card-bg);color:var(--muted-fg);
+  font-size:13px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:all 150ms;
+}
+.page-btn:hover { border-color:var(--accent);color:var(--accent); }
+.page-btn.active { background:var(--accent);color:#fff;border-color:var(--accent); }
+.page-btn:disabled { opacity:0.4;cursor:not-allowed; }
+
+/* Action buttons in table */
+.action-btn {
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:6px;
+  font-size:12px;font-weight:500;cursor:pointer;
+  border:1px solid var(--border);background:var(--card-bg);
+  color:var(--muted-fg);transition:all 150ms;
+}
+.action-btn svg { width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none; }
+.action-btn-edit:hover { background:var(--accent-subtle);color:var(--accent);border-color:var(--accent); }
+.action-btn-delete { color:#dc2626;border-color:#fecaca; }
+.action-btn-delete:hover { background:#fef2f2;color:#dc2626; }
+.action-btn-users:hover { background:#e6f7e6;color:#15803d;border-color:#86efac; }
+.action-btns { display:flex;gap:6px;flex-wrap:wrap; }
+
+/* Status toggle in table */
+.status-badge {
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:9999px;
+  font-size:12px;font-weight:500;
+}
+.status-badge-active { background:rgba(34,197,94,0.15);color:#16a34a; }
+.status-badge-inactive { background:rgba(239,68,68,0.15);color:#dc2626; }
+
+/* Toggle switch in form */
+.toggle-label { display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none; }
+.toggle-label input[type=checkbox] { display:none; }
+.toggle-track {
+  width:40px;height:22px;border-radius:11px;
+  background:var(--border);position:relative;
+  transition:background 200ms;
+}
+.toggle-label input:checked + .toggle-track { background:var(--success); }
+.toggle-thumb {
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;position:absolute;top:2px;left:2px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.2);
+  transition:transform 200ms;
+}
+.toggle-label input:checked + .toggle-track .toggle-thumb { transform:translateX(18px); }
+.toggle-text { font-size:13px;color:var(--muted-fg);font-weight:500; }
+.required { color:var(--destructive); }
+
+/* Users modal */
+.add-user-form {
+  background:var(--muted-bg);border-radius:10px;
+  padding:14px;border:1px solid var(--border);
+}
+.add-user-row { display:flex;gap:10px;align-items:center; }
+
+.user-item {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border:1px solid var(--border);
+  border-radius:8px;margin-bottom:6px;
+  transition:border-color 150ms;
+}
+.user-item:hover { border-color:var(--border-hover); }
+.user-item-avatar {
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent-subtle);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;flex-shrink:0;
+}
+.user-item-info { flex:1;min-width:0; }
+.user-item-name { font-size:13px;font-weight:600;color:var(--fg); }
+.user-item-role {
+  display:inline-block;font-size:11px;font-weight:500;
+  padding:1px 8px;border-radius:4px;margin-top:2px;
+}
+.user-item-role-admin { background:#e8f1ff;color:#1d4ed8; }
+.user-item-role-editor { background:#e6f7e6;color:#15803d; }
+.user-item-role-viewer { background:#f3f4f6;color:#6b7280; }
+.user-item-remove {
+  background:none;border:none;cursor:pointer;
+  color:var(--muted-light);padding:4px;border-radius:4px;
+  transition:all 150ms;font-size:16px;line-height:1;
+}
+.user-item-remove:hover { color:var(--destructive);background:rgba(239,68,68,0.1); }
+
+/* Modal Overrides */
+.modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding-top:5vh; }
+.modal-content { background:var(--card-bg);border-radius:14px;padding:24px;max-width:90vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.12); }
+.modal-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; }
+.modal-header h3 { font-size:17px;font-weight:600;margin:0; }
+
+/* Plugin checkboxes */
+.plugin-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+.plugin-checkbox {
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  border:1px solid var(--border);border-radius:8px;cursor:pointer;
+  transition:all 150ms;user-select:none;
+}
+.plugin-checkbox:hover { border-color:var(--accent);background:var(--accent-subtle); }
+.plugin-checkbox input[type=checkbox] { appearance:checkbox;width:16px;height:16px;cursor:pointer;accent-color:var(--accent); }
+.plugin-checkbox-label { font-size:13px;color:var(--fg);cursor:pointer; }
+.plugin-checkbox:has(input:checked) {
+  border-color:var(--accent);background:var(--accent-subtle);
+}
+.plugin-checkbox input:checked + .plugin-checkbox-label {
+  color:var(--accent);font-weight:600;
+}
+
+/* Nav checkboxes (same style) */
+.nav-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+.nav-checkbox {
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  border:1px solid var(--border);border-radius:8px;cursor:pointer;
+  transition:all 150ms;user-select:none;
+}
+.nav-checkbox:hover { border-color:var(--accent);background:var(--accent-subtle); }
+.nav-checkbox input[type=checkbox] { appearance:checkbox;width:16px;height:16px;cursor:pointer;accent-color:var(--accent); }
+.nav-checkbox-label { font-size:13px;color:var(--fg);cursor:pointer; }
+.nav-checkbox:has(input:checked) {
+  border-color:var(--accent);background:var(--accent-subtle);
+}
+.nav-checkbox input:checked + .nav-checkbox-label {
+  color:var(--accent);font-weight:600;
+}
+
+.btn-close { background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted-fg);padding:4px;line-height:1; }
+.btn-close:hover { color:var(--fg); }
+.form-group { margin-bottom:18px; }
+.form-group label { display:block;font-size:13px;font-weight:600;color:var(--fg);margin-bottom:7px; }
+.form-input {
+  width:100%;padding:9px 12px;font-size:13px;
+  background:var(--card-bg);border:1px solid var(--border);border-radius:8px;
+  color:var(--fg);outline:none;font-family:inherit;
+  transition:border-color 200ms;
+}
+.form-input:focus { border-color:var(--accent); }
+.form-input::placeholder { color:var(--border-hover); }
+select.form-input { cursor:pointer;appearance:none;padding-right:32px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+}
+.form-actions { display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:4px; }
+
+@media(max-width:640px){
+  .tenants-stats { flex-direction:column; }
+  .add-user-row { flex-direction:column; }
+  .add-user-row .form-group { width:100%;flex:1 1 auto !important; }
+  .modal-content { width:95vw !important; }
+  .action-btns { flex-direction:column; }
+}
+</style>
+<script>
+(function(){
+'use strict';
+
+const API = '/api/admin/tenants';
+const TOKEN_KEY='***';
+function t() { return localStorage.getItem(TOKEN_KEY); }
+async function f(path, opts) {
+  const r = await fetch(API+path, {
+    ...opts,
+    headers: {
+      ...(opts?.headers||{}),
+      'Authorization':'Bearer '+t(),
+      'Content-Type':'application/json'
+    }
+  });
+  if (r.status===204) return null;
+  if (!r.ok) {
+    let msg;
+    try { const e=await r.json(); msg=e.detail||e.message||JSON.stringify(e); }
+    catch(e2) { msg='HTTP '+r.status; }
+    throw new Error(msg);
+  }
+  return r.json();
+}
+
+// 通用 fetch（不拼接 API 前缀，用于跨模块请求如 kuaishou）
+async function fRaw(url, opts) {
+  const r = await fetch(url, {
+    ...opts,
+    headers: {
+      ...(opts?.headers||{}),
+      'Authorization':'Bearer '+t(),
+      'Content-Type':'application/json'
+    }
+  });
+  if (r.status===204) return null;
+  if (!r.ok) {
+    let msg;
+    try { const e=await r.json(); msg=e.detail||e.message||JSON.stringify(e); }
+    catch(e2) { msg='HTTP '+r.status; }
+    throw new Error(msg);
+  }
+  return r.json();
+}
+
+/* ── State ── */
+let currentPage = 1;
+let searchQuery = '';
+let deleteTargetId = null;
+let deleteTargetName = '';
+let usersModalTenantId = null;
+
+/* ── Debounce helper ── */
+let searchTimer = null;
+window.debouncedSearch = function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchQuery = document.getElementById('searchInput').value.trim();
+    currentPage = 1;
+    loadTenants();
+  }, 300);
+};
+
+/* ── Load tenants ── */
+async function loadTenants() {
+  const tbody = document.getElementById('tenantsBody');
+  try {
+    const params = new URLSearchParams();
+    params.set('page', currentPage);
+    if (searchQuery) params.set('q', searchQuery);
+    const data = await f('?'+params.toString());
+    const tenants = Array.isArray(data) ? data : (data.tenants||data.items||data.data||[]);
+    const total = data.total || tenants.length;
+    const totalPages = data.pages || Math.ceil(total / 20);
+
+    // Update stats
+    document.getElementById('totalTenants').textContent = total;
+    let activeCount = 0;
+    let userCount = 0;
+    tenants.forEach(t => {
+      if (t.is_active !== false) activeCount++;
+      userCount += (t.user_count || 0);
+    });
+    document.getElementById('activeTenants').textContent = activeCount;
+    document.getElementById('totalTenantUsers').textContent = userCount;
+
+    if (tenants.length===0) {
+      tbody.innerHTML = '<tr><td colspan="10" class="table-empty">暂无商户数据</td></tr>';
+      renderPagination(0, 0);
+      return;
+    }
+
+    tbody.innerHTML = tenants.map((t, i) => {
+      const rowNum = (currentPage - 1) * 20 + i + 1;
+      const isActive = t.is_active !== false;
+      const createdAt = t.created_at ? formatDate(t.created_at) : '—';
+      const name = escapeHtml(t.name||'');
+      const subdomain = escapeHtml(t.subdomain||'');
+      const contact = escapeHtml(t.contact_name||t.contact||'—');
+      const email = escapeHtml(t.contact_email||t.email||'—');
+      const id = t.id;
+      return `<tr>
+        <td style="color:var(--muted-fg);font-size:12px;">${rowNum}</td>
+        <td><strong>${name}</strong></td>
+        <td><code style="font-size:11px;color:var(--muted-fg);cursor:pointer;" onclick="navigator.clipboard.writeText('${id}')" title="点击复制商户ID">${id.slice(0,8)}...</code></td>
+        <td><code style="font-size:12px;color:var(--accent);">${subdomain}</code></td>
+        <td>${contact}</td>
+        <td>${email}</td>
+        <td><span class="status-badge ${isActive?'status-badge-active':'status-badge-inactive'}">
+          <span style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${isActive?'#16a34a':'#dc2626'};"></span>
+          ${isActive?'启用':'停用'}
+        </span></td>
+        <td style="font-size:12px;color:var(--muted-fg);">${createdAt}</td>
+        <td><code style="font-size:11px;cursor:pointer;color:var(--accent);" onclick="navigator.clipboard.writeText('https://${subdomain}.xhscdn.cn/tenant/login')" title="点击复制登录地址">${subdomain}.xhscdn.cn</code></td>
+        <td>
+          <div class="action-btns">
+            <button class="action-btn action-btn-users" onclick="openUsersModal('${id}','${name.replace(/'/g,"\\'")}')" title="管理用户">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              用户
+            </button>
+            <button class="action-btn action-btn-ks" onclick="openKsOssModal('${id}','${name.replace(/'/g,"\\'")}')" title="快手单卡 OSS 配置">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="7" cy="10" r="1.5"/><circle cx="12" cy="10" r="1.5"/><circle cx="17" cy="10" r="1.5"/><circle cx="7" cy="15" r="1.5"/><circle cx="12" cy="15" r="1.5"/><circle cx="17" cy="15" r="1.5"/></svg>
+              🃏
+            </button>
+            <button class="action-btn action-btn-edit" onclick="showTenantForm('${id}')" title="编辑">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              编辑
+            </button>
+            <button class="action-btn action-btn-delete" onclick="showDeleteModal('${id}','${name.replace(/'/g,"\\'")}')" title="删除">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              删除
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+    renderPagination(currentPage, totalPages);
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="8" class="table-empty">⚠️ '+e.message+'</td></tr>';
+  }
+}
+
+/* ── Pagination ── */
+function renderPagination(current, total) {
+  const el = document.getElementById('pagination');
+  if (total<=1) { el.innerHTML = ''; return; }
+  let html = '';
+  html += `<button class="page-btn" onclick="goToPage(${current-1})" ${current<=1?'disabled':''}>‹</button>`;
+  for (let i=1; i<=total; i++) {
+    if (i===1 || i===total || (i>=current-2 && i<=current+2)) {
+      html += `<button class="page-btn ${i===current?'active':''}" onclick="goToPage(${i})">${i}</button>`;
+    } else if (i===current-3 || i===current+3) {
+      html += `<span style="color:var(--muted-light);padding:0 4px;">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="goToPage(${current+1})" ${current>=total?'disabled':''}>›</button>`;
+  el.innerHTML = html;
+}
+
+window.goToPage = function(page) {
+  currentPage = page;
+  loadTenants();
+};
+
+/* ── Format date ── */
+function formatDate(dateStr) {
+  try {
+    const d = new Date(dateStr);
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    const h = String(d.getHours()).padStart(2,'0');
+    const min = String(d.getMinutes()).padStart(2,'0');
+    return `${y}-${m}-${day} ${h}:${min}`;
+  } catch { return dateStr; }
+}
+
+/* ── Escape HTML ── */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ── Show tenant form (create/edit) ── */
+window.showTenantForm = async function(tenantId) {
+  const modal = document.getElementById('tenantModal');
+  const title = document.getElementById('tenantModalTitle');
+  const nameInput = document.getElementById('formTenantName');
+  const subdomainInput = document.getElementById('formTenantSubdomain');
+  const contactInput = document.getElementById('formTenantContact');
+  const emailInput = document.getElementById('formTenantEmail');
+  const editId = document.getElementById('editTenantId');
+  const statusGroup = document.getElementById('tenantStatusGroup');
+  const activeCheckbox = document.getElementById('formTenantActive');
+
+  if (tenantId) {
+    title.textContent = '编辑商户';
+    try {
+      const data = await f('/'+tenantId);
+      const tenant = data.tenant||data;
+      nameInput.value = tenant.name||'';
+      subdomainInput.value = tenant.subdomain||'';
+      contactInput.value = tenant.contact_name||tenant.contact||'';
+      emailInput.value = tenant.contact_email||tenant.email||'';
+      editId.value = tenant.id||tenantId;
+      activeCheckbox.checked = tenant.is_active !== false;
+      updateToggleText();
+      statusGroup.style.display = 'block';
+      // 显示管理员账号（只读）
+      document.getElementById('tenantAccountGroup').style.display = 'block';
+      document.getElementById('formTenantUsername').value = tenant.admin_username || '(无)';
+      document.getElementById('formTenantUsername').readOnly = true;
+      // 编辑模式：隐藏密码字段
+      document.getElementById('tenantPasswordGroup').style.display = 'none';
+      // 恢复插件勾选
+      const plugins = (tenant.settings && tenant.settings.plugins) || [];
+      document.querySelectorAll('.plugin-cb').forEach(cb => {
+        cb.checked = plugins.includes(cb.dataset.key);
+      });
+      // 恢复导航栏勾选
+      const navItems = (tenant.settings && tenant.settings.nav_items) || null;
+      document.querySelectorAll('.nav-cb').forEach(cb => {
+        cb.checked = navItems ? navItems.includes(cb.dataset.key) : true;
+      });
+      // 恢复品牌配置
+      const settings = tenant.settings || {};
+      document.getElementById('formDashboardType').value = settings.dashboard_type || '';
+      document.getElementById('formBrandName').value = settings.brand_name || '';
+      const logoUrl = settings.logo_url || '';
+      document.getElementById('formLogoUrl').value = logoUrl;
+      document.getElementById('formCustomDomain').value = settings.custom_domain || '';
+      const preview = document.getElementById('formLogoPreview');
+      if (logoUrl) {
+        preview.src = logoUrl;
+        preview.style.display = 'inline-block';
+      } else {
+        preview.style.display = 'none';
+      }
+    } catch(e) {
+      alert('加载商户信息失败: '+e.message);
+      return;
+    }
+  } else {
+    title.textContent = '新建商户';
+    nameInput.value = '';
+    subdomainInput.value = '';
+    document.getElementById('formCustomDomain').value = '';
+    contactInput.value = '';
+    emailInput.value = '';
+    editId.value = '';
+    activeCheckbox.checked = true;
+    updateToggleText();
+    statusGroup.style.display = 'none';
+    document.getElementById('formDashboardType').value = '';
+    // 新建时清空插件勾选
+    document.querySelectorAll('.plugin-cb').forEach(cb => { cb.checked = false; });
+    // 新建时导航栏默认全选
+    document.querySelectorAll('.nav-cb').forEach(cb => { cb.checked = true; });
+    // 新建模式：显示账号密码字段
+    document.getElementById('tenantAccountGroup').style.display = 'block';
+    document.getElementById('tenantPasswordGroup').style.display = 'block';
+  }
+  modal.style.display = 'flex';
+};
+
+window.updateToggleText = function() {
+  const cb = document.getElementById('formTenantActive');
+  document.getElementById('toggleStatusText').textContent = cb.checked ? '启用' : '停用';
+};
+document.getElementById('formTenantActive')?.addEventListener('change', window.updateToggleText);
+
+// Logo URL 实时预览
+document.getElementById('formLogoUrl')?.addEventListener('input', function() {
+  const preview = document.getElementById('formLogoPreview');
+  const url = this.value.trim();
+  if (url) {
+    preview.src = url;
+    preview.style.display = 'inline-block';
+  } else {
+    preview.style.display = 'none';
+  }
+});
+
+// 子域名输入实时预览登录地址
+document.getElementById('formTenantSubdomain')?.addEventListener('input', function() {
+  const preview = document.getElementById('subdomainPreviewText');
+  if (preview) {
+    preview.textContent = this.value.trim() || 'chuangdian';
+  }
+});
+
+window.closeTenantForm = function() {
+  document.getElementById('tenantModal').style.display = 'none';
+};
+
+/* ── Save tenant ── */
+window.saveTenant = async function(e) {
+  e.preventDefault();
+  const tenantId = document.getElementById('editTenantId').value;
+  const name = document.getElementById('formTenantName').value.trim();
+  const subdomain = document.getElementById('formTenantSubdomain').value.trim();
+  const contact = document.getElementById('formTenantContact').value.trim();
+  const email = document.getElementById('formTenantEmail').value.trim();
+  const isActive = document.getElementById('formTenantActive').checked;
+
+  if (!name) { alert('请输入商户名称'); return; }
+  if (!subdomain) { alert('请输入子域名'); return; }
+  if (!/^[a-zA-Z0-9-]+$/.test(subdomain)) { alert('子域名只能包含字母、数字和连字符'); return; }
+
+  const body = { name, subdomain, contact_name: contact, contact_email: email, is_active: isActive };
+  // 收集插件勾选
+  const selectedPlugins = [];
+  document.querySelectorAll('.plugin-cb:checked').forEach(cb => {
+    selectedPlugins.push(cb.dataset.key);
+  });
+  // 收集导航栏勾选
+  const selectedNavItems = [];
+  document.querySelectorAll('.nav-cb:checked').forEach(cb => {
+    selectedNavItems.push(cb.dataset.key);
+  });
+  body.settings = {
+    plugins: selectedPlugins,
+    nav_items: selectedNavItems,
+    dashboard_type: document.getElementById('formDashboardType').value,
+    brand_name: document.getElementById('formBrandName').value.trim(),
+    logo_url: document.getElementById('formLogoUrl').value.trim(),
+    custom_domain: document.getElementById('formCustomDomain').value.trim(),
+  };
+  // 新建时带上账号密码
+  if (!tenantId) {
+    const username = document.getElementById('formTenantUsername').value.trim();
+    const password = document.getElementById('formTenantPassword').value.trim();
+    if (username) body.username = username;
+    if (password) body.password = password;
+  }
+  const btn = document.getElementById('saveTenantBtn');
+  try {
+    btn.disabled = true; btn.textContent = '保存中…';
+    if (tenantId) {
+      await f('/'+tenantId, { method:'PUT', body:JSON.stringify(body) });
+    } else {
+      await f('', { method:'POST', body:JSON.stringify(body) });
+    }
+    closeTenantForm();
+    await loadTenants();
+  } catch(e) {
+    alert('保存失败: '+e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '保存';
+  }
+};
+
+/* ── Delete tenant ── */
+window.showDeleteModal = function(tenantId, tenantName) {
+  deleteTargetId = tenantId;
+  deleteTargetName = tenantName;
+  document.getElementById('deleteTenantName').textContent = tenantName;
+  document.getElementById('deleteModal').style.display = 'flex';
+};
+
+window.closeDeleteModal = function() {
+  document.getElementById('deleteModal').style.display = 'none';
+  deleteTargetId = null;
+};
+
+window.confirmDelete = async function() {
+  if (!deleteTargetId) return;
+  const btn = document.getElementById('deleteConfirmBtn');
+  try {
+    btn.disabled = true; btn.textContent = '删除中…';
+    await f('/'+deleteTargetId, { method:'DELETE' });
+    closeDeleteModal();
+    await loadTenants();
+  } catch(e) {
+    alert('删除失败: '+e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '确认删除';
+  }
+};
+
+/* ── Users Modal ── */
+window.openUsersModal = async function(tenantId, tenantName) {
+  usersModalTenantId = tenantId;
+  document.getElementById('usersModalTenantId').value = tenantId;
+  document.getElementById('usersModalTenantName').value = tenantName;
+  document.getElementById('usersModalTitle').textContent = '管理用户 — '+tenantName;
+  document.getElementById('addUserInput').value = '';
+  document.getElementById('addUserRole').value = 'viewer';
+  document.getElementById('usersModal').style.display = 'flex';
+  await loadTenantUsers(tenantId);
+};
+
+window.closeUsersModal = function() {
+  document.getElementById('usersModal').style.display = 'none';
+  usersModalTenantId = null;
+};
+
+async function loadTenantUsers(tenantId) {
+  const container = document.getElementById('tenantUsersList');
+  try {
+    const data = await f('/'+tenantId+'/users');
+    const users = Array.isArray(data) ? data : (data.users||data.items||data.data||[]);
+    if (users.length===0) {
+      container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted-light);font-size:13px;">暂无关联用户</div>';
+      return;
+    }
+    container.innerHTML = users.map(u => {
+      const username = escapeHtml(u.username||u.name||'用户');
+      const role = u.role||'viewer';
+      const initial = username.charAt(0).toUpperCase();
+      const roleLabels = { admin:'管理员', editor:'编辑', viewer:'查看' };
+      return `<div class="user-item">
+        <div class="user-item-avatar">${initial}</div>
+        <div class="user-item-info">
+          <div class="user-item-name">${username}</div>
+          <span class="user-item-role user-item-role-${role}">${roleLabels[role]||role}</span>
+        </div>
+        <button class="user-item-remove" onclick="removeTenantUser('${tenantId}','${u.user_id||u.id}','${username.replace(/'/g,"\\'")}')" title="移除用户">✕</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--destructive);font-size:13px;">⚠️ '+e.message+'</div>';
+  }
+}
+
+window.addTenantUser = async function() {
+  const tenantId = usersModalTenantId;
+  if (!tenantId) return;
+  const username = document.getElementById('addUserInput').value.trim();
+  const role = document.getElementById('addUserRole').value;
+  if (!username) { alert('请输入用户名'); return; }
+  try {
+    await f('/'+tenantId+'/users', {
+      method:'POST',
+      body:JSON.stringify({ user_id: username, role: role })
+    });
+    document.getElementById('addUserInput').value = '';
+    await loadTenantUsers(tenantId);
+  } catch(e) {
+    alert('关联用户失败: '+e.message);
+  }
+};
+
+window.removeTenantUser = async function(tenantId, userId, userName) {
+  if (!confirm('确定要将用户「'+userName+'」从该商户移除吗？')) return;
+  try {
+    await f('/'+tenantId+'/users/'+userId, { method:'DELETE' });
+    await loadTenantUsers(tenantId);
+  } catch(e) {
+    alert('移除用户失败: '+e.message);
+  }
+};
+
+/* ── Kuaishou OSS Config ── */
+
+window.openKsOssModal = async function(tenantId, tenantName) {
+  document.getElementById('ksOssTenantId').value = tenantId;
+  document.getElementById('ksOssTenantName').textContent = tenantName;
+  document.getElementById('ksOssPath').value = '';
+  document.getElementById('ksOssFilename').value = '';
+  document.getElementById('ksOssPreviewVal').textContent = 'kuaishou/';
+  document.getElementById('saveKsOssBtn').disabled = false;
+  document.getElementById('saveKsOssBtn').textContent = '保存配置';
+  document.getElementById('ksOssModal').style.display = 'flex';
+
+  try {
+    const data = await fRaw('/api/apps/kuaishou/admin/tenants/'+tenantId+'/oss-config');
+    const path = data.oss_path || '';
+    const fname = data.oss_filename || '';
+    document.getElementById('ksOssPath').value = path;
+    document.getElementById('ksOssFilename').value = fname;
+    document.getElementById('ksOssPreviewVal').textContent = path || 'kuaishou/';
+  } catch(e) {
+    // 商户可能暂无配置，保持空值
+  }
+};
+
+window.closeKsOssModal = function() {
+  document.getElementById('ksOssModal').style.display = 'none';
+};
+
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'ksOssPath') {
+    const val = e.target.value.trim();
+    document.getElementById('ksOssPreviewVal').textContent = val || 'kuaishou/';
+  }
+});
+
+window.saveKsOssConfig = async function() {
+  const tenantId = document.getElementById('ksOssTenantId').value;
+  const ossPath = document.getElementById('ksOssPath').value.trim();
+  const ossFilename = document.getElementById('ksOssFilename').value.trim();
+  if (!ossPath) { alert('请输入 OSS 路径'); return; }
+  if (!ossFilename) { alert('请输入固定文件名'); return; }
+  const btn = document.getElementById('saveKsOssBtn');
+  btn.disabled = true;
+  btn.textContent = '保存中…';
+  try {
+    const data = await fRaw('/api/apps/kuaishou/admin/tenants/'+tenantId+'/oss-config', {
+      method: 'PUT',
+      body: JSON.stringify({ oss_path: ossPath, oss_filename: ossFilename })
+    });
+    document.getElementById('ksOssPreviewVal').textContent = data.oss_path;
+    alert('✅ OSS 路径配置已保存');
+    closeKsOssModal();
+  } catch(e) {
+    alert('保存失败: '+e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '保存配置';
+  }
+};
+
+/* ── Init ── */
+if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', loadTenants);
+else loadTenants();
+
+})();
+</script>
+{% endblock %}
