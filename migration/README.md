@@ -7,9 +7,11 @@
 迁移包包含：
 
 - `workspace/hypit-local-demo`：本地 Hypit 工作树，包括 Studio 导出、风格库和本地改动。
+- `workspace/.git`：完整的 `hypit-workspace` 仓库，可在新电脑继续拉取和提交。
 - `workspace/style-library`：已归档的剪辑风格和参考分析。
 - `workspace/playbook`：8 步视频制作流程、JSON 模板和门禁校验器。
 - `workspace/component-library`：标题、字幕、转场、版式、贴纸和场景块的状态登记。
+- `workspace/scripts`：未进入 Git 的本地配音、ASR、镜头检索和审片脚本。
 - `workspace/HYPIT_STYLE_SELECTION.json`：当前勾选风格。
 - `workspace/HYPIT_EDITING_PROTOCOL.md`：剪辑复用规则。
 - `workspace/hypit.runtime.json`：默认 Runtime，包括豆包 ASR 接入。
@@ -18,6 +20,13 @@
 - `workspace/config.json`：可选，火山引擎 ASR/TOS 凭证。包含密钥，只能通过可信介质私下传输。
 
 不复制 `node_modules`。新电脑会根据 `pnpm-lock.yaml` 安装同一批依赖，避免 Windows 链接路径失效。
+
+两个 GitHub 仓库的完整跟踪文件都会进入迁移包：
+
+- `hypit-workspace`：位于 `workspace`，包含 `.git`。
+- `hypit-workbench`：位于 `workspace/hypit-local-demo`，包含 `.git`。
+
+迁移包不是只复制运行所需子集；新电脑拿到后可以继续执行 `git pull`、提交和推送。
 
 ## 质量锁定
 

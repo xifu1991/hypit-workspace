@@ -65,6 +65,42 @@ foreach ($name in @("style-library", "component-library", "playbook", "HYPIT_EDI
     }
 }
 
+$git = Get-Command git -ErrorAction SilentlyContinue
+if ($null -eq $git) {
+    throw "Git is required to create a complete workspace migration bundle."
+}
+
+Write-Host "Copying complete hypit-workspace repository..."
+$trackedFiles = & $git.Source -c core.quotepath=false -C $workspace ls-files
+if ($LASTEXITCODE -ne 0) {
+    throw "Unable to list tracked files from the workspace repository."
+}
+foreach ($relativePath in $trackedFiles) {
+    if ([string]::IsNullOrWhiteSpace($relativePath)) {
+        continue
+    }
+    $sourceFile = Join-Path $workspace $relativePath
+    if (-not (Test-Path -LiteralPath $sourceFile -PathType Leaf)) {
+        continue
+    }
+    $targetFile = Join-Path $bundleWorkspace $relativePath
+    $targetDirectory = Split-Path -Parent $targetFile
+    New-Item -ItemType Directory -Force -Path $targetDirectory | Out-Null
+    Copy-Item -LiteralPath $sourceFile -Destination $targetFile -Force
+}
+
+$workspaceGit = Join-Path $workspace ".git"
+if (-not (Test-Path -LiteralPath $workspaceGit)) {
+    throw "Workspace Git metadata was not found: $workspaceGit"
+}
+Copy-Tree -SourcePath $workspaceGit -DestinationRoot $bundleWorkspace
+
+$localScripts = Join-Path $workspace "scripts"
+if (Test-Path -LiteralPath $localScripts) {
+    Write-Host "Copying local-only workspace scripts..."
+    Copy-Tree -SourcePath $localScripts -DestinationRoot $bundleWorkspace
+}
+
 foreach ($script in Get-ChildItem -LiteralPath $workspace -Filter "start_studio*.ps1" -File -ErrorAction SilentlyContinue) {
     Copy-Item -LiteralPath $script.FullName -Destination $bundleWorkspace -Force
 }
