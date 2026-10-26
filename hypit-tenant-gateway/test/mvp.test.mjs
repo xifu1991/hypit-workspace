@@ -122,12 +122,90 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
     assert.equal(voice.response.status, 201);
   }
 
+  const disposableVoice = await jsonRequest(
+    base,
+    `/api/admin/tenants/${tenantA.tenantId}/voices`,
+    {
+      method: "POST",
+      cookie: adminCookie,
+      body: { name: "待删除", speakerId: "S_DELETE_ME" },
+    },
+  );
+  assert.equal(disposableVoice.response.status, 201);
+
+  const disabledVoice = await jsonRequest(
+    base,
+    `/api/admin/tenants/${tenantA.tenantId}/voices/${disposableVoice.data.voice.id}`,
+    { method: "DELETE", cookie: adminCookie },
+  );
+  assert.equal(disabledVoice.response.status, 200);
+
+  const afterDeleteOverview = await jsonRequest(base, "/api/admin/overview", {
+    cookie: adminCookie,
+  });
+  const tenantAfterDelete = afterDeleteOverview.data.tenants.find(
+    (item) => item.id === tenantA.tenantId,
+  );
+  assert.ok(
+    tenantAfterDelete.voices.every((item) => item.name !== "待删除"),
+  );
+  assert.equal(tenantAfterDelete.voices[0].speakerId, `S_${tenantA.tenantId}`);
+
+  const restoredVoice = await jsonRequest(
+    base,
+    `/api/admin/tenants/${tenantA.tenantId}/voices`,
+    {
+      method: "POST",
+      cookie: adminCookie,
+      body: { name: "待删除", speakerId: "S_DELETE_ME_2" },
+    },
+  );
+  assert.equal(restoredVoice.response.status, 201);
+  assert.equal(restoredVoice.data.voice.id, disposableVoice.data.voice.id);
+  await jsonRequest(
+    base,
+    `/api/admin/tenants/${tenantA.tenantId}/voices/${disposableVoice.data.voice.id}`,
+    { method: "DELETE", cookie: adminCookie },
+  );
+
   const tenantLogin = await jsonRequest(base, "/api/auth/login", {
     method: "POST",
     body: { username: "tenant-a", password: "tenant-password-a" },
   });
   assert.equal(tenantLogin.response.status, 200);
   const tenantCookie = tenantLogin.response.headers.get("set-cookie").split(";")[0];
+
+  const tenantManagedVoice = await jsonRequest(
+    base,
+    `/api/admin/tenants/${tenantA.tenantId}/voices`,
+    {
+      method: "POST",
+      cookie: adminCookie,
+      body: { name: "租户删除", speakerId: "S_TENANT_DELETE" },
+    },
+  );
+  const tenantVoicesBefore = await jsonRequest(base, "/api/tenant/voices", {
+    cookie: tenantCookie,
+  });
+  assert.ok(
+    tenantVoicesBefore.data.voices.some(
+      (item) => item.id === tenantManagedVoice.data.voice.id,
+    ),
+  );
+  const tenantVoiceDelete = await jsonRequest(
+    base,
+    `/api/tenant/voices/${tenantManagedVoice.data.voice.id}`,
+    { method: "DELETE", cookie: tenantCookie },
+  );
+  assert.equal(tenantVoiceDelete.response.status, 200);
+  const tenantVoicesAfter = await jsonRequest(base, "/api/tenant/voices", {
+    cookie: tenantCookie,
+  });
+  assert.ok(
+    tenantVoicesAfter.data.voices.every(
+      (item) => item.id !== tenantManagedVoice.data.voice.id,
+    ),
+  );
 
   const tokenResult = await jsonRequest(base, "/api/tenant/tokens", {
     method: "POST",
@@ -137,6 +215,17 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.equal(tokenResult.response.status, 201);
   const tenantToken = tokenResult.data.token;
   assert.match(tenantToken, /^hgt_/u);
+
+  const deletedVoiceTts = await fetch(`${base}/gateway/v1/tts`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${tenantToken}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": "tts-voice-deleted",
+    },
+    body: JSON.stringify({ text: "不可使用", speaker: "待删除" }),
+  });
+  assert.equal(deletedVoiceTts.status, 404);
 
   const firstTts = await fetch(`${base}/gateway/v1/tts`, {
     method: "POST",

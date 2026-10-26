@@ -162,6 +162,34 @@ test("SaaS bridge manages a tenant without exposing the browser session", async 
   assert.equal(failed.response.status, 200);
   assert.equal(failed.data.order.status, "failed");
 
+  const voice = await jsonRequest(base, `/saas/v1/tenants/${tenantId}/voices`, {
+    method: "POST",
+    secret: "bridge-test-secret",
+    body: { name: "平台音色", speakerId: "S_SAAS_BRIDGE" },
+  });
+  assert.equal(voice.response.status, 201);
+
+  const voices = await jsonRequest(base, `/saas/v1/tenants/${tenantId}/voices`, {
+    secret: "bridge-test-secret",
+  });
+  assert.equal(voices.response.status, 200);
+  assert.equal(voices.data.voices.length, 1);
+  assert.equal(voices.data.voices[0].name, "平台音色");
+  assert.equal(voices.data.voices[0].speakerId, undefined);
+
+  const deletedVoice = await jsonRequest(
+    base,
+    `/saas/v1/tenants/${tenantId}/voices/${voice.data.voice.id}`,
+    { method: "DELETE", secret: "bridge-test-secret" },
+  );
+  assert.equal(deletedVoice.response.status, 200);
+  const afterVoiceDelete = await jsonRequest(
+    base,
+    `/saas/v1/tenants/${tenantId}/voices`,
+    { secret: "bridge-test-secret" },
+  );
+  assert.deepEqual(afterVoiceDelete.data.voices, []);
+
   const afterPayment = await jsonRequest(
     base,
     `/saas/v1/tenants/${tenantId}/dashboard`,

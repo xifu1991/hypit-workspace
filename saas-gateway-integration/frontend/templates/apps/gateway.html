@@ -210,6 +210,46 @@
   gap: 6px;
   align-items: center;
 }
+.gw-voice-list {
+  display: grid;
+  gap: 6px;
+  min-width: 180px;
+}
+.gw-voice-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.gw-voice-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.gw-voice-copy strong {
+  color: var(--fg);
+  font-size: 12px;
+}
+.gw-voice-copy span {
+  overflow-wrap: anywhere;
+  color: var(--muted-fg);
+  font-family: "Fira Code", monospace;
+  font-size: 10px;
+}
+.gw-voice-delete {
+  min-height: 26px;
+  padding: 3px 7px;
+  border: 1px solid color-mix(in srgb, var(--destructive) 45%, var(--border));
+  border-radius: 5px;
+  background: transparent;
+  color: var(--destructive);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.gw-voice-delete:hover {
+  background: color-mix(in srgb, var(--destructive) 8%, var(--card-bg));
+}
 .gw-actions input {
   width: 92px;
   min-height: 32px;
@@ -945,7 +985,7 @@
             </div>
             <div class="gw-table-wrap">
               <table class="gw-table">
-                <thead><tr><th>租户</th><th>状态</th><th class="num">余额</th><th class="num">消费</th><th class="num">调用</th><th>操作</th></tr></thead>
+                <thead><tr><th>租户</th><th>状态</th><th class="num">余额</th><th class="num">消费</th><th class="num">调用</th><th>音色</th><th>操作</th></tr></thead>
                 <tbody id="gwTenants"></tbody>
               </table>
             </div>
@@ -1083,6 +1123,20 @@
           <table class="gw-table gw-api-key-table">
             <thead><tr><th>名称</th><th>前缀</th><th>状态</th><th></th></tr></thead>
             <tbody id="gwTokens"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="gw-panel">
+        <div class="gw-panel-head">
+          <div>
+            <h2>音色</h2>
+            <p>当前租户可使用的声音复刻音色</p>
+          </div>
+        </div>
+        <div class="gw-table-wrap">
+          <table class="gw-table">
+            <thead><tr><th>名称</th><th>状态</th><th>分配时间</th><th></th></tr></thead>
+            <tbody id="gwVoices"></tbody>
           </table>
         </div>
       </section>
@@ -1433,6 +1487,20 @@
           <td class="num">${money(tenant.spentFen)}</td>
           <td class="num">${Number(tenant.usageCount || 0).toLocaleString("zh-CN")}</td>
           <td>
+            <div class="gw-voice-list">
+              ${(tenant.voices || []).length
+                ? tenant.voices.map((voice) => `
+                  <div class="gw-voice-item">
+                    <span class="gw-voice-copy">
+                      <strong>${escapeHtml(voice.name)}</strong>
+                      <span>${escapeHtml(voice.speakerId || "")}</span>
+                    </span>
+                    <button class="gw-voice-delete" type="button" onclick="gwDeleteAdminVoice('${escapeHtml(tenant.id)}', '${escapeHtml(voice.id)}')">删除</button>
+                  </div>`).join("")
+                : '<span class="gw-muted">未添加</span>'}
+            </div>
+          </td>
+          <td>
             <div class="gw-actions">
               <form class="gw-actions" onsubmit="gwRecharge(event, '${escapeHtml(tenant.id)}')">
                 <input name="amount" type="number" min="0.01" step="0.01" placeholder="金额" required>
@@ -1450,7 +1518,7 @@
             </div>
           </td>
         </tr>`).join("")
-      : '<tr><td colspan="6" class="gw-empty">尚未创建网关租户</td></tr>';
+      : '<tr><td colspan="7" class="gw-empty">尚未创建网关租户</td></tr>';
 
     document.getElementById("gwPrices").innerHTML = (data.prices || []).map((price) => `
       <tr>
@@ -1538,6 +1606,16 @@
           <td>${item.enabled ? `<button class="gw-btn small danger" type="button" onclick="gwDisableToken('${escapeHtml(item.id)}')">停用</button>` : ""}</td>
         </tr>`).join("")
       : '<tr><td colspan="4" class="gw-empty">尚未创建 API Key</td></tr>';
+
+    document.getElementById("gwVoices").innerHTML = (data.voices || []).length
+      ? data.voices.map((item) => `
+        <tr>
+          <td><strong>${escapeHtml(item.name)}</strong></td>
+          <td>${item.enabled ? '<span class="gw-pill">启用</span>' : '<span class="gw-pill off">停用</span>'}</td>
+          <td>${escapeHtml(dateText(item.createdAt))}</td>
+          <td><button class="gw-voice-delete" type="button" onclick="gwDeleteTenantVoice('${escapeHtml(item.id)}')">删除</button></td>
+        </tr>`).join("")
+      : '<tr><td colspan="4" class="gw-empty">尚未分配音色，请联系平台管理员添加</td></tr>';
 
     loading.hidden = true;
     tenantRoot.hidden = false;
@@ -1715,6 +1793,29 @@
         }),
       });
       await reloadAdmin();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  window.gwDeleteAdminVoice = async function(tenantId, voiceId) {
+    if (!confirm("确认删除这个音色？删除后该租户将无法继续使用。")) return;
+    try {
+      await api(
+        `/admin/tenants/${encodeURIComponent(tenantId)}/voices/${encodeURIComponent(voiceId)}`,
+        { method: "DELETE" },
+      );
+      await reloadAdmin();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  window.gwDeleteTenantVoice = async function(voiceId) {
+    if (!confirm("确认删除这个音色？删除后当前账户将无法继续使用。")) return;
+    try {
+      await api(`/tenant/voices/${encodeURIComponent(voiceId)}`, { method: "DELETE" });
+      await reloadTenant(document.getElementById("gwUsageDate")?.value || undefined);
     } catch (error) {
       alert(error.message);
     }

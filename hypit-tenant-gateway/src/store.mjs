@@ -419,6 +419,29 @@ export class Store {
     const cleanName = String(name ?? "").trim();
     const speakerId = String(providerSpeakerId ?? "").trim();
     if (!cleanName || !speakerId) throw badRequest("Voice name and speaker ID are required");
+    const existing = this.db
+      .prepare(
+        `SELECT id, enabled FROM voices
+         WHERE tenant_id = ? AND name = ?`,
+      )
+      .get(tenantId, cleanName);
+    if (existing?.enabled) {
+      throw conflict("Voice name already exists");
+    }
+    if (existing) {
+      this.db
+        .prepare(
+          `UPDATE voices
+           SET provider_speaker_id = ?, enabled = 1, created_at = ?
+           WHERE id = ? AND tenant_id = ?`,
+        )
+        .run(speakerId, nowIso(), existing.id, tenantId);
+      this.audit(actorUserId, "voice.restore", tenantId, {
+        name: cleanName,
+        voiceId: existing.id,
+      });
+      return { id: existing.id, name: cleanName };
+    }
     try {
       const id = makeId("voi");
       this.db
@@ -438,19 +461,32 @@ export class Store {
     }
   }
 
-  listVoices(tenantId) {
+  listVoices(tenantId, { includeSpeakerId = false } = {}) {
     return this.db
       .prepare(
-        `SELECT id, name, enabled, created_at FROM voices
-         WHERE tenant_id = ? ORDER BY created_at ASC`,
+        `SELECT id, name, provider_speaker_id, enabled, created_at FROM voices
+         WHERE tenant_id = ? AND enabled = 1 ORDER BY created_at ASC`,
       )
       .all(tenantId)
       .map((row) => ({
         id: row.id,
         name: row.name,
+        ...(includeSpeakerId ? { speakerId: row.provider_speaker_id } : {}),
         enabled: Boolean(row.enabled),
         createdAt: row.created_at,
       }));
+  }
+
+  disableVoice(tenantId, voiceId, actorUserId) {
+    const result = this.db
+      .prepare(
+        `UPDATE voices SET enabled = 0
+         WHERE id = ? AND tenant_id = ? AND enabled = 1`,
+      )
+      .run(String(voiceId ?? "").trim(), tenantId);
+    if (Number(result.changes) !== 1) throw notFound("Voice not found");
+    this.audit(actorUserId, "voice.disable", tenantId, { voiceId });
+    return { ok: true };
   }
 
   resolveVoice(tenantId, name) {
@@ -1260,7 +1296,10 @@ export class Store {
   }
 
   adminOverview() {
-    const tenants = this.listTenants();
+    const tenants = this.listTenants().map((tenant) => ({
+      ...tenant,
+      voices: this.listVoices(tenant.id, { includeSpeakerId: true }),
+    }));
     return {
       tenants,
       totals: {

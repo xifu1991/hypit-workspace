@@ -288,6 +288,18 @@ export function createApplication(config = loadConfig()) {
             return;
           }
 
+          if (method === "GET" && action === "voices") {
+            sendJson(res, 200, { voices: store.listVoices(tenantId) });
+            return;
+          }
+
+          const bridgeVoiceMatch = /^voices\/([^/]+)$/u.exec(action);
+          if (method === "DELETE" && bridgeVoiceMatch) {
+            store.disableVoice(tenantId, bridgeVoiceMatch[1], actorId);
+            sendJson(res, 200, { ok: true });
+            return;
+          }
+
           if (method === "GET" && action === "tokens") {
             sendJson(res, 200, { tokens: store.listApiTokens(tenantId) });
             return;
@@ -610,6 +622,15 @@ export function createApplication(config = loadConfig()) {
         return;
       }
 
+      const tenantVoiceMatch = /^\/api\/tenant\/voices\/([^/]+)$/u.exec(path);
+      if (method === "DELETE" && tenantVoiceMatch) {
+        requireSameOrigin(req, config);
+        const tenantId = store.requireTenantManager(user);
+        store.disableVoice(tenantId, tenantVoiceMatch[1], user.id);
+        sendJson(res, 200, { ok: true });
+        return;
+      }
+
       if (method === "GET" && path === "/api/admin/overview") {
         store.requireAdmin(user);
         const overview = store.adminOverview();
@@ -661,6 +682,16 @@ export function createApplication(config = loadConfig()) {
           );
           sendJson(res, 201, { voice });
         }
+        return;
+      }
+
+      const adminVoiceMatch =
+        /^\/api\/admin\/tenants\/([^/]+)\/voices\/([^/]+)$/u.exec(path);
+      if (method === "DELETE" && adminVoiceMatch) {
+        requireSameOrigin(req, config);
+        store.requireAdmin(user);
+        store.disableVoice(adminVoiceMatch[1], adminVoiceMatch[2], user.id);
+        sendJson(res, 200, { ok: true });
         return;
       }
 

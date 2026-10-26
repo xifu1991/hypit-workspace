@@ -293,9 +293,15 @@ export function renderTenant(user, data) {
         .join("")
     : '<tr><td colspan="5" class="muted">尚未创建令牌</td></tr>';
 
+  const canManageVoices = user.role === "tenant_admin";
   const voices = data.voices.length
-    ? data.voices.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${item.enabled ? "启用" : "停用"}</td><td>${dateText(item.createdAt)}</td></tr>`).join("")
-    : '<tr><td colspan="3" class="muted">管理员尚未分配音色</td></tr>';
+    ? data.voices.map((item) => `<tr>
+        <td>${escapeHtml(item.name)}</td>
+        <td>${item.enabled ? "启用" : "停用"}</td>
+        <td>${dateText(item.createdAt)}</td>
+        <td>${canManageVoices ? `<button class="danger" type="button" onclick="deleteVoice('${escapeHtml(item.id)}')">删除</button>` : ""}</td>
+      </tr>`).join("")
+    : '<tr><td colspan="4" class="muted">管理员尚未分配音色</td></tr>';
 
   const ledger = data.ledger.length
     ? data.ledger
@@ -358,7 +364,7 @@ export function renderTenant(user, data) {
           </section>
           <section class="panel">
             <div class="panel-head"><h2>声音</h2></div>
-            <table><thead><tr><th>名称</th><th>状态</th><th>分配时间</th></tr></thead><tbody>${voices}</tbody></table>
+            <table><thead><tr><th>名称</th><th>状态</th><th>分配时间</th><th></th></tr></thead><tbody>${voices}</tbody></table>
           </section>
         </aside>
       </div>`,
@@ -394,6 +400,13 @@ export function renderTenant(user, data) {
           location.reload();
         } catch (error) { alert(error.message); }
       }
+      async function deleteVoice(id) {
+        if (!confirm("删除这个音色？删除后租户将无法继续使用。")) return;
+        try {
+          await api("/api/tenant/voices/" + encodeURIComponent(id), { method: "DELETE" });
+          location.reload();
+        } catch (error) { alert(error.message); }
+      }
     `,
   });
 }
@@ -408,6 +421,14 @@ export function renderAdmin(user, data) {
             <td class="num">¥${formatFen(tenant.balanceFen)}</td>
             <td class="num">¥${formatFen(tenant.spentFen)}</td>
             <td class="num">${tenant.usageCount}</td>
+            <td>
+              ${(tenant.voices || []).length
+                ? tenant.voices.map((voice) => `<div class="actions">
+                    <span><strong>${escapeHtml(voice.name)}</strong><br><span class="code muted">${escapeHtml(voice.speakerId || "")}</span></span>
+                    <button class="danger" type="button" onclick="deleteVoice('${escapeHtml(tenant.id)}', '${escapeHtml(voice.id)}')">删除</button>
+                  </div>`).join("")
+                : '<span class="muted">未添加</span>'}
+            </td>
             <td>
               <form class="actions" onsubmit="recharge(event, '${escapeHtml(tenant.id)}')">
                 <input name="amount" type="number" min="0.01" step="0.01" style="width:100px" required placeholder="金额">
@@ -428,7 +449,7 @@ export function renderAdmin(user, data) {
           </tr>`,
         )
         .join("")
-    : '<tr><td colspan="7" class="muted">尚未创建租户</td></tr>';
+    : '<tr><td colspan="8" class="muted">尚未创建租户</td></tr>';
 
   const priceRows = data.prices
     .map(
@@ -497,7 +518,7 @@ export function renderAdmin(user, data) {
       </div>
       <section class="panel">
         <div class="panel-head"><h2>租户</h2></div>
-        <table><thead><tr><th>租户</th><th>状态</th><th class="num">余额</th><th class="num">消费</th><th class="num">调用</th><th>充值</th><th></th></tr></thead><tbody>${tenantRows}</tbody></table>
+        <table><thead><tr><th>租户</th><th>状态</th><th class="num">余额</th><th class="num">消费</th><th class="num">调用</th><th>音色</th><th>充值</th><th></th></tr></thead><tbody>${tenantRows}</tbody></table>
       </section>
       <section class="panel">
         <div class="panel-head"><h2>计费单价</h2></div>
@@ -544,6 +565,13 @@ export function renderAdmin(user, data) {
             method: "POST",
             body: JSON.stringify({ name: form.elements.name.value, speakerId: form.elements.speakerId.value })
           });
+          location.reload();
+        } catch (error) { alert(error.message); }
+      }
+      async function deleteVoice(tenantId, voiceId) {
+        if (!confirm("删除这个音色？删除后租户将无法继续使用。")) return;
+        try {
+          await api("/api/admin/tenants/" + encodeURIComponent(tenantId) + "/voices/" + encodeURIComponent(voiceId), { method: "DELETE" });
           location.reload();
         } catch (error) { alert(error.message); }
       }

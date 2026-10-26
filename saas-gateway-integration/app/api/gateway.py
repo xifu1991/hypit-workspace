@@ -601,6 +601,22 @@ async def add_gateway_voice(
     )
 
 
+@router.delete("/admin/tenants/{gateway_tenant_id}/voices/{voice_id}")
+async def delete_gateway_voice(
+    gateway_tenant_id: str,
+    voice_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    _require_admin(current_user)
+    return await _gateway_call(
+        "DELETE",
+        (
+            f"/saas/v1/tenants/{quote(gateway_tenant_id, safe='')}"
+            f"/voices/{quote(voice_id, safe='')}"
+        ),
+    )
+
+
 @router.put("/admin/prices/{service}")
 async def update_gateway_price(
     service: str,
@@ -649,8 +665,45 @@ async def tenant_gateway_summary(
         f"/saas/v1/tenants/{gateway_tenant_id}/dashboard"
         + (f"?date={quote(date, safe='')}" if date else ""),
     )
-    dashboard.pop("voices", None)
     return dashboard
+
+
+@router.get("/tenant/voices")
+async def tenant_gateway_voices(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    tenant_id = str(current_user.get("tenant_id") or "")
+    if not tenant_id:
+        raise HTTPException(status_code=403, detail="当前账号不属于商户")
+    tenant = await _tenant_row(db, tenant_id)
+    gateway_tenant_id = await _tenant_gateway_id(db, tenant)
+    return await _gateway_call(
+        "GET",
+        f"/saas/v1/tenants/{quote(gateway_tenant_id, safe='')}/voices",
+    )
+
+
+@router.delete("/tenant/voices/{voice_id}")
+async def delete_tenant_gateway_voice(
+    request: Request,
+    voice_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    _require_tenant_admin(request)
+    tenant_id = str(current_user.get("tenant_id") or "")
+    if not tenant_id:
+        raise HTTPException(status_code=403, detail="当前账号不属于商户")
+    tenant = await _tenant_row(db, tenant_id)
+    gateway_tenant_id = await _tenant_gateway_id(db, tenant)
+    return await _gateway_call(
+        "DELETE",
+        (
+            f"/saas/v1/tenants/{quote(gateway_tenant_id, safe='')}"
+            f"/voices/{quote(voice_id, safe='')}"
+        ),
+    )
 
 
 @router.post("/tenant/redeem")
