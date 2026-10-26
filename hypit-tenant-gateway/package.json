@@ -18,7 +18,8 @@
     "gateway": "node --env-file-if-exists=.env bin/hypit-gateway.mjs",
     "reset-admin-password": "node --env-file-if-exists=.env scripts/reset-admin-password.mjs",
     "apply-official-pricing": "node --env-file-if-exists=.env scripts/apply-official-pricing.mjs",
+    "clear-financial-data": "node --env-file-if-exists=.env scripts/clear-financial-data.mjs",
     "test": "node --test",
-    "check": "node --check src/config.mjs && node --check src/database.mjs && node --check src/errors.mjs && node --check src/money.mjs && node --check src/pricing.mjs && node --check src/security.mjs && node --check src/server.mjs && node --check src/store.mjs && node --check src/providers.mjs && node --check src/gateway.mjs && node --check src/ui.mjs && node --check src/client.mjs && node --check bin/hypit-gateway.mjs && node --check scripts/reset-admin-password.mjs && node --check scripts/apply-official-pricing.mjs"
+    "check": "node --check src/config.mjs && node --check src/database.mjs && node --check src/errors.mjs && node --check src/money.mjs && node --check src/pricing.mjs && node --check src/security.mjs && node --check src/server.mjs && node --check src/store.mjs && node --check src/providers.mjs && node --check src/gateway.mjs && node --check src/ui.mjs && node --check src/client.mjs && node --check bin/hypit-gateway.mjs && node --check scripts/reset-admin-password.mjs && node --check scripts/apply-official-pricing.mjs && node --check scripts/clear-financial-data.mjs"
   }
 }
