@@ -196,6 +196,10 @@ test("SaaS bridge manages a tenant without exposing the browser session", async 
     { secret: "bridge-test-secret" },
   );
   assert.equal(afterPayment.data.wallet.availableFen, 2000);
+  assert.equal(afterPayment.data.rechargeSummary.rechargeFen, 2000);
+  assert.equal(afterPayment.data.rechargeSummary.wechatRechargeFen, 800);
+  assert.equal(afterPayment.data.rechargeSummary.grantRechargeFen, 1200);
+  assert.equal(afterPayment.data.rechargeSummary.rechargeCodeFen, 0);
   assert.ok(
     afterPayment.data.ledger.some(
       (item) =>
@@ -257,4 +261,23 @@ test("SaaS bridge manages a tenant without exposing the browser session", async 
   );
   assert.equal(redeemed.response.status, 200);
   assert.equal(redeemed.data.wallet.availableFen, 2500);
+
+  const dashboardAfterCode = await jsonRequest(
+    base,
+    `/saas/v1/tenants/${tenantId}/dashboard`,
+    { secret: "bridge-test-secret" },
+  );
+  assert.equal(dashboardAfterCode.data.rechargeSummary.rechargeFen, 2500);
+  assert.equal(dashboardAfterCode.data.rechargeSummary.wechatRechargeFen, 800);
+  assert.equal(dashboardAfterCode.data.rechargeSummary.grantRechargeFen, 1200);
+  assert.equal(dashboardAfterCode.data.rechargeSummary.rechargeCodeFen, 500);
+
+  const overview = await jsonRequest(base, "/saas/v1/overview", {
+    secret: "bridge-test-secret",
+  });
+  assert.equal(overview.response.status, 200);
+  assert.equal(overview.data.totals.rechargeFen, 2500);
+  assert.equal(overview.data.totals.wechatRechargeFen, 800);
+  assert.equal(overview.data.totals.grantRechargeFen, 1200);
+  assert.equal(overview.data.totals.rechargeCodeFen, 500);
 });

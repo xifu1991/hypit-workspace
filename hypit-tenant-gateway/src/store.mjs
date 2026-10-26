@@ -30,6 +30,15 @@ function parseJson(value, fallback = null) {
   }
 }
 
+function rechargeSummaryFrom(row) {
+  return {
+    rechargeFen: number(row?.recharge_fen),
+    wechatRechargeFen: number(row?.wechat_recharge_fen),
+    grantRechargeFen: number(row?.grant_recharge_fen),
+    rechargeCodeFen: number(row?.recharge_code_fen),
+  };
+}
+
 function shanghaiDate(now = new Date()) {
   return new Date(now.getTime() + 8 * 60 * 60 * 1000)
     .toISOString()
@@ -1301,6 +1310,27 @@ export class Store {
       }));
   }
 
+  rechargeSummary(tenantId = null) {
+    const tenantClause = tenantId ? "AND tenant_id = ?" : "";
+    const row = this.db
+      .prepare(
+        `SELECT COALESCE(SUM(amount_fen), 0) AS recharge_fen,
+                COALESCE(SUM(CASE WHEN service = 'wechat_recharge'
+                  THEN amount_fen ELSE 0 END), 0) AS wechat_recharge_fen,
+                COALESCE(SUM(CASE WHEN service = 'recharge'
+                  THEN amount_fen ELSE 0 END), 0) AS grant_recharge_fen,
+                COALESCE(SUM(CASE WHEN service = 'recharge_code'
+                  THEN amount_fen ELSE 0 END), 0) AS recharge_code_fen
+         FROM ledger_entries
+         WHERE kind = 'credit'
+           AND amount_fen > 0
+           AND service IN ('recharge', 'wechat_recharge', 'recharge_code')
+           ${tenantClause}`,
+      )
+      .get(...(tenantId ? [tenantId] : []));
+    return rechargeSummaryFrom(row);
+  }
+
   tenantDashboard(tenantId, { date } = {}) {
     const tenant = this.db
       .prepare("SELECT id, name, status, created_at FROM tenants WHERE id = ?")
@@ -1316,6 +1346,7 @@ export class Store {
       },
       wallet: this.wallet(tenantId),
       summary: this.usageSummary(tenantId),
+      rechargeSummary: this.rechargeSummary(tenantId),
       dailyUsage: this.dailyUsage(tenantId, usageDate),
       usage: this.usage(tenantId, { limit: 25, date: usageDate }),
       ledger: this.ledger(tenantId, 25),
@@ -1509,6 +1540,7 @@ export class Store {
         balanceFen: tenants.reduce((sum, item) => sum + item.balanceFen, 0),
         reservedFen: tenants.reduce((sum, item) => sum + item.reservedFen, 0),
         spentFen: tenants.reduce((sum, item) => sum + item.spentFen, 0),
+        ...this.rechargeSummary(),
       },
       prices: this.listPrices(),
       rechargeCodes: this.listRechargeCodes(25),

@@ -117,6 +117,10 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.equal(grantOnlyOverview.data.monthly.grantCostFen, 333);
   assert.equal(grantOnlyOverview.data.monthly.profitFen, -333);
   assert.equal(grantOnlyOverview.data.monthly.marginBps, null);
+  assert.equal(grantOnlyOverview.data.totals.rechargeFen, 1_000);
+  assert.equal(grantOnlyOverview.data.totals.wechatRechargeFen, 0);
+  assert.equal(grantOnlyOverview.data.totals.grantRechargeFen, 1_000);
+  assert.equal(grantOnlyOverview.data.totals.rechargeCodeFen, 0);
 
   for (const tenant of [tenantA, tenantB]) {
     const voice = await jsonRequest(
@@ -274,6 +278,10 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.equal(summary.data.dailyUsage.apiRequests, 1);
   assert.equal(summary.data.dailyUsage.tokens, 3);
   assert.equal(summary.data.dailyUsage.hourly.length, 24);
+  assert.equal(summary.data.rechargeSummary.rechargeFen, 1_000);
+  assert.equal(summary.data.rechargeSummary.wechatRechargeFen, 0);
+  assert.equal(summary.data.rechargeSummary.grantRechargeFen, 1_000);
+  assert.equal(summary.data.rechargeSummary.rechargeCodeFen, 0);
 
   const asr = await fetch(`${base}/gateway/v1/asr`, {
     method: "POST",
@@ -347,6 +355,7 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   });
   assert.equal(tenantBSummary.data.summary.calls, 0);
   assert.equal(tenantBSummary.data.wallet.availableFen, 0);
+  assert.equal(tenantBSummary.data.rechargeSummary.rechargeFen, 0);
 
   const code = await jsonRequest(base, "/api/admin/recharge-codes", {
     method: "POST",
@@ -381,6 +390,10 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.ok(overview.data.monthly.revenueFen >= 3);
   assert.equal(overview.data.monthly.grantedFen, 1_000);
   assert.equal(overview.data.monthly.grantCostFen, 333);
+  assert.equal(overview.data.totals.rechargeFen, 1_500);
+  assert.equal(overview.data.totals.wechatRechargeFen, 0);
+  assert.equal(overview.data.totals.grantRechargeFen, 1_000);
+  assert.equal(overview.data.totals.rechargeCodeFen, 500);
   assert.equal(
     overview.data.monthly.profitFen,
     overview.data.monthly.revenueFen - overview.data.monthly.costFen,
