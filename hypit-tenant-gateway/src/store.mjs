@@ -50,6 +50,32 @@ function shanghaiDayRange(date = shanghaiDate()) {
   };
 }
 
+function shanghaiMonthRange(month = shanghaiDate().slice(0, 7)) {
+  const match = /^(\d{4})-(\d{2})$/u.exec(String(month));
+  if (!match) throw badRequest("month must use YYYY-MM");
+  const year = Number(match[1]);
+  const monthNumber = Number(match[2]);
+  if (monthNumber < 1 || monthNumber > 12) {
+    throw badRequest("month is not a valid calendar month");
+  }
+  const monthText = String(monthNumber).padStart(2, "0");
+  const start = new Date(`${String(year).padStart(4, "0")}-${monthText}-01T00:00:00+08:00`);
+  const nextYear = monthNumber === 12 ? year + 1 : year;
+  const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+  const nextMonthText = String(nextMonthNumber).padStart(2, "0");
+  const end = new Date(
+    `${String(nextYear).padStart(4, "0")}-${nextMonthText}-01T00:00:00+08:00`,
+  );
+  return {
+    month: `${String(year).padStart(4, "0")}-${monthText}`,
+    start: start.toISOString(),
+    end: end.toISOString(),
+    startDate: `${String(year).padStart(4, "0")}-${monthText}-01`,
+    endDate: new Date(Date.UTC(year, monthNumber, 0)).toISOString().slice(0, 10),
+    dayCount: Math.round((end.getTime() - start.getTime()) / 86_400_000),
+  };
+}
+
 function usageTokenCount(metadata) {
   const providerUsage = metadata?.providerUsage ?? {};
   const candidates = [
@@ -320,6 +346,8 @@ export class Store {
                   WHERE l.tenant_id = t.id AND l.amount_fen < 0), 0) AS spent_fen,
                 COALESCE((SELECT COUNT(*) FROM usage_events u
                   WHERE u.tenant_id = t.id), 0) AS usage_count,
+                COALESCE((SELECT COUNT(*) FROM api_tokens p
+                  WHERE p.tenant_id = t.id AND p.enabled = 1), 0) AS api_key_count,
                 (SELECT MAX(created_at) FROM usage_events u
                   WHERE u.tenant_id = t.id) AS last_usage_at
          FROM tenants t
@@ -336,6 +364,7 @@ export class Store {
         reservedFen: number(row.reserved_fen),
         spentFen: number(row.spent_fen),
         usageCount: number(row.usage_count),
+        apiKeyCount: number(row.api_key_count),
         lastUsageAt: row.last_usage_at,
       }));
   }
@@ -1295,13 +1324,150 @@ export class Store {
     };
   }
 
+  deleteTenant(tenantId, { force = false } = {}, actorUserId) {
+    const tenant = this.db
+      .prepare(
+        `SELECT t.id, t.name, t.status,
+                COALESCE(w.balance_fen, 0) AS balance_fen,
+                COALESCE((SELECT COUNT(*) FROM usage_events u
+                  WHERE u.tenant_id = t.id), 0) AS usage_count,
+                COALESCE((SELECT COUNT(*) FROM api_tokens p
+                  WHERE p.tenant_id = t.id AND p.enabled = 1), 0) AS api_key_count,
+                COALESCE((SELECT COUNT(*) FROM voices v
+                  WHERE v.tenant_id = t.id AND v.enabled = 1), 0) AS voice_count,
+                COALESCE((SELECT COUNT(*) FROM gateway_tasks g
+                  WHERE g.tenant_id = t.id AND g.status IN ('reserved', 'processing')), 0)
+                  AS pending_task_count
+         FROM tenants t
+         LEFT JOIN wallets w ON w.tenant_id = t.id
+         WHERE t.id = ?`,
+      )
+      .get(tenantId);
+    if (!tenant) throw notFound("Tenant not found");
+    const details = {
+      name: tenant.name,
+      status: tenant.status,
+      balanceFen: number(tenant.balance_fen),
+      usageCount: number(tenant.usage_count),
+      apiKeyCount: number(tenant.api_key_count),
+      voiceCount: number(tenant.voice_count),
+      pendingTaskCount: number(tenant.pending_task_count),
+    };
+    const inUse =
+      details.balanceFen > 0 ||
+      details.usageCount > 0 ||
+      details.apiKeyCount > 0 ||
+      details.voiceCount > 0 ||
+      details.pendingTaskCount > 0;
+    if (inUse && !force) {
+      throw conflict(
+        "Gateway tenant is in use",
+        "tenant_in_use",
+        {
+          ...details,
+          inUse: true,
+          requiresForce: true,
+        },
+      );
+    }
+    transaction(this.db, () => {
+      this.audit(actorUserId, "tenant.delete", tenantId, {
+        ...details,
+        forced: Boolean(force && inUse),
+      });
+      const result = this.db.prepare("DELETE FROM tenants WHERE id = ?").run(tenantId);
+      if (Number(result.changes) !== 1) throw notFound("Tenant not found");
+    });
+    return {
+      ok: true,
+      deletedTenant: {
+        id: tenantId,
+        ...details,
+        forced: Boolean(force && inUse),
+      },
+    };
+  }
+
+  monthlyAdminUsage(month = shanghaiDate().slice(0, 7)) {
+    const range = shanghaiMonthRange(month);
+    const rows = this.db
+      .prepare(
+        `SELECT tenant_id,
+                substr(datetime(created_at, '+8 hours'), 1, 10) AS usage_date,
+                SUM(amount_fen) AS amount_fen
+         FROM usage_events
+         WHERE status = 'completed'
+           AND created_at >= ? AND created_at < ?
+         GROUP BY tenant_id, usage_date
+         ORDER BY usage_date`,
+      )
+      .all(range.start, range.end);
+    const dailyFen = new Map();
+    const byTenantFen = {};
+    let revenueFen = 0;
+    for (const row of rows) {
+      const amountFen = number(row.amount_fen);
+      const day = Number(String(row.usage_date).slice(8, 10));
+      dailyFen.set(day, number(dailyFen.get(day)) + amountFen);
+      byTenantFen[row.tenant_id] = number(byTenantFen[row.tenant_id]) + amountFen;
+      revenueFen += amountFen;
+    }
+
+    const today = shanghaiDate();
+    const currentMonth = today.slice(0, 7);
+    const throughDay =
+      range.month === currentMonth
+        ? Number(today.slice(8, 10))
+        : range.month < currentMonth
+          ? range.dayCount
+          : 0;
+    const points = [];
+    let cumulativeRevenueFen = 0;
+    for (let day = 1; day <= throughDay; day += 1) {
+      cumulativeRevenueFen += number(dailyFen.get(day));
+      const cumulativeCostFen = Math.round(cumulativeRevenueFen / 3);
+      points.push({
+        day,
+        date: `${range.month}-${String(day).padStart(2, "0")}`,
+        revenueFen: cumulativeRevenueFen,
+        costFen: cumulativeCostFen,
+        profitFen: cumulativeRevenueFen - cumulativeCostFen,
+      });
+    }
+
+    const costFen = Math.round(revenueFen / 3);
+    const profitFen = revenueFen - costFen;
+    return {
+      month: range.month,
+      startDate: range.startDate,
+      endDate: range.endDate,
+      throughDate:
+        throughDay > 0
+          ? `${range.month}-${String(throughDay).padStart(2, "0")}`
+          : null,
+      dayCount: range.dayCount,
+      revenueFen,
+      costFen,
+      profitFen,
+      marginBps: revenueFen > 0 ? Math.round((profitFen / revenueFen) * 10_000) : 0,
+      costBasis: "official_price_x3",
+      points,
+      byTenantFen,
+    };
+  }
+
   adminOverview() {
+    const monthly = this.monthlyAdminUsage();
+    const monthlyByTenantFen = monthly.byTenantFen;
+    delete monthly.byTenantFen;
     const tenants = this.listTenants().map((tenant) => ({
       ...tenant,
+      monthlySpentFen: number(monthlyByTenantFen[tenant.id]),
       voices: this.listVoices(tenant.id, { includeSpeakerId: true }),
     }));
     return {
       tenants,
+      monthly,
       totals: {
         tenants: tenants.length,
         activeTenants: tenants.filter((item) => item.status === "active").length,

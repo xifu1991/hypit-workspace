@@ -556,6 +556,61 @@ async def bind_gateway_tenant(
     return {"ok": True, "gatewayTenantId": gateway_tenant_id}
 
 
+@router.delete("/admin/tenants/{gateway_tenant_id}")
+async def delete_gateway_tenant(
+    gateway_tenant_id: str,
+    force: bool = Query(False),
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    _require_admin(current_user)
+    result = await db.execute(select(Tenant))
+    bound_tenants = []
+    for tenant in result.scalars().all():
+        settings = _tenant_settings(tenant)
+        if str(settings.get("gateway_tenant_id") or "") == gateway_tenant_id:
+            bound_tenants.append(tenant)
+
+    if bound_tenants and not force:
+        names = "、".join(tenant.name for tenant in bound_tenants[:3])
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                f"该网关租户仍绑定商户“{names}”。强制删除会解除绑定，"
+                "并永久删除余额、API Key、音色和消费记录。"
+            ),
+        )
+
+    path = f"/saas/v1/tenants/{quote(gateway_tenant_id, safe='')}"
+    if force:
+        path += "?force=true"
+    try:
+        deleted = await _gateway_call("DELETE", path)
+    except HTTPException as exc:
+        if exc.status_code == 409:
+            raise HTTPException(
+                status_code=409,
+                detail=(
+                    "该网关租户已有余额、API Key、音色或消费记录。"
+                    "强制删除会永久清除这些数据，请确认后重试。"
+                ),
+            ) from exc
+        raise
+
+    cleared = []
+    for tenant in bound_tenants:
+        settings = _tenant_settings(tenant)
+        settings.pop("gateway_tenant_id", None)
+        plugins = settings.get("plugins")
+        if isinstance(plugins, list):
+            settings["plugins"] = [item for item in plugins if item != "gateway"]
+        tenant.settings = json.dumps(settings, ensure_ascii=False)
+        cleared.append({"id": str(tenant.id), "name": tenant.name})
+    if cleared:
+        await db.commit()
+    return {**deleted, "unboundTenants": cleared}
+
+
 @router.post("/admin/tenants/{gateway_tenant_id}/recharge")
 async def recharge_gateway_tenant(
     gateway_tenant_id: str,

@@ -61,6 +61,483 @@
   align-items: start;
   min-width: 0;
 }
+.gw-admin-shell {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.gw-admin-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 2px;
+}
+.gw-admin-title {
+  min-width: 0;
+}
+.gw-admin-eyebrow {
+  margin: 0 0 5px;
+  color: var(--gw-teal);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.gw-admin-title h2 {
+  margin: 0;
+  color: var(--fg);
+  font-size: 26px;
+}
+.gw-admin-title p {
+  margin: 5px 0 0;
+  color: var(--muted-fg);
+  font-size: 12px;
+}
+.gw-admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.gw-sync-chip {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--muted-fg);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.gw-sync-chip::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  content: "";
+}
+.gw-icon-btn {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--muted-fg);
+  font: inherit;
+  cursor: pointer;
+}
+.gw-icon-btn:hover {
+  border-color: var(--gw-teal);
+  color: var(--gw-teal);
+}
+.gw-icon-btn svg {
+  width: 17px;
+  height: 17px;
+}
+.gw-billing-menu {
+  position: relative;
+}
+.gw-billing-menu > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  list-style: none;
+}
+.gw-billing-menu > summary::-webkit-details-marker { display: none; }
+.gw-billing-menu-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  right: 0;
+  display: grid;
+  width: 174px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  box-shadow: 0 16px 36px rgba(16, 24, 40, .16);
+}
+.gw-billing-menu-panel a {
+  padding: 9px 10px;
+  border-radius: 5px;
+  color: var(--fg);
+  font-size: 12px;
+  text-decoration: none;
+}
+.gw-billing-menu-panel a:hover {
+  background: color-mix(in srgb, var(--gw-teal) 8%, var(--card-bg));
+  color: var(--gw-teal);
+}
+.gw-admin-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.gw-admin-metric {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+}
+.gw-admin-metric-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--gw-teal) 10%, var(--card-bg));
+  color: var(--gw-teal);
+}
+.gw-admin-metric-icon svg {
+  width: 19px;
+  height: 19px;
+}
+.gw-admin-metric-label {
+  color: var(--muted-fg);
+  font-size: 12px;
+}
+.gw-admin-metric-value {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--fg);
+  font-size: 25px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gw-admin-metric-note {
+  margin-top: 5px;
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+.gw-admin-chart-panel {
+  position: relative;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+}
+.gw-admin-chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.gw-admin-chart-head h2 {
+  margin: 0;
+  color: var(--fg);
+  font-size: 16px;
+}
+.gw-admin-chart-head p {
+  margin: 4px 0 0;
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+.gw-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+.gw-chart-legend span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.gw-chart-legend i {
+  width: 16px;
+  height: 2px;
+  background: var(--gw-teal);
+}
+.gw-chart-legend i.profit { background: #d05b3f; }
+.gw-chart-scroll {
+  min-width: 0;
+  overflow-x: auto;
+}
+.gw-monthly-chart {
+  position: relative;
+  min-width: 720px;
+  width: 100%;
+  height: 286px;
+}
+.gw-monthly-chart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.gw-chart-grid { stroke: var(--border); stroke-width: 1; }
+.gw-chart-axis {
+  fill: var(--muted-fg);
+  font-size: 10px;
+}
+.gw-chart-revenue {
+  fill: none;
+  stroke: var(--gw-teal);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+.gw-chart-profit {
+  fill: none;
+  stroke: #d05b3f;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.1;
+}
+.gw-chart-day-zone {
+  fill: transparent;
+  cursor: crosshair;
+  outline: none;
+}
+.gw-chart-day-zone:focus { fill: color-mix(in srgb, var(--gw-teal) 7%, transparent); }
+.gw-chart-cursor {
+  stroke: color-mix(in srgb, var(--fg) 28%, transparent);
+  stroke-dasharray: 3 4;
+  stroke-width: 1;
+}
+.gw-chart-point {
+  stroke: var(--card-bg);
+  stroke-width: 2;
+}
+.gw-chart-point.revenue { fill: var(--gw-teal); }
+.gw-chart-point.profit { fill: #d05b3f; }
+.gw-chart-tooltip {
+  position: absolute;
+  z-index: 8;
+  width: 188px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--card-bg);
+  box-shadow: 0 12px 30px rgba(16, 24, 40, .18);
+  color: var(--fg);
+  font-size: 11px;
+  pointer-events: none;
+}
+.gw-chart-tooltip[hidden] { display: none; }
+.gw-chart-tooltip-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  font-weight: 700;
+}
+.gw-chart-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 4px;
+  color: var(--muted-fg);
+}
+.gw-chart-tooltip-row strong {
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.gw-chart-footnote {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted-fg);
+  font-size: 10px;
+}
+.gw-admin-alert {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--gw-warn) 36%, var(--border));
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--gw-warn) 8%, var(--card-bg));
+  color: var(--muted-fg);
+  font-size: 12px;
+}
+.gw-admin-alert[hidden] { display: none; }
+.gw-admin-alert strong { color: var(--fg); }
+.gw-merchant-panel {
+  scroll-margin-top: 18px;
+}
+.gw-merchant-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.gw-merchant-head h2 {
+  margin: 0;
+  color: var(--fg);
+  font-size: 17px;
+}
+.gw-merchant-head p {
+  margin: 4px 0 0;
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+.gw-merchant-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.gw-merchant-tools input,
+.gw-merchant-tools select {
+  min-height: 34px;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 12px;
+}
+.gw-merchant-tools input { width: min(240px, 55vw); }
+.gw-merchant-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.gw-merchant-stat {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--muted-fg) 4%, var(--card-bg));
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+.gw-merchant-stat strong {
+  margin-left: 4px;
+  color: var(--fg);
+}
+.gw-merchant-name {
+  display: grid;
+  gap: 3px;
+  min-width: 150px;
+}
+.gw-merchant-name strong { color: var(--fg); }
+.gw-merchant-name span {
+  color: var(--muted-fg);
+  font-size: 10px;
+}
+.gw-status-stack {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+.gw-row-more {
+  min-width: 150px;
+}
+.gw-row-more > summary {
+  color: var(--gw-teal);
+  cursor: pointer;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.gw-row-drawer {
+  display: grid;
+  gap: 8px;
+  margin-top: 7px;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--muted-fg) 3%, var(--card-bg));
+}
+.gw-row-drawer .gw-voice-list { min-width: 210px; }
+.gw-row-drawer .gw-form { gap: 6px; }
+.gw-row-drawer input,
+.gw-row-drawer select {
+  min-height: 30px;
+  padding: 5px 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 11px;
+}
+.gw-admin-dialog {
+  width: min(480px, calc(100% - 24px));
+  max-height: calc(100dvh - 28px);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--fg);
+  box-shadow: 0 28px 80px rgba(16, 24, 40, .3);
+}
+.gw-admin-dialog::backdrop {
+  background: rgba(15, 23, 42, .5);
+  backdrop-filter: blur(3px);
+}
+.gw-admin-dialog-body { padding: 22px; }
+.gw-admin-dialog-head {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.gw-admin-dialog-head h2 {
+  margin: 0;
+  color: var(--fg);
+  font-size: 20px;
+}
+.gw-admin-dialog-head p {
+  margin: 5px 0 0;
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+.gw-admin-dialog .gw-dialog-close {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--muted-fg);
+}
+.gw-admin-dialog .gw-dialog-close:hover { color: var(--fg); }
+.gw-admin-dialog .gw-form { gap: 13px; }
+.gw-admin-dialog .gw-field input,
+.gw-admin-dialog .gw-field select {
+  background: var(--card-bg);
+  color: var(--fg);
+}
+.gw-admin-dialog .gw-status-line { min-height: 18px; }
+.gw-recharge-balance {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--gw-teal) 5%, var(--card-bg));
+  color: var(--muted-fg);
+  font-size: 12px;
+}
+.gw-recharge-balance strong {
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
 .gw-stack { display: grid; gap: 18px; min-width: 0; }
 .gw-panel {
   min-width: 0;
@@ -911,11 +1388,23 @@
 @media (max-width: 1050px) {
   .gw-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gw-grid { grid-template-columns: 1fr; }
+  .gw-admin-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
   .gw-metrics,
   .gw-summary-grid,
   .gw-analytics-metrics { grid-template-columns: 1fr; }
+  .gw-admin-metrics { grid-template-columns: 1fr; }
+  .gw-admin-topbar,
+  .gw-admin-toolbar,
+  .gw-merchant-tools { align-items: stretch; }
+  .gw-admin-toolbar,
+  .gw-merchant-tools { width: 100%; }
+  .gw-admin-toolbar .gw-btn,
+  .gw-billing-menu { flex: 1 1 auto; }
+  .gw-billing-menu > summary { justify-content: center; }
+  .gw-merchant-tools input { width: 100%; }
+  .gw-admin-title h2 { font-size: 23px; }
   .gw-recharge-dialog .gw-amount-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .gw-dialog-body { padding: 19px; }
   .gw-recharge-dialog .gw-dialog-head { margin-bottom: 14px; }
@@ -947,114 +1436,155 @@
   <div class="gw-error" id="gwError" hidden></div>
 
   <div id="gwAdmin" hidden>
-    <div class="gw-stack">
-      <section class="gw-panel">
-        <div class="gw-panel-head">
-          <div>
-            <h2>微信支付配置</h2>
-            <p>平台统一收款参数，与商户小程序支付配置相互独立</p>
-          </div>
-          <a class="gw-btn secondary small" href="/admin/settings">前往支付设置</a>
+    <div class="gw-admin-shell">
+      <section class="gw-admin-topbar" aria-labelledby="gwAdminTitle">
+        <div class="gw-admin-title">
+          <p class="gw-admin-eyebrow">AI GATEWAY OPERATIONS</p>
+          <h2 id="gwAdminTitle">经营总览</h2>
+          <p><span id="gwAdminDateRange">本月</span> · 数据按北京时间统计</p>
+        </div>
+        <div class="gw-admin-toolbar">
+          <span class="gw-sync-chip">数据实时同步 <span id="gwAdminSyncTime"></span></span>
+          <button class="gw-icon-btn" id="gwRefreshAdmin" type="button" title="刷新数据" aria-label="刷新数据">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 11a8 8 0 1 0-2.3 5.7"></path>
+              <path d="M20 4v7h-7"></path>
+            </svg>
+          </button>
+          <button class="gw-btn" id="gwOpenCreateTenant" type="button">开户</button>
+          <details class="gw-billing-menu">
+            <summary class="gw-btn secondary">计费与支付</summary>
+            <div class="gw-billing-menu-panel">
+              <a href="#gwAdminPrices">计费单价</a>
+              <a href="/admin/settings">支付设置</a>
+            </div>
+          </details>
         </div>
       </section>
 
-      <div class="gw-metrics" id="gwAdminMetrics"></div>
+      <div class="gw-admin-metrics" id="gwAdminMetrics"></div>
 
-      <div class="gw-grid">
-        <div class="gw-stack">
-          <section class="gw-panel">
-            <div class="gw-panel-head">
-              <h2>商户绑定</h2>
-              <p>秒创云商户与网关租户一一对应</p>
-            </div>
-            <div class="gw-inline-note">
-              绑定后，商户无需登录独立网关，在应用中心即可充值并查看自己的服务用量。
-            </div>
-            <div class="gw-table-wrap" style="margin-top:14px">
-              <table class="gw-table">
-                <thead><tr><th>秒创云商户</th><th>子域名</th><th>网关租户</th><th></th></tr></thead>
-                <tbody id="gwBindings"></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="gw-panel">
-            <div class="gw-panel-head">
-              <h2>网关租户</h2>
-              <p>余额、状态与音色管理</p>
-            </div>
-            <div class="gw-table-wrap">
-              <table class="gw-table">
-                <thead><tr><th>租户</th><th>状态</th><th class="num">余额</th><th class="num">消费</th><th class="num">调用</th><th>音色</th><th>操作</th></tr></thead>
-                <tbody id="gwTenants"></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="gw-panel">
-            <div class="gw-panel-head">
-              <h2>计费单价</h2>
-              <p>租户执行价按火山官方标准 ×3；调整只影响之后的调用</p>
-            </div>
-            <div class="gw-table-wrap">
-              <table class="gw-table">
-                <thead><tr><th>服务</th><th>计费单位</th><th class="num">租户执行价 / 微元</th><th></th></tr></thead>
-                <tbody id="gwPrices"></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="gw-panel">
-            <div class="gw-panel-head">
-              <h2>最新用量</h2>
-              <p>跨租户调用流水</p>
-            </div>
-            <div class="gw-table-wrap">
-              <table class="gw-table">
-                <thead><tr><th>时间</th><th>租户</th><th>服务</th><th>用量</th><th class="num">金额</th><th>状态</th></tr></thead>
-                <tbody id="gwUsage"></tbody>
-              </table>
-            </div>
-          </section>
+      <section class="gw-admin-chart-panel" aria-labelledby="gwMonthlyChartTitle">
+        <div class="gw-admin-chart-head">
+          <div>
+            <h2 id="gwMonthlyChartTitle">本月客户实扣与毛利</h2>
+            <p>累计数据 · 悬停或聚焦日期查看当天累计金额</p>
+          </div>
+          <div class="gw-chart-legend" aria-label="图例">
+            <span><i></i>客户实扣</span>
+            <span><i class="profit"></i>毛利</span>
+          </div>
         </div>
+        <div class="gw-chart-scroll">
+          <div class="gw-monthly-chart" id="gwMonthlyChart"></div>
+        </div>
+        <div class="gw-chart-tooltip" id="gwMonthlyTooltip" role="tooltip" hidden></div>
+        <div class="gw-chart-footnote">
+          <span>本月累计：客户实扣 <strong id="gwMonthlyRevenue">¥0.00</strong> · 毛利 <strong id="gwMonthlyProfit">¥0.00</strong></span>
+          <span>火山成本按当前官方价 ×3 规则折算为实扣的 1/3</span>
+        </div>
+      </section>
 
-        <aside class="gw-stack">
-          <section class="gw-panel">
-            <div class="gw-panel-head"><h2>创建网关租户</h2></div>
-            <form class="gw-form" id="gwCreateTenant">
-              <div class="gw-field"><label for="gwTenantName">租户名称</label><input id="gwTenantName" required maxlength="100"></div>
-              <div class="gw-field"><label for="gwTenantUsername">登录用户名</label><input id="gwTenantUsername" required minlength="3" maxlength="100" autocomplete="off"></div>
-              <div class="gw-field"><label for="gwTenantPassword">初始密码</label><input id="gwTenantPassword" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div>
-              <div class="gw-field">
-                <label for="gwCreateSaasTenant">同时绑定秒创云商户</label>
-                <select id="gwCreateSaasTenant"><option value="">暂不绑定</option></select>
-              </div>
-              <button class="gw-btn" type="submit">创建租户</button>
-              <div class="gw-status-line" id="gwCreateStatus"></div>
-            </form>
-          </section>
+      <div class="gw-admin-alert" id="gwAdminAlert" hidden></div>
 
-          <section class="gw-panel">
-            <div class="gw-panel-head"><h2>生成充值码</h2></div>
-            <form class="gw-form" id="gwCreateCode">
-              <div class="gw-field"><label for="gwCodeAmount">金额（元）</label><input id="gwCodeAmount" type="number" min="0.01" step="0.01" required></div>
-              <div class="gw-field">
-                <label for="gwCodeTenant">限定网关租户</label>
-                <select id="gwCodeTenant"><option value="">不限定</option></select>
-              </div>
-              <button class="gw-btn" type="submit">生成充值码</button>
-              <div class="gw-code" id="gwCodeResult"></div>
-            </form>
-            <div class="gw-table-wrap" style="margin-top:14px">
-              <table class="gw-table">
-                <thead><tr><th>充值码</th><th class="num">金额</th><th>状态</th></tr></thead>
-                <tbody id="gwCodes"></tbody>
-              </table>
-            </div>
-          </section>
-        </aside>
-      </div>
+      <section class="gw-panel gw-merchant-panel" id="gwAdminMerchants" aria-labelledby="gwMerchantTitle">
+        <div class="gw-merchant-head">
+          <div>
+            <h2 id="gwMerchantTitle">商户管理</h2>
+            <p>秒创云商户与网关租户统一查看；独立网关账户单独列出</p>
+          </div>
+          <div class="gw-merchant-tools">
+            <input id="gwMerchantSearch" type="search" placeholder="搜索商户、子域名或网关 ID" aria-label="搜索商户">
+            <select id="gwMerchantFilter" aria-label="筛选商户状态">
+              <option value="all">全部状态</option>
+              <option value="active">正常</option>
+              <option value="suspended">停用</option>
+              <option value="unbound">未绑定</option>
+            </select>
+          </div>
+        </div>
+        <div class="gw-merchant-stats" id="gwMerchantStats"></div>
+        <div class="gw-table-wrap">
+          <table class="gw-table">
+            <thead>
+              <tr>
+                <th>商户 / 子域名</th>
+                <th>状态</th>
+                <th>网关绑定</th>
+                <th class="num">API Keys</th>
+                <th class="num">可用余额</th>
+                <th class="num">本月消费</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="gwAdminTenants"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="gw-panel" id="gwAdminPrices" aria-labelledby="gwAdminPricesTitle">
+        <div class="gw-panel-head">
+          <div>
+            <h2 id="gwAdminPricesTitle">计费单价</h2>
+            <p>租户执行价按火山官方标准 ×3；调整只影响之后的调用</p>
+          </div>
+          <a class="gw-btn secondary small" href="/admin/settings">支付设置</a>
+        </div>
+        <div class="gw-table-wrap">
+          <table class="gw-table">
+            <thead><tr><th>服务</th><th>计费单位</th><th class="num">租户执行价 / 微元</th><th></th></tr></thead>
+            <tbody id="gwPrices"></tbody>
+          </table>
+        </div>
+      </section>
     </div>
+
+    <dialog class="gw-admin-dialog" id="gwCreateTenantDialog" aria-labelledby="gwCreateTenantTitle">
+      <div class="gw-admin-dialog-body">
+        <div class="gw-admin-dialog-head">
+          <div>
+            <h2 id="gwCreateTenantTitle">创建网关租户</h2>
+            <p>创建独立计费账户，可直接绑定已有秒创云商户</p>
+          </div>
+          <button class="gw-dialog-close" id="gwCloseCreateTenant" type="button" aria-label="关闭开户窗口">×</button>
+        </div>
+        <form class="gw-form" id="gwCreateTenant">
+          <div class="gw-field"><label for="gwTenantName">租户名称</label><input id="gwTenantName" required maxlength="100"></div>
+          <div class="gw-field"><label for="gwTenantUsername">网关登录用户名</label><input id="gwTenantUsername" required minlength="3" maxlength="100" autocomplete="off"></div>
+          <div class="gw-field"><label for="gwTenantPassword">网关初始密码</label><input id="gwTenantPassword" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div>
+          <div class="gw-field">
+            <label for="gwCreateSaasTenant">同时绑定秒创云商户</label>
+            <select id="gwCreateSaasTenant"><option value="">暂不绑定</option></select>
+          </div>
+          <button class="gw-btn" type="submit">创建网关租户</button>
+          <div class="gw-status-line" id="gwCreateStatus"></div>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="gw-admin-dialog" id="gwAdminRechargeDialog" aria-labelledby="gwAdminRechargeTitle">
+      <div class="gw-admin-dialog-body">
+        <div class="gw-admin-dialog-head">
+          <div>
+            <h2 id="gwAdminRechargeTitle">手动充值</h2>
+            <p id="gwAdminRechargeSubtitle">调整当前网关租户余额</p>
+          </div>
+          <button class="gw-dialog-close" id="gwCloseAdminRecharge" type="button" aria-label="关闭充值窗口">×</button>
+        </div>
+        <form class="gw-form" id="gwAdminRechargeForm">
+          <div class="gw-recharge-balance">
+            <span>当前可用余额</span>
+            <strong id="gwAdminRechargeBalance">¥0.00</strong>
+          </div>
+          <div class="gw-field">
+            <label for="gwAdminRechargeAmount">充值金额（元）</label>
+            <input id="gwAdminRechargeAmount" name="amount" type="number" min="0.01" step="0.01" required placeholder="请输入充值金额">
+          </div>
+          <button class="gw-btn" type="submit">确认充值</button>
+          <div class="gw-status-line" id="gwAdminRechargeStatus" aria-live="polite"></div>
+        </form>
+      </div>
+    </dialog>
   </div>
 
   <div id="gwTenant" hidden>
@@ -1240,6 +1770,7 @@
   const tenantRoot = document.getElementById("gwTenant");
   let adminData = null;
   let tenantData = null;
+  let adminRows = [];
   let tenantRequestId = 0;
   let rechargePollTimer = null;
   let rechargePollGeneration = 0;
@@ -1317,7 +1848,10 @@
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(data.detail || data.message || "请求失败");
+      const error = new Error(data.detail || data.message || "请求失败");
+      error.status = response.status;
+      error.data = data;
+      throw error;
     }
     return data;
   }
@@ -1328,12 +1862,21 @@
     errorBox.textContent = error instanceof Error ? error.message : String(error);
   }
 
-  function metric(label, value, note) {
-    return `<div class="gw-metric">
-      <div class="gw-metric-label">${escapeHtml(label)}</div>
-      <div class="gw-metric-value">${escapeHtml(value)}</div>
-      <div class="gw-metric-note">${escapeHtml(note || "")}</div>
-    </div>`;
+  function adminMetric(label, value, note, icon) {
+    const icons = {
+      tenants: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+      balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18M7 15h3"></path></svg>',
+      revenue: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3v18h18"></path><path d="m7 14 4-4 3 3 5-6"></path></svg>',
+      profit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 14.5c.8 1 2.1 1.5 4 1.5 2.2 0 3.5-.8 3.5-2.3 0-1.3-1-1.9-3.6-2.3-2.4-.4-3.4-1.1-3.4-2.5 0-1.4 1.4-2.4 3.6-2.4 1.6 0 2.8.4 3.6 1.2"></path><path d="M12 5v14"></path></svg>',
+    };
+    return `<article class="gw-admin-metric">
+      <div class="gw-admin-metric-icon">${icons[icon] || icons.revenue}</div>
+      <div>
+        <div class="gw-admin-metric-label">${escapeHtml(label)}</div>
+        <div class="gw-admin-metric-value">${escapeHtml(value)}</div>
+        <div class="gw-admin-metric-note">${escapeHtml(note || "")}</div>
+      </div>
+    </article>`;
   }
 
   function analyticsMetric(label, value, note) {
@@ -1434,91 +1977,301 @@
     renderAdmin();
   }
 
+  function monthlyChartSvg(monthly) {
+    const points = (Array.isArray(monthly?.points) ? monthly.points : [])
+      .map((point) => ({
+        day: Number(point.day || 0),
+        date: String(point.date || ""),
+        revenueFen: Number(point.revenueFen || 0),
+        costFen: Number(point.costFen || 0),
+        profitFen: Number(point.profitFen || 0),
+      }))
+      .filter((point) => point.day > 0);
+    if (!points.length) {
+      return '<div class="gw-empty" style="padding:110px 0">本月暂无已完成消费</div>';
+    }
+
+    const width = 760;
+    const height = 286;
+    const padding = { top: 24, right: 20, bottom: 32, left: 58 };
+    const plotWidth = width - padding.left - padding.right;
+    const plotHeight = height - padding.top - padding.bottom;
+    const dayCount = Math.max(1, Number(monthly?.dayCount) || points.length);
+    const maxRevenue = Math.max(1, ...points.map((point) => point.revenueFen));
+    const yMax = Math.max(100, Math.ceil(maxRevenue / 100) * 100);
+    const x = (day) => padding.left + ((day - 0.5) / dayCount) * plotWidth;
+    const y = (value) => padding.top + plotHeight - (Number(value || 0) / yMax) * plotHeight;
+    const pathFor = (key) => points
+      .map((point, index) => `${index === 0 ? "M" : "L"}${x(point.day).toFixed(2)},${y(point[key]).toFixed(2)}`)
+      .join(" ");
+    const xLabels = [...new Set([
+      1,
+      Math.round(dayCount / 4),
+      Math.round(dayCount / 2),
+      Math.round((dayCount * 3) / 4),
+      dayCount,
+    ])].filter((day) => day >= 1 && day <= dayCount);
+    const gridLines = [0, 0.5, 1].map((ratio) => {
+      const value = yMax * ratio;
+      const top = y(value);
+      return `<line class="gw-chart-grid" x1="${padding.left}" y1="${top.toFixed(2)}"
+          x2="${(width - padding.right).toFixed(2)}" y2="${top.toFixed(2)}"></line>
+        <text class="gw-chart-axis" x="${padding.left - 9}" y="${(top + 3).toFixed(2)}"
+          text-anchor="end">${escapeHtml(money(value))}</text>`;
+    }).join("");
+    const xAxis = xLabels.map((day) => {
+      const point = points.find((item) => item.day === day);
+      return `<text class="gw-chart-axis" x="${x(day).toFixed(2)}" y="${height - 9}"
+          text-anchor="middle">${escapeHtml(point?.date?.slice(5) || day + "日")}</text>`;
+    }).join("");
+    const zones = points.map((point) => {
+      const left = padding.left + ((point.day - 1) / dayCount) * plotWidth;
+      const zoneWidth = plotWidth / dayCount;
+      const label = `${point.date}，客户实扣 ${money(point.revenueFen)}，估算成本 ${money(point.costFen)}，毛利 ${money(point.profitFen)}`;
+      return `<rect class="gw-chart-day-zone" x="${left.toFixed(2)}" y="${padding.top}"
+        width="${Math.max(4, zoneWidth).toFixed(2)}" height="${plotHeight}"
+        tabindex="0" role="img" aria-label="${escapeHtml(label)}" data-chart-day="${point.day}"></rect>`;
+    }).join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img"
+        aria-label="本月客户实扣与毛利累计曲线">
+      ${gridLines}
+      ${xAxis}
+      <path class="gw-chart-revenue" d="${pathFor("revenueFen")}"></path>
+      <path class="gw-chart-profit" d="${pathFor("profitFen")}"></path>
+      ${zones}
+    </svg>`;
+  }
+
+  function showMonthlyTooltip(zone) {
+    const tooltip = document.getElementById("gwMonthlyTooltip");
+    const panel = zone?.closest(".gw-admin-chart-panel");
+    const point = (adminData?.monthly?.points || [])
+      .find((item) => Number(item.day) === Number(zone?.dataset.chartDay));
+    if (!tooltip || !panel || !point) return;
+    tooltip.innerHTML = `
+      <div class="gw-chart-tooltip-head"><span>${escapeHtml(point.date)}</span><span>累计</span></div>
+      <div class="gw-chart-tooltip-row"><span>客户实扣</span><strong>${money(point.revenueFen)}</strong></div>
+      <div class="gw-chart-tooltip-row"><span>估算成本</span><strong>${money(point.costFen)}</strong></div>
+      <div class="gw-chart-tooltip-row"><span>毛利</span><strong>${money(point.profitFen)}</strong></div>`;
+    tooltip.hidden = false;
+
+    const panelRect = panel.getBoundingClientRect();
+    const zoneRect = zone.getBoundingClientRect();
+    const maxLeft = Math.max(10, panelRect.width - tooltip.offsetWidth - 10);
+    const left = Math.min(
+      maxLeft,
+      Math.max(10, zoneRect.left - panelRect.left + zoneRect.width / 2 - tooltip.offsetWidth / 2),
+    );
+    let top = zoneRect.top - panelRect.top - tooltip.offsetHeight - 10;
+    if (top < 8) top = zoneRect.bottom - panelRect.top + 10;
+    tooltip.style.left = left + "px";
+    tooltip.style.top = Math.max(8, top) + "px";
+  }
+
+  function hideMonthlyTooltip() {
+    const tooltip = document.getElementById("gwMonthlyTooltip");
+    if (tooltip) tooltip.hidden = true;
+  }
+
+  function merchantMatches(row, query, filter) {
+    const text = [
+      row.name,
+      row.subdomain,
+      row.saasTenantId,
+      row.tenant?.id,
+      row.tenant?.name,
+    ].filter(Boolean).join(" ").toLowerCase();
+    if (query && !text.includes(query)) return false;
+    if (filter === "unbound" && row.tenant) return false;
+    if (filter === "active" && (!row.isActive || row.tenant?.status === "suspended")) return false;
+    if (filter === "suspended" && row.isActive && row.tenant?.status !== "suspended") return false;
+    return true;
+  }
+
+  function merchantActions(row) {
+    const tenant = row.tenant;
+    const occupiedTenantIds = new Set(
+      (adminData?.saasTenants || [])
+        .filter((item) => item.id !== row.saasTenantId)
+        .map((item) => item.gatewayTenantId)
+        .filter(Boolean),
+    );
+    const availableTenants = (adminData?.tenants || []).filter(
+      (item) => item.id === tenant?.id || !occupiedTenantIds.has(item.id),
+    );
+    if (!tenant) {
+      return `<details class="gw-row-more">
+        <summary>绑定网关</summary>
+        <div class="gw-row-drawer">
+          <select data-bind-select="${escapeHtml(row.saasTenantId)}">
+            <option value="">选择未占用网关租户</option>
+            ${availableTenants.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)}</option>`).join("")}
+          </select>
+          <button class="gw-btn small" type="button" onclick="gwBind('${escapeHtml(row.saasTenantId)}')">保存绑定</button>
+        </div>
+      </details>`;
+    }
+
+    const voiceItems = (tenant.voices || []).length
+      ? tenant.voices.map((voice) => `<div class="gw-voice-item">
+          <span class="gw-voice-copy">
+            <strong>${escapeHtml(voice.name)}</strong>
+            <span>${escapeHtml(voice.speakerId || "")}</span>
+          </span>
+          <button class="gw-voice-delete" type="button"
+            onclick="gwDeleteAdminVoice('${escapeHtml(tenant.id)}', '${escapeHtml(voice.id)}')">删除</button>
+        </div>`).join("")
+      : '<span class="gw-muted">尚未添加音色</span>';
+
+    return `<div class="gw-actions">
+      <button class="gw-btn small" type="button"
+        onclick="gwOpenAdminRecharge('${escapeHtml(tenant.id)}')">充值</button>
+      <details class="gw-row-more">
+        <summary>管理</summary>
+        <div class="gw-row-drawer">
+          <div class="gw-actions">
+            <button class="gw-btn small ${tenant.status === "active" ? "secondary" : ""}" type="button"
+              onclick="gwToggleTenant('${escapeHtml(tenant.id)}', '${tenant.status === "active" ? "suspended" : "active"}')">
+              ${tenant.status === "active" ? "停用网关" : "恢复网关"}
+            </button>
+            <button class="gw-btn small danger" type="button"
+              onclick="gwDeleteAdminTenant('${escapeHtml(tenant.id)}')">删除租户</button>
+          </div>
+          ${row.saasTenantId ? `<div class="gw-field">
+            <label>秒创云商户绑定</label>
+            <select data-bind-select="${escapeHtml(row.saasTenantId)}">
+              <option value="">解除绑定</option>
+              ${availableTenants.map((item) => `<option value="${escapeHtml(item.id)}"${item.id === tenant.id ? " selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+            </select>
+            <button class="gw-btn small secondary" type="button"
+              onclick="gwBind('${escapeHtml(row.saasTenantId)}')">保存绑定</button>
+          </div>` : ""}
+          <div class="gw-voice-list">${voiceItems}</div>
+          <form class="gw-form" onsubmit="gwAddVoice(event, '${escapeHtml(tenant.id)}')">
+            <input name="name" required maxlength="100" placeholder="音色名称">
+            <input name="speakerId" required placeholder="S_ 音色 ID">
+            <button class="gw-btn small" type="submit">添加音色</button>
+          </form>
+        </div>
+      </details>
+    </div>`;
+  }
+
+  function renderAdminMerchantRows() {
+    const query = String(document.getElementById("gwMerchantSearch")?.value || "").trim().toLowerCase();
+    const filter = document.getElementById("gwMerchantFilter")?.value || "all";
+    const rows = adminRows.filter((row) => merchantMatches(row, query, filter));
+    document.getElementById("gwAdminTenants").innerHTML = rows.length
+      ? rows.map((row) => {
+        const tenant = row.tenant;
+        const gatewayStatus = !tenant
+          ? '<span class="gw-pill pending">待绑定</span>'
+          : statusPill(tenant.status);
+        const merchantStatus = row.saasTenantId
+          ? statusPill(row.isActive ? "active" : "suspended")
+          : statusPill(tenant?.status || "suspended");
+        return `<tr>
+          <td>
+            <div class="gw-merchant-name">
+              <strong>${escapeHtml(row.name)}</strong>
+              <span>${escapeHtml(row.identityLine)}</span>
+            </div>
+          </td>
+          <td><div class="gw-status-stack">${merchantStatus}</div></td>
+          <td><div class="gw-status-stack">${gatewayStatus}</div></td>
+          <td class="num">${tenant ? Number(tenant.apiKeyCount || 0).toLocaleString("zh-CN") : "-"}</td>
+          <td class="num">${tenant ? money(tenant.balanceFen) : "-"}</td>
+          <td class="num">${tenant ? money(tenant.monthlySpentFen) : "-"}</td>
+          <td>${merchantActions(row)}</td>
+        </tr>`;
+      }).join("")
+      : '<tr><td colspan="7" class="gw-empty">没有符合当前条件的商户</td></tr>';
+  }
+
   function renderAdmin() {
     const data = adminData;
     const tenants = data.tenants || [];
     const saasTenants = data.saasTenants || [];
-    const tenantOptions = tenants.map((item) =>
-      `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)}</option>`
-    ).join("");
+    const monthly = data.monthly || {};
+    const activeTenantIds = new Set(
+      saasTenants.map((item) => item.gatewayTenantId).filter(Boolean),
+    );
+    adminRows = [
+      ...saasTenants.map((saas) => {
+        const tenant = tenants.find((item) => item.id === saas.gatewayTenantId) || null;
+        return {
+          key: "saas:" + saas.id,
+          saasTenantId: saas.id,
+          tenant,
+          name: saas.name,
+          subdomain: saas.subdomain,
+          isActive: Boolean(saas.isActive),
+          identityLine: `秒创云商户 · ${saas.subdomain || "未设置子域名"}`,
+        };
+      }),
+      ...tenants.filter((tenant) => !activeTenantIds.has(tenant.id)).map((tenant) => ({
+        key: "gateway:" + tenant.id,
+        saasTenantId: "",
+        tenant,
+        name: tenant.name,
+        subdomain: "",
+        isActive: tenant.status === "active",
+        identityLine: `独立网关账户 · ${tenant.id}`,
+      })),
+    ];
 
     document.getElementById("gwAdminMetrics").innerHTML = [
-      metric("网关租户", String(data.totals?.tenants || 0), (data.totals?.activeTenants || 0) + " 个正常"),
-      metric("客户余额", money(data.totals?.balanceFen), "冻结 " + money(data.totals?.reservedFen)),
-      metric("平台消费", money(data.totals?.spentFen), "租户实际扣费"),
-      metric("最近充值码", String((data.rechargeCodes || []).length), "最近生成记录"),
+      adminMetric(
+        "网关租户",
+        String(data.totals?.tenants || 0),
+        `${Number(data.totals?.activeTenants || 0)} 个正常 · ${Number(saasTenants.length)} 个秒创云商户`,
+        "tenants",
+      ),
+      adminMetric(
+        "当前可用余额",
+        money(data.totals?.balanceFen),
+        `处理中冻结 ${money(data.totals?.reservedFen)}`,
+        "balance",
+      ),
+      adminMetric(
+        "本月客户实扣",
+        money(monthly.revenueFen),
+        `${monthly.startDate || ""} 至 ${monthly.throughDate || "今日"}`,
+        "revenue",
+      ),
+      adminMetric(
+        "本月毛利（估算）",
+        money(monthly.profitFen),
+        `毛利率 ${(Number(monthly.marginBps || 0) / 100).toFixed(1)}% · 成本按官方价 ×3 折算`,
+        "profit",
+      ),
     ].join("");
 
     const createSelect = document.getElementById("gwCreateSaasTenant");
     createSelect.innerHTML = '<option value="">暂不绑定</option>' + saasTenants
       .filter((item) => !item.gatewayTenantId)
-      .map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} (${escapeHtml(item.subdomain)})</option>`)
+      .map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} · ${escapeHtml(item.subdomain)}</option>`)
       .join("");
 
-    const codeTenant = document.getElementById("gwCodeTenant");
-    codeTenant.innerHTML = '<option value="">不限定</option>' + tenantOptions;
-
-    document.getElementById("gwBindings").innerHTML = saasTenants.length
-      ? saasTenants.map((item) => `
-        <tr>
-          <td><strong>${escapeHtml(item.name)}</strong><div class="gw-code gw-muted">${escapeHtml(item.id)}</div></td>
-          <td>${escapeHtml(item.subdomain)}</td>
-          <td>
-            <select class="gw-field" data-bind-select="${escapeHtml(item.id)}" style="min-width:180px">
-              <option value="">未绑定</option>
-              ${tenants.map((tenant) => `<option value="${escapeHtml(tenant.id)}"${tenant.id === item.gatewayTenantId ? " selected" : ""}>${escapeHtml(tenant.name)}</option>`).join("")}
-            </select>
-          </td>
-          <td>
-            <div class="gw-actions">
-              <button class="gw-btn small" type="button" onclick="gwBind('${escapeHtml(item.id)}')">保存</button>
-              ${item.gatewayTenantId ? `<button class="gw-btn small secondary" type="button" onclick="gwBind('${escapeHtml(item.id)}', true)">解除</button>` : ""}
-            </div>
-          </td>
-        </tr>`).join("")
-      : '<tr><td colspan="4" class="gw-empty">暂无秒创云商户</td></tr>';
-
-    document.getElementById("gwTenants").innerHTML = tenants.length
-      ? tenants.map((tenant) => `
-        <tr>
-          <td><strong>${escapeHtml(tenant.name)}</strong><div class="gw-code gw-muted">${escapeHtml(tenant.id)}</div></td>
-          <td>${statusPill(tenant.status)}</td>
-          <td class="num">${money(tenant.balanceFen)}</td>
-          <td class="num">${money(tenant.spentFen)}</td>
-          <td class="num">${Number(tenant.usageCount || 0).toLocaleString("zh-CN")}</td>
-          <td>
-            <div class="gw-voice-list">
-              ${(tenant.voices || []).length
-                ? tenant.voices.map((voice) => `
-                  <div class="gw-voice-item">
-                    <span class="gw-voice-copy">
-                      <strong>${escapeHtml(voice.name)}</strong>
-                      <span>${escapeHtml(voice.speakerId || "")}</span>
-                    </span>
-                    <button class="gw-voice-delete" type="button" onclick="gwDeleteAdminVoice('${escapeHtml(tenant.id)}', '${escapeHtml(voice.id)}')">删除</button>
-                  </div>`).join("")
-                : '<span class="gw-muted">未添加</span>'}
-            </div>
-          </td>
-          <td>
-            <div class="gw-actions">
-              <form class="gw-actions" onsubmit="gwRecharge(event, '${escapeHtml(tenant.id)}')">
-                <input name="amount" type="number" min="0.01" step="0.01" placeholder="金额" required>
-                <button class="gw-btn small" type="submit">充值</button>
-              </form>
-              <button class="gw-btn small ${tenant.status === "active" ? "danger" : "secondary"}" type="button" onclick="gwToggleTenant('${escapeHtml(tenant.id)}', '${tenant.status === "active" ? "suspended" : "active"}')">${tenant.status === "active" ? "停用" : "恢复"}</button>
-              <details class="gw-details">
-                <summary>添加音色</summary>
-                <form class="gw-form" onsubmit="gwAddVoice(event, '${escapeHtml(tenant.id)}')">
-                  <input name="name" required placeholder="音色名称">
-                  <input name="speakerId" required placeholder="S_ 音色 ID">
-                  <button class="gw-btn small" type="submit">添加</button>
-                </form>
-              </details>
-            </div>
-          </td>
-        </tr>`).join("")
-      : '<tr><td colspan="7" class="gw-empty">尚未创建网关租户</td></tr>';
+    document.getElementById("gwAdminDateRange").textContent = monthly.month
+      ? `${monthly.month.replace("-", " 年 ")} 月`
+      : "本月";
+    document.getElementById("gwAdminSyncTime").textContent = new Date().toLocaleTimeString("zh-CN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    document.getElementById("gwMonthlyChart").innerHTML = monthlyChartSvg(monthly);
+    document.getElementById("gwMonthlyRevenue").textContent = money(monthly.revenueFen);
+    document.getElementById("gwMonthlyProfit").textContent = money(monthly.profitFen);
+    document.getElementById("gwMerchantStats").innerHTML = [
+      ["全部", adminRows.length],
+      ["正常", adminRows.filter((row) => row.isActive && row.tenant?.status !== "suspended").length],
+      ["已绑定网关", adminRows.filter((row) => row.tenant).length],
+      ["待绑定", adminRows.filter((row) => !row.tenant).length],
+    ].map(([label, value]) => `<span class="gw-merchant-stat">${label}<strong>${value}</strong></span>`).join("");
+    renderAdminMerchantRows();
 
     document.getElementById("gwPrices").innerHTML = (data.prices || []).map((price) => `
       <tr>
@@ -1530,27 +2283,6 @@
         </td>
         <td><button class="gw-btn small" type="button" onclick="gwSavePrice('${escapeHtml(price.service)}')">保存</button></td>
       </tr>`).join("");
-
-    document.getElementById("gwCodes").innerHTML = (data.rechargeCodes || []).length
-      ? data.rechargeCodes.map((item) => `
-        <tr>
-          <td class="gw-code">${escapeHtml(item.code)}</td>
-          <td class="num">${money(item.amountFen)}</td>
-          <td>${item.redeemedAt ? "已使用" : '<span class="gw-pill pending">未使用</span>'}</td>
-        </tr>`).join("")
-      : '<tr><td colspan="3" class="gw-empty">尚未生成充值码</td></tr>';
-
-    document.getElementById("gwUsage").innerHTML = (data.usage || []).length
-      ? data.usage.map((row) => `
-        <tr>
-          <td>${dateText(row.createdAt)}</td>
-          <td>${escapeHtml(row.tenantName)}</td>
-          <td>${escapeHtml(serviceName(row.service))}</td>
-          <td>${escapeHtml(quantityText(row))}</td>
-          <td class="num">${money(row.amountFen)}</td>
-          <td>${statusPill(row.status)}</td>
-        </tr>`).join("")
-      : '<tr><td colspan="6" class="gw-empty">暂无调用记录</td></tr>';
 
     loading.hidden = true;
     adminRoot.hidden = false;
@@ -1738,9 +2470,9 @@
     await check();
   }
 
-  window.gwBind = async function(saasTenantId, clear) {
+  window.gwBind = async function(saasTenantId) {
     const select = document.querySelector(`[data-bind-select="${saasTenantId}"]`);
-    const gatewayTenantId = clear ? "" : (select?.value || "");
+    const gatewayTenantId = select?.value || "";
     try {
       await api("/admin/bind", {
         method: "POST",
@@ -1755,18 +2487,67 @@
     }
   };
 
-  window.gwRecharge = async function(event, tenantId) {
-    event.preventDefault();
-    const input = event.currentTarget.elements.amount;
+  window.gwOpenAdminRecharge = function(tenantId) {
+    const tenant = (adminData?.tenants || []).find((item) => item.id === tenantId);
+    const dialog = document.getElementById("gwAdminRechargeDialog");
+    if (!tenant || !dialog) return;
+    dialog.dataset.tenantId = tenantId;
+    document.getElementById("gwAdminRechargeTitle").textContent = `为 ${tenant.name} 充值`;
+    document.getElementById("gwAdminRechargeSubtitle").textContent = `网关 ID：${tenant.id}`;
+    document.getElementById("gwAdminRechargeBalance").textContent = money(tenant.balanceFen);
+    document.getElementById("gwAdminRechargeStatus").textContent = "";
+    const form = document.getElementById("gwAdminRechargeForm");
+    form.reset();
+    dialog.showModal();
+    form.elements.amount.focus();
+  };
+
+  window.gwDeleteAdminTenant = async function(tenantId) {
+    const tenant = (adminData?.tenants || []).find((item) => item.id === tenantId);
+    if (!tenant) return;
+    const boundNames = (adminData?.saasTenants || [])
+      .filter((item) => item.gatewayTenantId === tenantId)
+      .map((item) => item.name);
+    const summary = [
+      `租户：${tenant.name}`,
+      `余额：${money(tenant.balanceFen)}`,
+      `API Keys：${Number(tenant.apiKeyCount || 0)}`,
+      `音色：${Number((tenant.voices || []).length)}`,
+    ].join("\n");
+    if (!confirm(`确认删除下面这个网关租户？\n\n${summary}`)) return;
+
     try {
-      await api(`/admin/tenants/${encodeURIComponent(tenantId)}/recharge`, {
-        method: "POST",
-        body: JSON.stringify({ amount_fen: Math.round(Number(input.value) * 100) }),
-      });
-      await reloadAdmin();
+      await api(`/admin/tenants/${encodeURIComponent(tenantId)}`, { method: "DELETE" });
     } catch (error) {
-      alert(error.message);
+      if (error.status !== 409) {
+        alert(error.message);
+        return;
+      }
+      const bindingText = boundNames.length
+        ? `\n关联秒创云商户：${boundNames.join("、")}，删除后会自动解除绑定。`
+        : "";
+      if (!confirm(
+        `该网关租户仍在使用或存在业务数据。${bindingText}\n\n` +
+        "是否继续强制删除？余额、API Key、音色和消费记录都会永久删除。",
+      )) return;
+      if (!confirm(
+        "最后确认：此操作不可恢复。\n\n" +
+        "确定永久删除该网关租户及其全部网关数据吗？",
+      )) return;
+      try {
+        const result = await api(
+          `/admin/tenants/${encodeURIComponent(tenantId)}?force=true`,
+          { method: "DELETE" },
+        );
+        if (result.unboundTenants?.length) {
+          alert(`网关租户已强制删除，并已解除 ${result.unboundTenants.length} 个商户绑定。`);
+        }
+      } catch (forceError) {
+        alert(forceError.message);
+        return;
+      }
     }
+    await reloadAdmin();
   };
 
   window.gwToggleTenant = async function(tenantId, status) {
@@ -1844,6 +2625,20 @@
     }
   };
 
+  const createTenantDialog = document.getElementById("gwCreateTenantDialog");
+  const openCreateTenant = document.getElementById("gwOpenCreateTenant");
+  if (createTenantDialog && openCreateTenant) {
+    openCreateTenant.addEventListener("click", () => {
+      document.getElementById("gwCreateStatus").textContent = "";
+      createTenantDialog.showModal();
+    });
+    document.getElementById("gwCloseCreateTenant")
+      ?.addEventListener("click", () => createTenantDialog.close());
+    createTenantDialog.addEventListener("click", (event) => {
+      if (event.target === createTenantDialog) createTenantDialog.close();
+    });
+  }
+
   const createTenantForm = document.getElementById("gwCreateTenant");
   if (createTenantForm) {
     createTenantForm.addEventListener("submit", async (event) => {
@@ -1869,26 +2664,90 @@
     });
   }
 
-  const createCodeForm = document.getElementById("gwCreateCode");
-  if (createCodeForm) {
-    createCodeForm.addEventListener("submit", async (event) => {
+  const adminRechargeDialog = document.getElementById("gwAdminRechargeDialog");
+  if (adminRechargeDialog) {
+    document.getElementById("gwCloseAdminRecharge")
+      ?.addEventListener("click", () => adminRechargeDialog.close());
+    adminRechargeDialog.addEventListener("click", (event) => {
+      if (event.target === adminRechargeDialog) adminRechargeDialog.close();
+    });
+  }
+
+  const adminRechargeForm = document.getElementById("gwAdminRechargeForm");
+  if (adminRechargeForm) {
+    adminRechargeForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const result = document.getElementById("gwCodeResult");
-      result.textContent = "正在生成...";
+      const tenantId = adminRechargeDialog?.dataset.tenantId;
+      const amountFen = Math.round(Number(adminRechargeForm.elements.amount.value) * 100);
+      const status = document.getElementById("gwAdminRechargeStatus");
+      if (!tenantId || !Number.isFinite(amountFen) || amountFen < 1) {
+        status.textContent = "请输入有效充值金额";
+        return;
+      }
+      const button = adminRechargeForm.querySelector('button[type="submit"]');
+      button.disabled = true;
+      status.textContent = "正在充值...";
       try {
-        const data = await api("/admin/recharge-codes", {
+        await api(`/admin/tenants/${encodeURIComponent(tenantId)}/recharge`, {
           method: "POST",
-          body: JSON.stringify({
-            amount_fen: Math.round(Number(document.getElementById("gwCodeAmount").value) * 100),
-            tenant_id: document.getElementById("gwCodeTenant").value || null,
-          }),
+          body: JSON.stringify({ amount_fen: amountFen }),
         });
-        result.textContent = "充值码：" + data.code;
+        status.textContent = "充值成功";
+        adminRechargeDialog.close();
         await reloadAdmin();
       } catch (error) {
-        result.textContent = error.message;
+        status.textContent = error.message;
+      } finally {
+        button.disabled = false;
       }
     });
+  }
+
+  document.getElementById("gwMerchantSearch")?.addEventListener("input", renderAdminMerchantRows);
+  document.getElementById("gwMerchantFilter")?.addEventListener("change", renderAdminMerchantRows);
+  document.getElementById("gwRefreshAdmin")?.addEventListener("click", async (event) => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      await reloadAdmin();
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  const monthlyChart = document.getElementById("gwMonthlyChart");
+  if (monthlyChart) {
+    let activeZone = null;
+    const zoneFromEvent = (event) => event.target.closest?.("[data-chart-day]") || null;
+    monthlyChart.addEventListener("pointerover", (event) => {
+      const zone = zoneFromEvent(event);
+      if (!zone || zone === activeZone) return;
+      activeZone = zone;
+      showMonthlyTooltip(zone);
+    });
+    monthlyChart.addEventListener("pointermove", (event) => {
+      const zone = zoneFromEvent(event);
+      if (!zone) return;
+      activeZone = zone;
+      showMonthlyTooltip(zone);
+    });
+    monthlyChart.addEventListener("pointerleave", () => {
+      activeZone = null;
+      hideMonthlyTooltip();
+    });
+    monthlyChart.addEventListener("focusin", (event) => {
+      const zone = zoneFromEvent(event);
+      if (!zone) return;
+      activeZone = zone;
+      showMonthlyTooltip(zone);
+    });
+    monthlyChart.addEventListener("focusout", () => {
+      activeZone = null;
+      hideMonthlyTooltip();
+    });
+    monthlyChart.closest(".gw-chart-scroll")?.addEventListener("scroll", hideMonthlyTooltip);
   }
 
   const usageDateInput = document.getElementById("gwUsageDate");

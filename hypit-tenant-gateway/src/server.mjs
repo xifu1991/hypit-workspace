@@ -234,6 +234,15 @@ export function createApplication(config = loadConfig()) {
           const tenantId = bridgeTenantMatch[1];
           const action = bridgeTenantMatch[2] ?? "";
 
+          if (method === "DELETE" && action === "") {
+            const force = ["1", "true"].includes(
+              String(url.searchParams.get("force") ?? "").toLowerCase(),
+            );
+            const deleted = store.deleteTenant(tenantId, { force }, actorId);
+            sendJson(res, 200, deleted);
+            return;
+          }
+
           if (method === "GET" && action === "dashboard") {
             sendJson(
               res,
@@ -652,6 +661,18 @@ export function createApplication(config = loadConfig()) {
           user.id,
         );
         sendJson(res, 201, { tenant });
+        return;
+      }
+
+      const adminTenantMatch = /^\/api\/admin\/tenants\/([^/]+)$/u.exec(path);
+      if (method === "DELETE" && adminTenantMatch) {
+        requireSameOrigin(req, config);
+        store.requireAdmin(user);
+        const force = ["1", "true"].includes(
+          String(url.searchParams.get("force") ?? "").toLowerCase(),
+        );
+        const deleted = store.deleteTenant(adminTenantMatch[1], { force }, user.id);
+        sendJson(res, 200, deleted);
         return;
       }
 

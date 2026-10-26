@@ -364,4 +364,95 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   });
   assert.equal(globalUsage.response.status, 200);
   assert.ok(globalUsage.data.usage.every((item) => item.tenantId === tenantA.tenantId || item.tenantId === tenantB.tenantId));
+
+  const overview = await jsonRequest(base, "/api/admin/overview", {
+    cookie: adminCookie,
+  });
+  assert.equal(overview.response.status, 200);
+  assert.ok(overview.data.monthly.revenueFen >= 3);
+  assert.equal(
+    overview.data.monthly.profitFen,
+    overview.data.monthly.revenueFen - overview.data.monthly.costFen,
+  );
+  assert.ok(overview.data.monthly.points.length > 0);
+  assert.equal(
+    overview.data.monthly.points.at(-1).revenueFen,
+    overview.data.monthly.revenueFen,
+  );
+
+  const disposableTenant = await jsonRequest(base, "/api/admin/tenants", {
+    method: "POST",
+    cookie: adminCookie,
+    body: {
+      name: "待删除空账户",
+      username: "tenant-delete-empty",
+      password: "tenant-password-delete",
+    },
+  });
+  assert.equal(disposableTenant.response.status, 201);
+  const emptyDelete = await jsonRequest(
+    base,
+    `/api/admin/tenants/${disposableTenant.data.tenant.tenantId}`,
+    { method: "DELETE", cookie: adminCookie },
+  );
+  assert.equal(emptyDelete.response.status, 200);
+  assert.equal(emptyDelete.data.deletedTenant.forced, false);
+
+  const protectedTenant = await jsonRequest(base, "/api/admin/tenants", {
+    method: "POST",
+    cookie: adminCookie,
+    body: {
+      name: "待强制删除账户",
+      username: "tenant-delete-protected",
+      password: "tenant-password-delete",
+    },
+  });
+  assert.equal(protectedTenant.response.status, 201);
+  const protectedTenantId = protectedTenant.data.tenant.tenantId;
+  await jsonRequest(base, `/api/admin/tenants/${protectedTenantId}/recharge`, {
+    method: "POST",
+    cookie: adminCookie,
+    body: { amountFen: 100 },
+  });
+  await jsonRequest(base, `/api/admin/tenants/${protectedTenantId}/voices`, {
+    method: "POST",
+    cookie: adminCookie,
+    body: { name: "强制删除测试", speakerId: "S_FORCE_DELETE" },
+  });
+
+  const protectedDelete = await jsonRequest(
+    base,
+    `/api/admin/tenants/${protectedTenantId}`,
+    { method: "DELETE", cookie: adminCookie },
+  );
+  assert.equal(protectedDelete.response.status, 409);
+  assert.equal(protectedDelete.data.code, "tenant_in_use");
+  assert.equal(protectedDelete.data.details.requiresForce, true);
+
+  const forcedDelete = await jsonRequest(
+    base,
+    `/api/admin/tenants/${protectedTenantId}?force=true`,
+    { method: "DELETE", cookie: adminCookie },
+  );
+  assert.equal(forcedDelete.response.status, 200);
+  assert.equal(forcedDelete.data.deletedTenant.forced, true);
+
+  const afterForcedDelete = await jsonRequest(base, "/api/admin/overview", {
+    cookie: adminCookie,
+  });
+  assert.ok(
+    afterForcedDelete.data.tenants.every(
+      (item) => item.id !== protectedTenantId,
+    ),
+  );
+  assert.equal(
+    app.db.prepare("SELECT COUNT(*) AS count FROM wallets WHERE tenant_id = ?")
+      .get(protectedTenantId).count,
+    0,
+  );
+  assert.equal(
+    app.db.prepare("SELECT COUNT(*) AS count FROM voices WHERE tenant_id = ?")
+      .get(protectedTenantId).count,
+    0,
+  );
 });
