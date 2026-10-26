@@ -2080,9 +2080,10 @@
       return '<div class="gw-empty" style="padding:110px 0">本月暂无已完成消费</div>';
     }
 
-    const width = 760;
+    const chart = document.getElementById("gwMonthlyChart");
+    const width = Math.max(720, Math.round(chart?.clientWidth || 760));
     const height = 286;
-    const padding = { top: 24, right: 20, bottom: 32, left: 58 };
+    const padding = { top: 24, right: 10, bottom: 32, left: 58 };
     const plotWidth = width - padding.left - padding.right;
     const plotHeight = height - padding.top - padding.bottom;
     const pointCount = points.length;
@@ -2306,6 +2307,8 @@
       : Number(monthly.grantedFen || 0) > 0
         ? `暂无消费 · 赠送成本 ${money(monthly.grantCostFen)}`
         : "暂无消费 · 暂无估算成本";
+    loading.hidden = true;
+    adminRoot.hidden = false;
     const activeTenantIds = new Set(
       saasTenants.map((item) => item.gatewayTenantId).filter(Boolean),
     );
@@ -2407,8 +2410,6 @@
         <td><button class="gw-btn small" type="button" onclick="gwSavePrice('${escapeHtml(price.service)}')">保存</button></td>
       </tr>`).join("");
 
-    loading.hidden = true;
-    adminRoot.hidden = false;
   }
 
   async function reloadTenant(date) {
@@ -2893,6 +2894,15 @@
   const monthlyChart = document.getElementById("gwMonthlyChart");
   if (monthlyChart) {
     let activeZone = null;
+    let resizeFrame = 0;
+    const refreshMonthlyChartSize = () => {
+      if (!adminData || adminRoot.hidden) return;
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        monthlyChart.innerHTML = monthlyChartSvg(adminData.monthly);
+      });
+    };
+    new ResizeObserver(refreshMonthlyChartSize).observe(monthlyChart);
     const zoneFromEvent = (event) => event.target.closest?.("[data-chart-day]") || null;
     monthlyChart.addEventListener("pointerover", (event) => {
       const zone = zoneFromEvent(event);
