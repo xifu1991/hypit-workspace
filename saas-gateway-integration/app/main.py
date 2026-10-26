@@ -54,6 +54,7 @@ async def lifespan(app: FastAPI):
     # ── 1.1 初始化平台级 AI 网关支付配置 ──
     async with AsyncSessionLocal() as session:
         await gateway.ensure_gateway_payment_config(session)
+        await gateway.ensure_gateway_platform_config(session)
     print("   ✅ AI 网关支付配置已就绪")
 
     # ── 2. 自动创建 admin 用户（如果不存在）──

@@ -20,7 +20,12 @@ from app.api.auth import get_current_user
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.core.security import decode_access_token
-from app.models.all import GatewayPaymentConfig, Tenant, TenantMiniappConfig
+from app.models.all import (
+    GatewayPaymentConfig,
+    GatewayPlatformConfig,
+    Tenant,
+    TenantMiniappConfig,
+)
 
 router = APIRouter(prefix="/api/apps/gateway", tags=["apps-gateway"])
 
@@ -82,7 +87,12 @@ class GatewayPaymentConfigUpdate(BaseModel):
     wxpay_public_key_id: Optional[str] = Field(None, max_length=200)
 
 
+class GatewayVolcBalanceUpdate(BaseModel):
+    volc_balance_fen: int = Field(..., ge=0, le=2_000_000_000)
+
+
 GATEWAY_PAYMENT_CONFIG_ID = 1
+GATEWAY_PLATFORM_CONFIG_ID = 1
 LEGACY_GATEWAY_PAYMENT_TENANT_NAME = "牛莱仕"
 
 
@@ -282,6 +292,24 @@ async def ensure_gateway_payment_config(db: AsyncSession) -> GatewayPaymentConfi
     return cfg
 
 
+async def ensure_gateway_platform_config(
+    db: AsyncSession,
+) -> GatewayPlatformConfig:
+    result = await db.execute(
+        select(GatewayPlatformConfig).where(
+            GatewayPlatformConfig.id == GATEWAY_PLATFORM_CONFIG_ID
+        )
+    )
+    cfg = result.scalar_one_or_none()
+    if cfg:
+        return cfg
+    cfg = GatewayPlatformConfig(id=GATEWAY_PLATFORM_CONFIG_ID)
+    db.add(cfg)
+    await db.commit()
+    await db.refresh(cfg)
+    return cfg
+
+
 def _wechat_notify_url() -> str:
     base = get_settings().wxpay_notify_base_url.strip().rstrip("/")
     if not base:
@@ -474,6 +502,9 @@ async def admin_overview(
 ):
     _require_admin(current_user)
     overview = await _gateway_call("GET", "/saas/v1/overview")
+    platform_cfg = await ensure_gateway_platform_config(db)
+    overview["volcBalanceFen"] = int(platform_cfg.volc_balance_fen or 0)
+    overview["volcBalanceUpdatedAt"] = platform_cfg.updated_at
     result = await db.execute(select(Tenant).order_by(Tenant.created_at.desc()))
     saas_tenants = []
     for tenant in result.scalars().all():
@@ -489,6 +520,25 @@ async def admin_overview(
         )
     overview["saasTenants"] = saas_tenants
     return overview
+
+
+@router.put("/admin/platform/volc-balance")
+async def update_volc_balance(
+    data: GatewayVolcBalanceUpdate,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    _require_admin(current_user)
+    cfg = await ensure_gateway_platform_config(db)
+    cfg.volc_balance_fen = data.volc_balance_fen
+    cfg.updated_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(cfg)
+    return {
+        "ok": True,
+        "volcBalanceFen": int(cfg.volc_balance_fen or 0),
+        "volcBalanceUpdatedAt": cfg.updated_at,
+    }
 
 
 @router.post("/admin/tenants")

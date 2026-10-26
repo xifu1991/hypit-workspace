@@ -1402,15 +1402,35 @@ export class Store {
          ORDER BY usage_date`,
       )
       .all(range.start, range.end);
+    const grantRows = this.db
+      .prepare(
+        `SELECT substr(datetime(created_at, '+8 hours'), 1, 10) AS grant_date,
+                SUM(amount_fen) AS amount_fen
+         FROM ledger_entries
+         WHERE kind = 'credit'
+           AND service = 'recharge'
+           AND created_at >= ? AND created_at < ?
+         GROUP BY grant_date
+         ORDER BY grant_date`,
+      )
+      .all(range.start, range.end);
     const dailyFen = new Map();
+    const dailyGrantFen = new Map();
     const byTenantFen = {};
     let revenueFen = 0;
+    let grantedFen = 0;
     for (const row of rows) {
       const amountFen = number(row.amount_fen);
       const day = Number(String(row.usage_date).slice(8, 10));
       dailyFen.set(day, number(dailyFen.get(day)) + amountFen);
       byTenantFen[row.tenant_id] = number(byTenantFen[row.tenant_id]) + amountFen;
       revenueFen += amountFen;
+    }
+    for (const row of grantRows) {
+      const amountFen = number(row.amount_fen);
+      const day = Number(String(row.grant_date).slice(8, 10));
+      dailyGrantFen.set(day, number(dailyGrantFen.get(day)) + amountFen);
+      grantedFen += amountFen;
     }
 
     const today = shanghaiDate();
@@ -1423,19 +1443,28 @@ export class Store {
           : 0;
     const points = [];
     let cumulativeRevenueFen = 0;
+    let cumulativeGrantedFen = 0;
     for (let day = 1; day <= throughDay; day += 1) {
       cumulativeRevenueFen += number(dailyFen.get(day));
-      const cumulativeCostFen = Math.round(cumulativeRevenueFen / 3);
+      cumulativeGrantedFen += number(dailyGrantFen.get(day));
+      const cumulativeServiceCostFen = Math.round(cumulativeRevenueFen / 3);
+      const cumulativeGrantCostFen = Math.round(cumulativeGrantedFen / 3);
+      const cumulativeCostFen = cumulativeServiceCostFen + cumulativeGrantCostFen;
       points.push({
         day,
         date: `${range.month}-${String(day).padStart(2, "0")}`,
         revenueFen: cumulativeRevenueFen,
+        grantedFen: cumulativeGrantedFen,
         costFen: cumulativeCostFen,
+        serviceCostFen: cumulativeServiceCostFen,
+        grantCostFen: cumulativeGrantCostFen,
         profitFen: cumulativeRevenueFen - cumulativeCostFen,
       });
     }
 
-    const costFen = Math.round(revenueFen / 3);
+    const serviceCostFen = Math.round(revenueFen / 3);
+    const grantCostFen = Math.round(grantedFen / 3);
+    const costFen = serviceCostFen + grantCostFen;
     const profitFen = revenueFen - costFen;
     return {
       month: range.month,
@@ -1447,10 +1476,16 @@ export class Store {
           : null,
       dayCount: range.dayCount,
       revenueFen,
+      grantedFen,
+      serviceCostFen,
+      grantCostFen,
       costFen,
       profitFen,
-      marginBps: revenueFen > 0 ? Math.round((profitFen / revenueFen) * 10_000) : 0,
-      costBasis: "official_price_x3",
+      marginBps:
+        revenueFen > 0
+          ? Math.round((profitFen / revenueFen) * 10_000)
+          : null,
+      costBasis: "official_price_x3_plus_grants",
       points,
       byTenantFen,
     };

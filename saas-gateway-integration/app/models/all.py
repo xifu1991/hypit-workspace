@@ -651,6 +651,20 @@ class GatewayPaymentConfig(Base):
     )
 
 
+class GatewayPlatformConfig(Base):
+    """秒创云 AI 网关平台运营数据（平台级单例）。"""
+    __tablename__ = "gateway_platform_configs"
+    __table_args__ = {"extend_existing": True}
+
+    id = Column(Integer, primary_key=True, default=1)
+    volc_balance_fen = Column(Integer, default=0, nullable=False)
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
+
+
 # ═══════════════════════════════════════
 # 工作流 — Agent 定义
 # ═══════════════════════════════════════

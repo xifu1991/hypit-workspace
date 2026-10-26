@@ -109,6 +109,15 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   assert.equal(recharge.response.status, 200);
   assert.equal(recharge.data.wallet.availableFen, 1_000);
 
+  const grantOnlyOverview = await jsonRequest(base, "/api/admin/overview", {
+    cookie: adminCookie,
+  });
+  assert.equal(grantOnlyOverview.data.monthly.revenueFen, 0);
+  assert.equal(grantOnlyOverview.data.monthly.grantedFen, 1_000);
+  assert.equal(grantOnlyOverview.data.monthly.grantCostFen, 333);
+  assert.equal(grantOnlyOverview.data.monthly.profitFen, -333);
+  assert.equal(grantOnlyOverview.data.monthly.marginBps, null);
+
   for (const tenant of [tenantA, tenantB]) {
     const voice = await jsonRequest(
       base,
@@ -370,9 +379,15 @@ test("tenant gateway keeps balances, usage, replay and isolation", async (t) => 
   });
   assert.equal(overview.response.status, 200);
   assert.ok(overview.data.monthly.revenueFen >= 3);
+  assert.equal(overview.data.monthly.grantedFen, 1_000);
+  assert.equal(overview.data.monthly.grantCostFen, 333);
   assert.equal(
     overview.data.monthly.profitFen,
     overview.data.monthly.revenueFen - overview.data.monthly.costFen,
+  );
+  assert.equal(
+    overview.data.monthly.costFen,
+    overview.data.monthly.serviceCostFen + overview.data.monthly.grantCostFen,
   );
   assert.ok(overview.data.monthly.points.length > 0);
   assert.equal(

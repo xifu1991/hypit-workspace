@@ -165,16 +165,29 @@
   background: var(--card-bg);
   box-shadow: 0 16px 36px rgba(16, 24, 40, .16);
 }
-.gw-billing-menu-panel a {
+.gw-billing-menu-panel a,
+.gw-billing-menu-panel button {
+  width: 100%;
   padding: 9px 10px;
+  border: 0;
   border-radius: 5px;
+  background: transparent;
   color: var(--fg);
+  font: inherit;
   font-size: 12px;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
 }
-.gw-billing-menu-panel a:hover {
+.gw-billing-menu-panel a:hover,
+.gw-billing-menu-panel button:hover {
   background: color-mix(in srgb, var(--gw-teal) 8%, var(--card-bg));
   color: var(--gw-teal);
+}
+.gw-billing-menu-panel a:focus-visible,
+.gw-billing-menu-panel button:focus-visible {
+  outline: 2px solid var(--gw-teal);
+  outline-offset: 1px;
 }
 .gw-admin-metrics {
   display: grid;
@@ -223,6 +236,28 @@
   margin-top: 5px;
   color: var(--muted-fg);
   font-size: 11px;
+}
+.gw-admin-metric-action {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  margin-top: 9px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--gw-teal);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.gw-admin-metric-action:hover {
+  border-color: var(--gw-teal);
+  background: color-mix(in srgb, var(--gw-teal) 7%, var(--card-bg));
+}
+.gw-admin-metric-action:focus-visible {
+  outline: 2px solid var(--gw-teal);
+  outline-offset: 2px;
 }
 .gw-admin-chart-panel {
   position: relative;
@@ -537,6 +572,29 @@
 .gw-recharge-balance strong {
   color: var(--fg);
   font-variant-numeric: tabular-nums;
+}
+.gw-dialog-hint {
+  padding: 9px 11px;
+  border-left: 3px solid var(--gw-warn);
+  background: color-mix(in srgb, var(--gw-warn) 7%, var(--card-bg));
+  color: var(--muted-fg);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.gw-price-table input {
+  width: min(148px, 32vw);
+  min-height: 34px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: var(--fg);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.gw-price-table input:focus {
+  border-color: var(--gw-teal);
+  outline: 2px solid color-mix(in srgb, var(--gw-teal) 14%, transparent);
 }
 .gw-stack { display: grid; gap: 18px; min-width: 0; }
 .gw-panel {
@@ -1455,7 +1513,7 @@
           <details class="gw-billing-menu">
             <summary class="gw-btn secondary">计费与支付</summary>
             <div class="gw-billing-menu-panel">
-              <a href="#gwAdminPrices">计费单价</a>
+              <button id="gwOpenPrices" type="button">计费单价</button>
               <a href="/admin/settings">支付设置</a>
             </div>
           </details>
@@ -1481,7 +1539,7 @@
         <div class="gw-chart-tooltip" id="gwMonthlyTooltip" role="tooltip" hidden></div>
         <div class="gw-chart-footnote">
           <span>本月累计：客户实扣 <strong id="gwMonthlyRevenue">¥0.00</strong> · 毛利 <strong id="gwMonthlyProfit">¥0.00</strong></span>
-          <span>火山成本按当前官方价 ×3 规则折算为实扣的 1/3</span>
+          <span>成本 = 已完成消费 ÷ 3 + 本月后台赠送充值 ÷ 3，数据为估算口径</span>
         </div>
       </section>
 
@@ -1522,21 +1580,6 @@
         </div>
       </section>
 
-      <section class="gw-panel" id="gwAdminPrices" aria-labelledby="gwAdminPricesTitle">
-        <div class="gw-panel-head">
-          <div>
-            <h2 id="gwAdminPricesTitle">计费单价</h2>
-            <p>租户执行价按火山官方标准 ×3；调整只影响之后的调用</p>
-          </div>
-          <a class="gw-btn secondary small" href="/admin/settings">支付设置</a>
-        </div>
-        <div class="gw-table-wrap">
-          <table class="gw-table">
-            <thead><tr><th>服务</th><th>计费单位</th><th class="num">租户执行价 / 微元</th><th></th></tr></thead>
-            <tbody id="gwPrices"></tbody>
-          </table>
-        </div>
-      </section>
     </div>
 
     <dialog class="gw-admin-dialog" id="gwCreateTenantDialog" aria-labelledby="gwCreateTenantTitle">
@@ -1566,8 +1609,8 @@
       <div class="gw-admin-dialog-body">
         <div class="gw-admin-dialog-head">
           <div>
-            <h2 id="gwAdminRechargeTitle">手动充值</h2>
-            <p id="gwAdminRechargeSubtitle">调整当前网关租户余额</p>
+            <h2 id="gwAdminRechargeTitle">赠送充值</h2>
+            <p id="gwAdminRechargeSubtitle">向当前网关租户发放体验余额</p>
           </div>
           <button class="gw-dialog-close" id="gwCloseAdminRecharge" type="button" aria-label="关闭充值窗口">×</button>
         </div>
@@ -1577,11 +1620,55 @@
             <strong id="gwAdminRechargeBalance">¥0.00</strong>
           </div>
           <div class="gw-field">
-            <label for="gwAdminRechargeAmount">充值金额（元）</label>
-            <input id="gwAdminRechargeAmount" name="amount" type="number" min="0.01" step="0.01" required placeholder="请输入充值金额">
+            <label for="gwAdminRechargeAmount">赠送金额（元）</label>
+            <input id="gwAdminRechargeAmount" name="amount" type="number" min="0.01" step="0.01" required placeholder="请输入赠送金额">
           </div>
-          <button class="gw-btn" type="submit">确认充值</button>
+          <div class="gw-dialog-hint">该笔金额会按 1/3 计入本月运营成本。客户产生调用后，服务成本另按实扣金额的 1/3 估算。</div>
+          <button class="gw-btn" type="submit">确认赠送</button>
           <div class="gw-status-line" id="gwAdminRechargeStatus" aria-live="polite"></div>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="gw-admin-dialog" id="gwPriceDialog" aria-labelledby="gwPriceDialogTitle">
+      <div class="gw-admin-dialog-body">
+        <div class="gw-admin-dialog-head">
+          <div>
+            <h2 id="gwPriceDialogTitle">计费单价</h2>
+            <p>租户执行价按火山官方标准 ×3；调整只影响之后的调用</p>
+          </div>
+          <button class="gw-dialog-close" id="gwClosePrices" type="button" aria-label="关闭计费单价窗口">×</button>
+        </div>
+        <div class="gw-table-wrap">
+          <table class="gw-table gw-price-table">
+            <thead><tr><th>服务</th><th>计费单位</th><th class="num">执行价 / 微元</th><th></th></tr></thead>
+            <tbody id="gwPrices"></tbody>
+          </table>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="gw-admin-dialog" id="gwVolcBalanceDialog" aria-labelledby="gwVolcBalanceTitle">
+      <div class="gw-admin-dialog-body">
+        <div class="gw-admin-dialog-head">
+          <div>
+            <h2 id="gwVolcBalanceTitle">火山引擎充值余额</h2>
+            <p>手动维护用于经营测算，不会自动同步火山引擎账单</p>
+          </div>
+          <button class="gw-dialog-close" id="gwCloseVolcBalance" type="button" aria-label="关闭余额维护窗口">×</button>
+        </div>
+        <form class="gw-form" id="gwVolcBalanceForm">
+          <div class="gw-recharge-balance">
+            <span>当前记录</span>
+            <strong id="gwVolcBalanceCurrent">¥0.00</strong>
+          </div>
+          <div class="gw-field">
+            <label for="gwVolcBalanceAmount">火山引擎账户余额（元）</label>
+            <input id="gwVolcBalanceAmount" name="amount" type="number" min="0" step="0.01" required placeholder="请输入实际充值余额">
+          </div>
+          <div class="gw-dialog-hint">请以火山引擎控制台显示的可用余额为准手动更新。该数值仅用于总后台展示，不参与租户钱包扣费。</div>
+          <button class="gw-btn" type="submit">保存余额</button>
+          <div class="gw-status-line" id="gwVolcBalanceStatus" aria-live="polite"></div>
         </form>
       </div>
     </dialog>
@@ -1785,7 +1872,8 @@
   }
 
   function money(fen) {
-    return "¥" + (Number(fen || 0) / 100).toFixed(2);
+    const value = Number(fen || 0) / 100;
+    return (value < 0 ? "-¥" : "¥") + Math.abs(value).toFixed(2);
   }
 
   function priceUnitText(unit) {
@@ -1862,7 +1950,7 @@
     errorBox.textContent = error instanceof Error ? error.message : String(error);
   }
 
-  function adminMetric(label, value, note, icon) {
+  function adminMetric(label, value, note, icon, actionHtml = "") {
     const icons = {
       tenants: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
       balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18M7 15h3"></path></svg>',
@@ -1875,6 +1963,7 @@
         <div class="gw-admin-metric-label">${escapeHtml(label)}</div>
         <div class="gw-admin-metric-value">${escapeHtml(value)}</div>
         <div class="gw-admin-metric-note">${escapeHtml(note || "")}</div>
+        ${actionHtml}
       </div>
     </article>`;
   }
@@ -1996,40 +2085,54 @@
     const padding = { top: 24, right: 20, bottom: 32, left: 58 };
     const plotWidth = width - padding.left - padding.right;
     const plotHeight = height - padding.top - padding.bottom;
-    const dayCount = Math.max(1, Number(monthly?.dayCount) || points.length);
-    const maxRevenue = Math.max(1, ...points.map((point) => point.revenueFen));
-    const yMax = Math.max(100, Math.ceil(maxRevenue / 100) * 100);
-    const x = (day) => padding.left + ((day - 0.5) / dayCount) * plotWidth;
-    const y = (value) => padding.top + plotHeight - (Number(value || 0) / yMax) * plotHeight;
-    const pathFor = (key) => points
-      .map((point, index) => `${index === 0 ? "M" : "L"}${x(point.day).toFixed(2)},${y(point[key]).toFixed(2)}`)
-      .join(" ");
-    const xLabels = [...new Set([
+    const pointCount = points.length;
+    const maxValue = Math.max(
       1,
-      Math.round(dayCount / 4),
-      Math.round(dayCount / 2),
-      Math.round((dayCount * 3) / 4),
-      dayCount,
-    ])].filter((day) => day >= 1 && day <= dayCount);
+      ...points.map((point) => Math.max(point.revenueFen, point.profitFen)),
+    );
+    const minValue = Math.min(0, ...points.map((point) => point.profitFen));
+    const yMax = Math.max(100, Math.ceil(maxValue / 100) * 100);
+    const yMin = Math.min(0, Math.floor(minValue / 100) * 100);
+    const yRange = Math.max(1, yMax - yMin);
+    const xIndex = (index) => pointCount <= 1
+      ? padding.left + plotWidth / 2
+      : padding.left + (index / (pointCount - 1)) * plotWidth;
+    const y = (value) => (
+      padding.top + plotHeight - ((Number(value || 0) - yMin) / yRange) * plotHeight
+    );
+    const pathFor = (key) => points
+      .map((point, index) => `${index === 0 ? "M" : "L"}${xIndex(index).toFixed(2)},${y(point[key]).toFixed(2)}`)
+      .join(" ");
+    const labelIndexes = [...new Set([
+      0,
+      Math.round((pointCount - 1) / 4),
+      Math.round((pointCount - 1) / 2),
+      Math.round(((pointCount - 1) * 3) / 4),
+      pointCount - 1,
+    ])];
     const gridLines = [0, 0.5, 1].map((ratio) => {
-      const value = yMax * ratio;
+      const value = yMin + yRange * ratio;
       const top = y(value);
       return `<line class="gw-chart-grid" x1="${padding.left}" y1="${top.toFixed(2)}"
           x2="${(width - padding.right).toFixed(2)}" y2="${top.toFixed(2)}"></line>
         <text class="gw-chart-axis" x="${padding.left - 9}" y="${(top + 3).toFixed(2)}"
           text-anchor="end">${escapeHtml(money(value))}</text>`;
     }).join("");
-    const xAxis = xLabels.map((day) => {
-      const point = points.find((item) => item.day === day);
-      return `<text class="gw-chart-axis" x="${x(day).toFixed(2)}" y="${height - 9}"
-          text-anchor="middle">${escapeHtml(point?.date?.slice(5) || day + "日")}</text>`;
+    const xAxis = labelIndexes.map((index) => {
+      const point = points[index];
+      return `<text class="gw-chart-axis" x="${xIndex(index).toFixed(2)}" y="${height - 9}"
+          text-anchor="${index === 0 ? "start" : index === pointCount - 1 ? "end" : "middle"}">${escapeHtml(point?.date?.slice(5) || point.day + "日")}</text>`;
     }).join("");
-    const zones = points.map((point) => {
-      const left = padding.left + ((point.day - 1) / dayCount) * plotWidth;
-      const zoneWidth = plotWidth / dayCount;
+    const zones = points.map((point, index) => {
+      const left = index === 0
+        ? padding.left
+        : (xIndex(index - 1) + xIndex(index)) / 2;
+      const right = index === pointCount - 1
+        ? padding.left + plotWidth
+        : (xIndex(index) + xIndex(index + 1)) / 2;
       const label = `${point.date}，客户实扣 ${money(point.revenueFen)}，估算成本 ${money(point.costFen)}，毛利 ${money(point.profitFen)}`;
       return `<rect class="gw-chart-day-zone" x="${left.toFixed(2)}" y="${padding.top}"
-        width="${Math.max(4, zoneWidth).toFixed(2)}" height="${plotHeight}"
+        width="${Math.max(4, right - left).toFixed(2)}" height="${plotHeight}"
         tabindex="0" role="img" aria-label="${escapeHtml(label)}" data-chart-day="${point.day}"></rect>`;
     }).join("");
 
@@ -2053,6 +2156,7 @@
       <div class="gw-chart-tooltip-head"><span>${escapeHtml(point.date)}</span><span>累计</span></div>
       <div class="gw-chart-tooltip-row"><span>客户实扣</span><strong>${money(point.revenueFen)}</strong></div>
       <div class="gw-chart-tooltip-row"><span>估算成本</span><strong>${money(point.costFen)}</strong></div>
+      ${Number(point.grantCostFen || 0) > 0 ? `<div class="gw-chart-tooltip-row"><span>其中赠送成本</span><strong>${money(point.grantCostFen)}</strong></div>` : ""}
       <div class="gw-chart-tooltip-row"><span>毛利</span><strong>${money(point.profitFen)}</strong></div>`;
     tooltip.hidden = false;
 
@@ -2126,7 +2230,7 @@
 
     return `<div class="gw-actions">
       <button class="gw-btn small" type="button"
-        onclick="gwOpenAdminRecharge('${escapeHtml(tenant.id)}')">充值</button>
+        onclick="gwOpenAdminRecharge('${escapeHtml(tenant.id)}')">赠送充值</button>
       <details class="gw-row-more">
         <summary>管理</summary>
         <div class="gw-row-drawer">
@@ -2194,6 +2298,14 @@
     const tenants = data.tenants || [];
     const saasTenants = data.saasTenants || [];
     const monthly = data.monthly || {};
+    const volcBalanceNote = data.volcBalanceUpdatedAt
+      ? `手动维护 · 更新于 ${dateText(data.volcBalanceUpdatedAt)}`
+      : "手动维护 · 尚未更新";
+    const profitNote = Number(monthly.revenueFen || 0) > 0
+      ? `毛利率 ${(Number(monthly.marginBps || 0) / 100).toFixed(1)}% · 含后台赠送成本`
+      : Number(monthly.grantedFen || 0) > 0
+        ? `暂无消费 · 赠送成本 ${money(monthly.grantCostFen)}`
+        : "暂无消费 · 暂无估算成本";
     const activeTenantIds = new Set(
       saasTenants.map((item) => item.gatewayTenantId).filter(Boolean),
     );
@@ -2229,24 +2341,35 @@
         "tenants",
       ),
       adminMetric(
-        "当前可用余额",
-        money(data.totals?.balanceFen),
-        `处理中冻结 ${money(data.totals?.reservedFen)}`,
+        "火山引擎充值余额",
+        money(data.volcBalanceFen),
+        volcBalanceNote,
         "balance",
+        '<button class="gw-admin-metric-action" id="gwOpenVolcBalance" type="button">更新余额</button>',
       ),
       adminMetric(
         "本月客户实扣",
         money(monthly.revenueFen),
-        `${monthly.startDate || ""} 至 ${monthly.throughDate || "今日"}`,
+        `${monthly.startDate || ""} 至 ${monthly.throughDate || "今日"} · 全部网关租户合计`,
         "revenue",
       ),
       adminMetric(
         "本月毛利（估算）",
         money(monthly.profitFen),
-        `毛利率 ${(Number(monthly.marginBps || 0) / 100).toFixed(1)}% · 成本按官方价 ×3 折算`,
+        profitNote,
         "profit",
       ),
     ].join("");
+    document.getElementById("gwOpenVolcBalance")?.addEventListener("click", () => {
+      const dialog = document.getElementById("gwVolcBalanceDialog");
+      if (!dialog) return;
+      document.getElementById("gwVolcBalanceCurrent").textContent = money(data.volcBalanceFen);
+      document.getElementById("gwVolcBalanceAmount").value = (
+        Number(data.volcBalanceFen || 0) / 100
+      ).toFixed(2);
+      document.getElementById("gwVolcBalanceStatus").textContent = "";
+      dialog.showModal();
+    });
 
     const createSelect = document.getElementById("gwCreateSaasTenant");
     createSelect.innerHTML = '<option value="">暂不绑定</option>' + saasTenants
@@ -2492,7 +2615,7 @@
     const dialog = document.getElementById("gwAdminRechargeDialog");
     if (!tenant || !dialog) return;
     dialog.dataset.tenantId = tenantId;
-    document.getElementById("gwAdminRechargeTitle").textContent = `为 ${tenant.name} 充值`;
+    document.getElementById("gwAdminRechargeTitle").textContent = `向 ${tenant.name} 赠送充值`;
     document.getElementById("gwAdminRechargeSubtitle").textContent = `网关 ID：${tenant.id}`;
     document.getElementById("gwAdminRechargeBalance").textContent = money(tenant.balanceFen);
     document.getElementById("gwAdminRechargeStatus").textContent = "";
@@ -2681,19 +2804,69 @@
       const amountFen = Math.round(Number(adminRechargeForm.elements.amount.value) * 100);
       const status = document.getElementById("gwAdminRechargeStatus");
       if (!tenantId || !Number.isFinite(amountFen) || amountFen < 1) {
-        status.textContent = "请输入有效充值金额";
+        status.textContent = "请输入有效赠送金额";
         return;
       }
       const button = adminRechargeForm.querySelector('button[type="submit"]');
       button.disabled = true;
-      status.textContent = "正在充值...";
+      status.textContent = "正在赠送...";
       try {
         await api(`/admin/tenants/${encodeURIComponent(tenantId)}/recharge`, {
           method: "POST",
-          body: JSON.stringify({ amount_fen: amountFen }),
+          body: JSON.stringify({
+            amount_fen: amountFen,
+            description: "秒创云平台赠送充值",
+          }),
         });
-        status.textContent = "充值成功";
+        status.textContent = "赠送成功";
         adminRechargeDialog.close();
+        await reloadAdmin();
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  const priceDialog = document.getElementById("gwPriceDialog");
+  document.getElementById("gwOpenPrices")?.addEventListener("click", () => {
+    priceDialog?.showModal();
+    document.querySelector(".gw-billing-menu")?.removeAttribute("open");
+  });
+  document.getElementById("gwClosePrices")
+    ?.addEventListener("click", () => priceDialog?.close());
+  priceDialog?.addEventListener("click", (event) => {
+    if (event.target === priceDialog) priceDialog.close();
+  });
+
+  const volcBalanceDialog = document.getElementById("gwVolcBalanceDialog");
+  document.getElementById("gwCloseVolcBalance")
+    ?.addEventListener("click", () => volcBalanceDialog?.close());
+  volcBalanceDialog?.addEventListener("click", (event) => {
+    if (event.target === volcBalanceDialog) volcBalanceDialog.close();
+  });
+
+  const volcBalanceForm = document.getElementById("gwVolcBalanceForm");
+  if (volcBalanceForm) {
+    volcBalanceForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const amountFen = Math.round(Number(volcBalanceForm.elements.amount.value) * 100);
+      const status = document.getElementById("gwVolcBalanceStatus");
+      if (!Number.isFinite(amountFen) || amountFen < 0) {
+        status.textContent = "请输入有效的火山引擎余额";
+        return;
+      }
+      const button = volcBalanceForm.querySelector('button[type="submit"]');
+      button.disabled = true;
+      status.textContent = "正在保存...";
+      try {
+        await api("/admin/platform/volc-balance", {
+          method: "PUT",
+          body: JSON.stringify({ volc_balance_fen: amountFen }),
+        });
+        status.textContent = "余额已保存";
+        volcBalanceDialog?.close();
         await reloadAdmin();
       } catch (error) {
         status.textContent = error.message;
